@@ -19,10 +19,21 @@ const About = () => {
       </Box>
       <div style={{ textAlign: "center", padding: "2rem" }}>
         <h1>About</h1>
-        <h2>Meet Braillearn's Developers</h2>
-        <p>Name, Name, Name, Name</p>
-        <h2>Motivation</h2>
-        <p>About page.</p>
+        <Box
+          sx={{
+            border: `0.3rem solid #919bd9`,
+            borderRadius: theme.shape.borderRadius,
+            padding: theme.spacing(1),
+            textAlign: "left",
+            backgroundColor: "transparent",
+            color: theme.palette.text.primary,
+          }}
+        >
+          <h2>Meet Braillearn's Developers</h2>
+          <p>Name, Name, Name, Name</p>
+          <h2>Motivation</h2>
+          <p>About page.</p>
+        </Box>
       </div>
     </Box>
   );
