@@ -1,19 +1,22 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createTheme, ThemeProvider, Typography } from "@mui/material";
+import { createTheme, ThemeProvider, Typography, Button } from "@mui/material";
 
 const theme = createTheme({
   typography: {
     h7: {
-      fontSize: "3rem",
-      fontWeight: 500,
-      fontFamily: "sans-serif",
-      fontStyle: "bold",
+      fontSize: "4rem",
+      fontWeight: 700,
+      fontFamily: "'Arial', sans-serif",
+      background: "linear-gradient(90deg,rgb(142, 198, 247), #5e67bf)",
+      WebkitBackgroundClip: "text",
+      WebkitTextFillColor: "transparent",
     },
   },
   palette: {
     custom: {
-      textBlue: "#1e88e5",
+      buttonBackground: "#5e67bf",
+      buttonHover: "#4b539c",
     },
   },
 });
@@ -31,27 +34,43 @@ function Home() {
   };
 
   return (
-    <div className="Home">
-      <header className="Home-header">
+    <div style={{ textAlign: "center", padding: "2rem" }}>
+      <header style={{ marginTop: "10rem", marginBottom: "2rem" }}>
         <ThemeProvider theme={theme}>
-          <Typography sx={{ color: theme.palette.custom.textBlue }} variant="h7">
-            Braillearn
-          </Typography>
+          <Typography sx={{ color: theme.palette.custom.textPurple }} variant="h7">Braillearn</Typography>
         </ThemeProvider>
-        <div className="description-box">
+        <div style={{ fontSize: "1.5rem", margin: "2rem 0", fontFamily: "Roboto, sans-serif" }}>
           <p>
-            Welcome to Braillearn, your interactive platform for learning and practicing Braille! More description to be added.
+            Welcome to Braillearn, an interactive platform for learning and practicing Braille.
           </p>
         </div>
-        <div className="mode-selector">
-          <label htmlFor="mode">Choose Mode: </label>
-          <select id="mode" name="mode" value={mode} onChange={(e) => setMode(e.target.value)}>
+        <div style={{ marginBottom: "2rem" }}>
+          <label htmlFor="mode" style={{ fontSize: "1.5rem", marginRight: "1rem" }}>Choose Mode: </label>
+          <select
+            id="mode"
+            name="mode"
+            value={mode}
+            onChange={(e) => setMode(e.target.value)}
+            style={{ fontSize: "1.2rem", padding: "0.5rem" }}
+          >
             <option value="practice">Practice</option>
             <option value="learn">Learn</option>
           </select>
         </div>
-        <div className="start-button">
-          <button onClick={handleStart}>Start</button>
+        <div>
+          <Button
+            onClick={handleStart}
+            variant="outlined"
+            sx={{
+              fontSize: "1.5rem",
+              color: theme.palette.custom.buttonBackground,
+              padding: "1rem",
+              width: "6rem",
+              height: "3rem"
+            }}
+          >
+            Start
+          </Button>
         </div>
       </header>
     </div>
