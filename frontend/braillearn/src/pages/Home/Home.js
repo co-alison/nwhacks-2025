@@ -1,25 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createTheme, ThemeProvider, Typography, Button } from "@mui/material";
-
-const theme = createTheme({
-  typography: {
-    h7: {
-      fontSize: "4rem",
-      fontWeight: 700,
-      fontFamily: "'Arial', sans-serif",
-      background: "linear-gradient(90deg,rgb(142, 198, 247), #5e67bf)",
-      WebkitBackgroundClip: "text",
-      WebkitTextFillColor: "transparent",
-    },
-  },
-  palette: {
-    custom: {
-      buttonBackground: "#5e67bf",
-      buttonHover: "#4b539c",
-    },
-  },
-});
+import theme from '../../styles/theme';
 
 function Home() {
   const [mode, setMode] = useState('practice');
