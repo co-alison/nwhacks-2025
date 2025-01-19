@@ -7,16 +7,36 @@ import SpeechRecognition, {
     useSpeechRecognition,
 } from 'react-speech-recognition';
 import theme from '../../styles/theme';
-import { Box, Typography, Button } from '@mui/material'; // Importing Material-UI components for consistent styling.
+import { Box, Typography } from '@mui/material'; // Importing Material-UI components for consistent styling.
 import StyledButton from '../../components/StyledButton';
 
-const Practice = () => {
+import CustomNumberInput from '../../components/NumberPicker';
+
+const Quiz = () => {
     const [currentChar, setCurrentChar] = useState('');
-    const [status, setStatus] = useState(states.display);
+    const [status, setStatus] = useState(states.quizMenu);
     const [charInput, setCharInput] = useState('');
     const [timerFlag, setTimerFlag] = useState(true);
     const [isListening, setIsListening] = useState(false);
+
+    const [quizQuestionCount, setQuizQuestionCount] = useState(0);
+    const [quizQuestionsLeft, setQuizQuestionsLeft] = useState(-1);
+    const [correctQuizAnswers, setCorrectQuizAnswers] = useState(0);
+
     const [showingCorrectAnswer, setShowingCorrectAnswer] = useState(false);
+
+    // if the user chooses to retake the quiz with their previously incorrect or unseen
+    // characters, getRandomChar() will pull from this list
+    const [retakeQuizCharPool, setRetakeQuizCharPool] = useState([
+        ...characters,
+    ]);
+
+    // a list of the incorrect or unseen chars in this quiz instance
+    const [curIncorrectOrUnseenChars, setCurIncorrectOrUnseenChars] = useState([
+        ...characters,
+    ]);
+
+    const [isRetakingQuiz, setIsRetakingQuiz] = useState(false);
 
     const {
         transcript,
@@ -51,7 +71,7 @@ const Practice = () => {
                 setTimerFlag(0);
                 SpeechRecognition.stopListening();
                 setIsListening(false);
-            }, 10000);
+            }, 5000);
 
             return () => clearTimeout(timer);
         }
@@ -74,7 +94,7 @@ const Practice = () => {
             const input = transcript.split(' ')[0];
             setCharInput(input);
             resetTranscript();
-            await verifyChar(input);
+            verifyChar(input);
         };
 
         if (!listening && !transcript && !timerFlag) {
@@ -96,8 +116,16 @@ const Practice = () => {
     };
 
     const getRandomChar = () => {
-        const index = Math.floor(Math.random() * characters.length);
-        return characters[index];
+        var chars = [];
+        if (isRetakingQuiz) {
+            chars = retakeQuizCharPool;
+            console.log('choosing characters from', retakeQuizCharPool);
+        } else {
+            chars = characters;
+            console.log('choosing characters from', characters);
+        }
+        const index = Math.floor(Math.random() * chars.length);
+        return chars[index];
     };
 
     const verifyChar = async (input) => {
@@ -113,22 +141,47 @@ const Practice = () => {
             return;
         }
 
-        setCharInput(res.data);
-        if (currentChar.toLowerCase() === res.data.toLowerCase()) {
+        setCharInput(res.data.toLowerCase());
+        if (currentChar === res.data.toLowerCase()) {
             setStatus(states.correct);
+            setCorrectQuizAnswers(correctQuizAnswers + 1);
+
+            // Update the list of currently unseen or incorrect characters
+            curIncorrectOrUnseenChars.splice(
+                curIncorrectOrUnseenChars.indexOf(currentChar),
+                1
+            );
+            setCurIncorrectOrUnseenChars(curIncorrectOrUnseenChars);
+            console.log(
+                'current uncorrect or unseen chars',
+                curIncorrectOrUnseenChars
+            );
         } else {
             setStatus(states.incorrect);
         }
+
+        console.log(
+            'current incorrect or unseen chars',
+            curIncorrectOrUnseenChars
+        );
     };
 
     const reset = () => {
-        const clear = '.';
-        // const res = axios.get(`http://localhost:3001/send-letter?letter=${clear}`);
         setCurrentChar('');
         setCharInput('');
         setTimerFlag(true);
         setShowingCorrectAnswer(false);
-        setStatus(states.display);
+
+        if (quizQuestionsLeft > 1) {
+            setQuizQuestionsLeft(quizQuestionsLeft - 1);
+            setStatus(states.display);
+        } else {
+            setStatus(states.quizDone);
+        }
+    };
+
+    const showCorrectAnswer = () => {
+        setShowingCorrectAnswer(true);
     };
 
     const speakText = (text) => {
@@ -143,8 +196,45 @@ const Practice = () => {
         speechSynthesis.speak(utterance);
     };
 
-    const showCorrectAnswer = () => {
-        setShowingCorrectAnswer(true);
+    useEffect(() => {
+        console.log('quiz questions left', quizQuestionsLeft);
+    }, [quizQuestionsLeft]); // Runs when `quizQuestionsLeft` changes
+
+    const handleQuizQuestionChange = (event, val) => {
+        console.log('number of questions chosen', val);
+        setQuizQuestionCount(val);
+        setQuizQuestionsLeft(val);
+    };
+
+    const startQuiz = () => {
+        setStatus(states.display);
+        console.log('questions left: ', quizQuestionsLeft);
+        console.log('total question count: ', quizQuestionCount);
+        console.log('quiz started');
+    };
+
+    const takeNewQuiz = () => {
+        // Reset everything
+        setRetakeQuizCharPool([...characters]);
+        setCurIncorrectOrUnseenChars([...characters]);
+        setIsRetakingQuiz(false);
+
+        resetQuizStates();
+    };
+
+    const retakeQuiz = () => {
+        // Populate the next array of incorrect or unseen chars
+        setRetakeQuizCharPool([...curIncorrectOrUnseenChars]);
+        setIsRetakingQuiz(true);
+
+        resetQuizStates();
+    };
+
+    const resetQuizStates = () => {
+        setStatus(states.quizMenu);
+        setQuizQuestionCount(0);
+        setQuizQuestionsLeft(-1);
+        setCorrectQuizAnswers(0);
     };
 
     return (
@@ -167,13 +257,26 @@ const Practice = () => {
                 <BackButton />
             </Box>
 
-            {/* Main heading */}
             <Typography
                 variant='h4'
                 sx={{ marginBottom: theme.spacing(4), fontWeight: 'bold' }}
             >
-                Practice Braille
+                Braille Quiz
             </Typography>
+
+            {quizQuestionsLeft !== -1 &&
+            status !== states.quizMenu &&
+            status !== states.quizDone ? (
+                <Typography
+                    variant='h6'
+                    sx={{
+                        padding: theme.spacing(2),
+                        fontStyle: 'italic',
+                    }}
+                >
+                    {quizQuestionsLeft} question(s) left
+                </Typography>
+            ) : null}
 
             {status === states.display ? (
                 <Typography variant='h5'>Displaying Character...</Typography>
@@ -191,12 +294,63 @@ const Practice = () => {
                 </Box>
             ) : status === states.incorrect ? (
                 <Box>
-                    <Typography variant='h5'>{charInput}</Typography>
+                    <Typography variant='h5'>
+                        {charInput === 'No input received' ||
+                        charInput === 'Something went wrong'
+                            ? charInput
+                            : charInput.toUpperCase()}
+                    </Typography>
                     <Typography variant='h6' color='error.main'>
                         Incorrect, the correct answer was:{' '}
                         {currentChar.toUpperCase()}
                     </Typography>
                     <StyledButton onClick={reset}>Next</StyledButton>
+                </Box>
+            ) : status === states.quizMenu ? (
+                <Box
+                    display='flex'
+                    justifyContent='center'
+                    flexDirection='column'
+                    alignItems='center'
+                >
+                    <Typography variant='h6'>
+                        Choose number of quiz questions:
+                    </Typography>
+
+                    <CustomNumberInput
+                        helperText='Number of quiz questions'
+                        value={quizQuestionCount}
+                        onChange={handleQuizQuestionChange}
+                    ></CustomNumberInput>
+
+                    <StyledButton onClick={startQuiz}>Next</StyledButton>
+                </Box>
+            ) : status === states.quizDone ? (
+                <Box>
+                    <Typography variant='h6'>
+                        Quiz complete! Your score is:
+                    </Typography>
+                    <Typography
+                        variant='h5'
+                        sx={{
+                            marginTop: theme.spacing(4),
+                            fontWeight: 'bold',
+                        }}
+                    >
+                        {correctQuizAnswers}/{quizQuestionCount}
+                    </Typography>
+                    {curIncorrectOrUnseenChars.length !== 0 ? (
+                        <StyledButton onClick={retakeQuiz}>
+                            Retest using unseen and incorrect characters
+                        </StyledButton>
+                    ) : (
+                        <Typography>
+                            There are no more unseen or incorrect chars to quiz!
+                        </Typography>
+                    )}
+                    <StyledButton onClick={takeNewQuiz}>
+                        Retest using all characters
+                    </StyledButton>
                 </Box>
             ) : status === states.noInput ? (
                 <Box>
@@ -217,4 +371,4 @@ const Practice = () => {
     );
 };
 
-export default Practice;
+export default Quiz;
