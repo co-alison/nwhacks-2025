@@ -1,5 +1,5 @@
-import { CohereClient } from "cohere-ai";
-import axios from 'axios';
+const { CohereClient } = require("cohere-ai");
+const axios = require('axios');
 
 const cohere = new CohereClient({
   token: "3CYYUmfqdP7CKKnhMgp2F23Qe2jEzgTsG0VK27TH",
@@ -31,11 +31,4 @@ const getLetterFromSpeech = async (speechInput) => {
   }
 };
 
-const userSpeechInput = 'See';
-getLetterFromSpeech(userSpeechInput).then((letter) => {
-  if (letter) {
-    console.log(`Predicted letter: ${letter}`);
-  } else {
-    console.log('Failed to predict the letter.');
-  }
-});
+module.exports = getLetterFromSpeech;

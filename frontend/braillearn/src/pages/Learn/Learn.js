@@ -13,10 +13,16 @@ function Learn() {
     const [textInput, setTextInput] = useState('');
     const [displayedChar, setDisplayedChar] = useState('');
     const [status, setStatus] = useState(states.listen);
+    const [error, setError] = useState(false);
 
     const getCharacterValue = async () => {
         SpeechRecognition.stopListening();
-        sendChar(textInput);
+        if (textInput.length === 1) {
+            setError(false);
+            sendChar(textInput);
+        } else {
+            setError(true);
+        }
     };
 
     const sendChar = async (char) => {
@@ -37,7 +43,7 @@ function Learn() {
     const reset = () => {
         setTextInput('');
         setDisplayedChar('');
-
+        setError(false);
         setStatus(states.listen);
     };
 
@@ -66,12 +72,15 @@ function Learn() {
         }
     };
 
+
+
     useEffect(() => {
         const stopListen = async () => {
             await SpeechRecognition.stopListening();
             const input = transcript.split(' ')[0];
-            setTextInput(input);
-            setDisplayedChar(input);
+            const res = await axios.get(`http://localhost:3001/get-letter?input=${input}`);
+            setTextInput(res.data);
+            setDisplayedChar(res.data);
 
             resetTranscript();
             setStatus(states.response);
@@ -112,11 +121,11 @@ function Learn() {
 
             <Box display='flex' justifyContent='center' alignItems='center'>
                 <TextField
-                    maxLength='1'
+                    error={error}
+                    helperText={error ? 'Input must be exactly one character' : 'Character to display'}
                     variant='outlined'
                     value={textInput}
                     onChange={handleChange}
-                    helperText='Character to display'
                     sx={{ marginTop: '1rem', padding: '1rem', height: '3rem' }}
                 />
                 <StyledButton
@@ -128,7 +137,7 @@ function Learn() {
                 </StyledButton>
             </Box>
 
-            {displayedChar !== '' && (
+            {displayedChar.length === 1 && (
                 <Typography
                     variant='h5'
                     sx={{ padding: '1rem', marginTop: '1rem' }}
