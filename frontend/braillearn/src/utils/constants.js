@@ -1,6 +1,6 @@
 export const states = {
     display: "display",
     listen: "listen",
-    correct: "correctnpm",
+    correct: "correct",
     incorrect: "incorrect"
 };
