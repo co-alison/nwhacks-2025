@@ -4,13 +4,14 @@ import characters from "../../utils/characters";
 import { states } from "../../utils/constants";
 import axios from "axios";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import { Button } from "@mui/material";
 
 const Practice = () => {
     const [currentChar, setCurrentChar] = useState("");
     const [status, setStatus] = useState(states.display);
     const [charInput, setCharInput] = useState("");
     const [timerFlag, setTimerFlag] = useState(true);
-    const [correctResponse, setCorrectResponse] = useState(false);
+    // const [correctResponse, setCorrectResponse] = useState(false);
 
     const {
         transcript,
@@ -62,7 +63,7 @@ const Practice = () => {
             setCharInput(input); 
             resetTranscript(); 
             verifyChar(input);
-            setStatus(states.response); 
+            // setStatus(states.response); 
         }
 
         if (!listening && !transcript && !timerFlag && !charInput) {
@@ -90,10 +91,19 @@ const Practice = () => {
         console.log("current", currentChar);
         console.log("input", input);
         if (currentChar.toLowerCase() === input.toLowerCase()) {
-            setCorrectResponse(true);
+            setStatus(states.correct);
         } else {
-            setCorrectResponse(false);
+            setStatus(states.incorrect);
         }
+    }
+
+    const reset = () => {
+        const clear = ".";
+        const res = axios.get(`http://localhost:3001/send-letter?letter=${clear}`);
+        setCurrentChar("");
+        setCharInput("");
+        setTimerFlag(true);
+        setStatus(states.display);
     }
     return (
         <div>
@@ -107,10 +117,22 @@ const Practice = () => {
                 <div>
                     <h2>Listening...</h2>
                 </div>
-            ) : status === states.response ? (
+            ) : status === states.correct ? (
                 <div>
-                    <h2>{charInput.split(" ")[0]}</h2>
-                    <h3>{correctResponse ? "Correct" : "Incorrect"}</h3>
+                    <h2>{charInput}</h2>
+                    <h3>Correct!</h3>
+
+                    <Button onClick={reset}>
+                        Next
+                    </Button>
+                </div>
+            ) : status === states.incorrect ? (
+                <div>
+                    <h2>{charInput}</h2>
+                    <h3>Incorrect, the correct answer was: {currentChar}</h3>
+                    <Button onClick={reset}>
+                        Next
+                    </Button>
                 </div>
             ) : null}
         </div>
