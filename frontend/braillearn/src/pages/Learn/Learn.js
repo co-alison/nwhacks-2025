@@ -83,12 +83,24 @@ function Learn() {
       setStatus(states.response);
     };
 
-    if (!listening && !transcript) {
-      setStatus(states.response);
-    } else if (transcript) {
-      stopListen();
-    }
-  }, [transcript, listening]);
+    useEffect(() => {
+        const stopListen = async () => {
+            await SpeechRecognition.stopListening();
+            const input = transcript.split(' ')[0];
+            const res = await axios.get(`http://localhost:3001/get-letter?input=${input}`);
+            setTextInput(res.data);
+            setDisplayedChar(res.data);
+
+            resetTranscript();
+            setStatus(states.response);
+        };
+
+        if (!listening && !transcript) {
+            setStatus(states.response);
+        } else if (transcript) {
+            stopListen();
+        }
+    }, [transcript, listening]);
 
   return (
     <Box

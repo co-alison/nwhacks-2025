@@ -33,6 +33,10 @@ const Practice = () => {
             sendChar(char);
         } else if (status === states.listen) {
             listen();
+        } else if (status === states.correct) {
+            speakText("Correct!");
+        } else if (status === states.incorrect) {
+            speakText(`Incorrect, the correct answer was: ${currentChar}`);
         }
     }, [status]);
 
@@ -42,7 +46,7 @@ const Practice = () => {
                 setTimerFlag(0);
                 SpeechRecognition.stopListening();
                 setIsListening(false);
-            }, 5000);
+            }, 10000);
 
             return () => clearTimeout(timer);
         }
@@ -65,7 +69,7 @@ const Practice = () => {
             const input = transcript.split(" ")[0];
             setCharInput(input);
             resetTranscript();
-            verifyChar(input);
+            await verifyChar(input);
         };
 
         if (!listening && !transcript && !timerFlag) {
@@ -89,10 +93,19 @@ const Practice = () => {
         return characters[index];
     };
 
-    const verifyChar = (input) => {
+    const verifyChar = async (input) => {
         console.log("current", currentChar);
         console.log("input", input);
-        if (currentChar.toLowerCase() === input.toLowerCase()) {
+
+        const res = await axios.get(`http://localhost:3001/get-letter?input=${input}`);
+        if (res.data.length !== 1) {
+            setStatus(states.incorrect);
+            setCharInput("Something went wrong");
+            return;
+        } 
+
+        setCharInput(res.data);
+        if (currentChar.toLowerCase() === res.data.toLowerCase()) {
             setStatus(states.correct);
         } else {
             setStatus(states.incorrect);
@@ -106,6 +119,18 @@ const Practice = () => {
         setCharInput("");
         setTimerFlag(true);
         setStatus(states.display);
+    };
+
+    const speakText = (text) => {
+        // const voices = speechSynthesis.getVoices();
+        // voices.forEach(voice => {
+        //     console.log(`Name: ${voice.name}, Lang: ${voice.lang}, Voice URI: ${voice.voiceURI}`);
+        // });
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.pitch = 1;
+        utterance.rate = 1;
+        utterance.volume = 1;
+        speechSynthesis.speak(utterance);
     };
 
     return (
@@ -133,7 +158,7 @@ const Practice = () => {
                 <Typography variant="h5">Listening...</Typography>
             ) : status === states.correct ? (
                 <Box>
-                    <Typography variant="h5">{charInput}</Typography>
+                    <Typography variant="h5">{charInput.toUpperCase()}</Typography>
                     <Typography variant="h6" color="success.main">
                         Correct!
                     </Typography>
