@@ -3,6 +3,7 @@ export const states = {
     listen: 'listen',
     correct: 'correct',
     incorrect: 'incorrect',
+    noInput: 'noInput',
     quizMenu: 'quizMenu',
     quizDone: 'quizDone',
 };
