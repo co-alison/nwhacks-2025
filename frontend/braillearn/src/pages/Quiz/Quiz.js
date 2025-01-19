@@ -23,6 +23,8 @@ const Quiz = () => {
     const [quizQuestionsLeft, setQuizQuestionsLeft] = useState(-1);
     const [correctQuizAnswers, setCorrectQuizAnswers] = useState(0);
 
+    const [showingCorrectAnswer, setShowingCorrectAnswer] = useState(false);
+
     // if the user chooses to retake the quiz with their previously incorrect or unseen
     // characters, getRandomChar() will pull from this list
     const [retakeQuizCharPool, setRetakeQuizCharPool] = useState([
@@ -98,7 +100,7 @@ const Quiz = () => {
         if (!listening && !transcript && !timerFlag) {
             console.log('no input received');
             setCharInput('No input received');
-            setStatus(states.incorrect);
+            setStatus(states.noInput);
         } else if (transcript) {
             stopListen();
         }
@@ -168,6 +170,7 @@ const Quiz = () => {
         setCurrentChar('');
         setCharInput('');
         setTimerFlag(true);
+        setShowingCorrectAnswer(false);
 
         if (quizQuestionsLeft > 1) {
             setQuizQuestionsLeft(quizQuestionsLeft - 1);
@@ -175,6 +178,10 @@ const Quiz = () => {
         } else {
             setStatus(states.quizDone);
         }
+    };
+
+    const showCorrectAnswer = () => {
+        setShowingCorrectAnswer(true);
     };
 
     const speakText = (text) => {
@@ -344,6 +351,20 @@ const Quiz = () => {
                     <StyledButton onClick={takeNewQuiz}>
                         Retest using all characters
                     </StyledButton>
+                </Box>
+            ) : status === states.noInput ? (
+                <Box>
+                    <Typography variant='h5'>{charInput}</Typography>
+                    {showingCorrectAnswer && (
+                        <Typography variant='h6'>
+                            The correct answer was: {currentChar.toUpperCase()}
+                        </Typography>
+                    )}
+
+                    <StyledButton onClick={showCorrectAnswer}>
+                        Show correct answer
+                    </StyledButton>
+                    <StyledButton onClick={reset}>Next</StyledButton>
                 </Box>
             ) : null}
         </Box>

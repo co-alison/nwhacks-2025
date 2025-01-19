@@ -16,6 +16,7 @@ const Practice = () => {
     const [charInput, setCharInput] = useState('');
     const [timerFlag, setTimerFlag] = useState(true);
     const [isListening, setIsListening] = useState(false);
+    const [showingCorrectAnswer, setShowingCorrectAnswer] = useState(false);
 
     const {
         transcript,
@@ -79,7 +80,7 @@ const Practice = () => {
         if (!listening && !transcript && !timerFlag) {
             console.log('no input received');
             setCharInput('No input received');
-            setStatus(states.incorrect);
+            setStatus(states.noInput);
         } else if (transcript) {
             stopListen();
         }
@@ -126,6 +127,7 @@ const Practice = () => {
         setCurrentChar('');
         setCharInput('');
         setTimerFlag(true);
+        setShowingCorrectAnswer(false);
         setStatus(states.display);
     };
 
@@ -139,6 +141,10 @@ const Practice = () => {
         utterance.rate = 1;
         utterance.volume = 1;
         speechSynthesis.speak(utterance);
+    };
+
+    const showCorrectAnswer = () => {
+        setShowingCorrectAnswer(true);
     };
 
     return (
@@ -190,6 +196,20 @@ const Practice = () => {
                         Incorrect, the correct answer was:{' '}
                         {currentChar.toUpperCase()}
                     </Typography>
+                    <StyledButton onClick={reset}>Next</StyledButton>
+                </Box>
+            ) : status === states.noInput ? (
+                <Box>
+                    <Typography variant='h5'>{charInput}</Typography>
+                    {showingCorrectAnswer && (
+                        <Typography variant='h6'>
+                            The correct answer was: {currentChar.toUpperCase()}
+                        </Typography>
+                    )}
+
+                    <StyledButton onClick={showCorrectAnswer}>
+                        Show correct answer
+                    </StyledButton>
                     <StyledButton onClick={reset}>Next</StyledButton>
                 </Box>
             ) : null}
