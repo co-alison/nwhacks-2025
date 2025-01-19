@@ -41,7 +41,7 @@ const About = () => {
             <li>Tammy Kim</li>
           </ul>
           <h2>Motivation</h2>
-          <p>Braille is a universal system available in every language, used by six million blind people worldwide.
+          <p>Braille is a universal system available in every language.
             However, only 10% of blind individuals are Braille literate, while 90% of employed blind people are proficient in Braille.
             Among adults who don't know Braille, only one in three is employed.
             Proficiency in Braille is crucial for visually impaired children to compete with their sighted peers academically and succeed in the workforce. Braillearn aims to make learning Braille immersive and accessible, enabling more visually impaired individuals to learn Braille anytime, anywhere, improving communication and employability.
