@@ -35,12 +35,13 @@ app.get("/send-letter", (req, res) => {
     const letter = req.query.letter;
     if (letter) {
         console.log("Sending letter:", letter);
-        port.write(letter + "\n", (err) => {
-            if (err) {
-                return res.status(500).send("Error on write: " + err.message);
-            }
-            res.send("Letter sent: " + letter);
-        });
+        res.send("Letter sent: " + letter);
+        // port.write(letter + "\n", (err) => {
+        //     if (err) {
+        //         return res.status(500).send("Error on write: " + err.message);
+        //     }
+        //     res.send("Letter sent: " + letter);
+        // });
     } else {
         res.status(400).send("No letter provided");
     }
