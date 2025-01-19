@@ -33,10 +33,19 @@ const About = () => {
             color: theme.palette.text.primary,
           }}
         >
-          <h2>Meet Braillearn's Developers</h2>
-          <p>Name, Name, Name, Name</p>
+          <h2>Braillearn is created by:</h2>
+          <ul>
+            <li>Allison Co</li>
+            <li>Cindy Cui</li>
+            <li>Mayank Rastogi</li>
+            <li>Tammy Kim</li>
+          </ul>
           <h2>Motivation</h2>
-          <p>About page.</p>
+          <p>Braille is a universal system available in every language, used by six million blind people worldwide.
+            However, only 10% of blind individuals are Braille literate, while 90% of employed blind people are proficient in Braille.
+            Among adults who don't know Braille, only one in three is employed.
+            Proficiency in Braille is crucial for visually impaired children to compete with their sighted peers academically and succeed in the workforce. Braillearn aims to make learning Braille immersive and accessible, enabling more visually impaired individuals to learn Braille anytime, anywhere, improving communication and employability.
+          </p>
         </Box>
       </div>
     </Box>
