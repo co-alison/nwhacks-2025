@@ -5,6 +5,9 @@ import SpeechRecognition, {
     useSpeechRecognition,
 } from 'react-speech-recognition';
 import { states } from '../../utils/constants';
+import StyledButton from '../../components/StyledButton';
+import { Box, TextField, Typography } from '@mui/material';
+import theme from '../../styles/theme';
 
 function Learn() {
     const [textInput, setTextInput] = useState('');
@@ -82,34 +85,61 @@ function Learn() {
     }, [transcript, listening]);
 
     return (
-        <div className='Learn'>
-            <BackButton />
-            <header className='Learn-header'>
-                <h1>Learn Braille</h1>
-                <input
-                    id='char-input'
-                    type='text'
+        <Box
+            sx={{
+                padding: theme.spacing(4),
+                maxWidth: '800px',
+                margin: '0 auto',
+                textAlign: 'center',
+            }}
+        >
+            <Box
+                sx={{
+                    position: 'absolute',
+                    top: theme.spacing(4),
+                    left: theme.spacing(4),
+                }}
+            >
+                <BackButton />
+            </Box>
+
+            <Typography
+                variant='h4'
+                sx={{ marginBottom: theme.spacing(4), fontWeight: 'bold' }}
+            >
+                Learn Braille
+            </Typography>
+
+            <Box display='flex' justifyContent='center' alignItems='center'>
+                <TextField
                     maxLength='1'
-                    name='char'
+                    variant='outlined'
                     value={textInput}
                     onChange={handleChange}
+                    helperText='Character to display'
+                    sx={{ marginTop: '1rem', padding: '1rem', height: '3rem' }}
                 />
-                <button
+                <StyledButton
                     type='button'
                     id='display-btn'
                     onClick={getCharacterValue}
                 >
                     Display
-                </button>
+                </StyledButton>
+            </Box>
 
-                {displayedChar !== '' && (
-                    <h3>The character {displayedChar} is displayed.</h3>
-                )}
-            </header>
-            <button type='button' id='next-btn' onClick={reset}>
+            {displayedChar !== '' && (
+                <Typography
+                    variant='h5'
+                    sx={{ padding: '1rem', marginTop: '1rem' }}
+                >
+                    The character "{displayedChar}" is displayed.
+                </Typography>
+            )}
+            <StyledButton type='button' id='next-btn' onClick={reset}>
                 Next
-            </button>
-        </div>
+            </StyledButton>
+        </Box>
     );
 }
 
