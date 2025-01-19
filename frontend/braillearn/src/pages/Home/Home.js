@@ -12,6 +12,8 @@ function Home() {
       navigate('/learn');
     } else if (mode === 'practice') {
       navigate('/practice');
+    } else if (mode === 'quiz') {
+        navigate('/quiz')
     }
   };
 
@@ -37,6 +39,7 @@ function Home() {
           >
             <option value="practice">Practice</option>
             <option value="learn">Learn</option>
+            <option value="quiz">Quiz</option>
           </select>
         </div>
         <div>
