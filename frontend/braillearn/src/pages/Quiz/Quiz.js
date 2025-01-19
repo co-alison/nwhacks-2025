@@ -7,7 +7,7 @@ import SpeechRecognition, {
     useSpeechRecognition,
 } from 'react-speech-recognition';
 import theme from '../../styles/theme';
-import { Box, Typography, TextField } from '@mui/material'; // Importing Material-UI components for consistent styling.
+import { Box, Typography } from '@mui/material'; // Importing Material-UI components for consistent styling.
 import StyledButton from '../../components/StyledButton';
 
 import CustomNumberInput from '../../components/NumberPicker';
@@ -22,6 +22,8 @@ const Quiz = () => {
     const [quizQuestionCount, setQuizQuestionCount] = useState(0);
     const [quizQuestionsLeft, setQuizQuestionsLeft] = useState(0);
     const [correctQuizAnswers, setCorrectQuizAnswers] = useState(0);
+
+    const [characterPool, setCharacterPool] = useState([...characters]);
 
     const {
         transcript,
@@ -41,6 +43,10 @@ const Quiz = () => {
             sendChar(char);
         } else if (status === states.listen) {
             listen();
+        } else if (status === states.correct) {
+            speakText('Correct!');
+        } else if (status === states.incorrect) {
+            speakText(`Incorrect, the correct answer was: ${currentChar}`);
         }
     }, [status]);
 
@@ -50,7 +56,7 @@ const Quiz = () => {
                 setTimerFlag(0);
                 SpeechRecognition.stopListening();
                 setIsListening(false);
-            }, 2000);
+            }, 5000);
 
             return () => clearTimeout(timer);
         }
@@ -95,26 +101,42 @@ const Quiz = () => {
     };
 
     const getRandomChar = () => {
-        const index = Math.floor(Math.random() * characters.length);
-        return characters[index];
+        const index = Math.floor(Math.random() * characterPool.length);
+        return characterPool[index];
     };
 
-    const verifyChar = (input) => {
+    const verifyChar = async (input) => {
         console.log('current', currentChar);
         console.log('input', input);
-        if (currentChar.toLowerCase() === input.toLowerCase()) {
+
+        const res = await axios.get(
+            `http://localhost:3001/get-letter?input=${input}`
+        );
+        if (res.data.length !== 1) {
+            setStatus(states.incorrect);
+            setCharInput('Something went wrong');
+            return;
+        }
+
+        setCharInput(res.data.toLowerCase());
+        if (currentChar === res.data.toLowerCase()) {
             setStatus(states.correct);
             setCorrectQuizAnswers(correctQuizAnswers + 1);
+
+            console.log('char pool before', characterPool);
+            characterPool.splice(characterPool.indexOf(currentChar), 1);
+            setCharacterPool(characterPool);
+            console.log('char pool after', characterPool);
         } else {
             setStatus(states.incorrect);
         }
     };
 
+    useEffect(() => {
+        console.log('chars left to choose from', characterPool);
+    }, [characterPool]);
+
     const reset = () => {
-        const clear = '.';
-        const res = axios.get(
-            `http://localhost:3001/send-letter?letter=${clear}`
-        );
         setCurrentChar('');
         setCharInput('');
         setTimerFlag(true);
@@ -125,6 +147,18 @@ const Quiz = () => {
         } else {
             setStatus(states.quizDone);
         }
+    };
+
+    const speakText = (text) => {
+        // const voices = speechSynthesis.getVoices();
+        // voices.forEach(voice => {
+        //     console.log(`Name: ${voice.name}, Lang: ${voice.lang}, Voice URI: ${voice.voiceURI}`);
+        // });
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.pitch = 1;
+        utterance.rate = 1;
+        utterance.volume = 1;
+        speechSynthesis.speak(utterance);
     };
 
     useEffect(() => {
@@ -144,8 +178,22 @@ const Quiz = () => {
         console.log('quiz started');
     };
 
-    const retakeQuiz = () => {
+    const takeNewQuiz = () => {
+        // Reset the characterPool
+        setCharacterPool([...characters]);
+
         setStatus(states.quizMenu);
+        setQuizQuestionCount(0);
+        setQuizQuestionsLeft(0);
+        setCorrectQuizAnswers(0);
+    };
+
+    const retakeQuiz = () => {
+        // Do not reset the characterPool
+        setStatus(states.quizMenu);
+        setQuizQuestionCount(0);
+        setQuizQuestionsLeft(0);
+        setCorrectQuizAnswers(0);
     };
 
     return (
@@ -229,7 +277,10 @@ const Quiz = () => {
                         {correctQuizAnswers}/{quizQuestionCount}
                     </Typography>
                     <StyledButton onClick={retakeQuiz}>
-                        Retake Quiz
+                        Retest using unseen and incorrect characters
+                    </StyledButton>
+                    <StyledButton onClick={takeNewQuiz}>
+                        Retest using all characters
                     </StyledButton>
                 </Box>
             ) : null}
