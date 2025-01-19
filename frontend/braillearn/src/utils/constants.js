@@ -1,4 +1,5 @@
 export const states = {
     display: "display",
-    listen: "listen"
+    listen: "listen",
+    response: "response"
 };
