@@ -13,6 +13,7 @@ const Practice = () => {
     const [status, setStatus] = useState(states.display);
     const [charInput, setCharInput] = useState("");
     const [timerFlag, setTimerFlag] = useState(true);
+    const [isListening, setIsListening] = useState(false);
 
     const {
         transcript,
@@ -36,19 +37,21 @@ const Practice = () => {
     }, [status]);
 
     useEffect(() => {
-        if (listening && timerFlag) {
+        if (isListening && timerFlag) {
             const timer = setTimeout(() => {
                 setTimerFlag(0);
                 SpeechRecognition.stopListening();
+                setIsListening(false);
             }, 5000);
 
             return () => clearTimeout(timer);
         }
-    }, [timerFlag, listening]);
+    }, [timerFlag, isListening]);
 
     const listen = async () => {
         if (browserSupportsSpeechRecognition) {
             await SpeechRecognition.startListening({ language: "en-US" });
+            setIsListening(true);
             console.log("listening", listening);
         } else {
             console.log("browser does not support speech recognition");
@@ -58,13 +61,14 @@ const Practice = () => {
     useEffect(() => {
         const stopListen = async () => {
             await SpeechRecognition.stopListening();
+            setIsListening(false);
             const input = transcript.split(" ")[0];
             setCharInput(input);
             resetTranscript();
             verifyChar(input);
         };
 
-        if (!listening && !transcript && !timerFlag && !charInput) {
+        if (!listening && !transcript && !timerFlag) {
             console.log("no input received");
             setCharInput("No input received");
             setStatus(states.incorrect);
