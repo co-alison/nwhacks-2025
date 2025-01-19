@@ -20,10 +20,21 @@ const Quiz = () => {
     const [isListening, setIsListening] = useState(false);
 
     const [quizQuestionCount, setQuizQuestionCount] = useState(0);
-    const [quizQuestionsLeft, setQuizQuestionsLeft] = useState(0);
+    const [quizQuestionsLeft, setQuizQuestionsLeft] = useState(-1);
     const [correctQuizAnswers, setCorrectQuizAnswers] = useState(0);
 
-    const [characterPool, setCharacterPool] = useState([...characters]);
+    // if the user chooses to retake the quiz with their previously incorrect or unseen
+    // characters, getRandomChar() will pull from this list
+    const [retakeQuizCharPool, setRetakeQuizCharPool] = useState([
+        ...characters,
+    ]);
+
+    // a list of the incorrect or unseen chars in this quiz instance
+    const [curIncorrectOrUnseenChars, setCurIncorrectOrUnseenChars] = useState([
+        ...characters,
+    ]);
+
+    const [isRetakingQuiz, setIsRetakingQuiz] = useState(false);
 
     const {
         transcript,
@@ -46,7 +57,9 @@ const Quiz = () => {
         } else if (status === states.correct) {
             speakText('Correct!');
         } else if (status === states.incorrect) {
-            speakText(`Incorrect, the correct answer was: ${currentChar}`);
+            speakText(
+                `Incorrect, the correct answer was: ${currentChar.toUpperCase()}`
+            );
         }
     }, [status]);
 
@@ -101,8 +114,16 @@ const Quiz = () => {
     };
 
     const getRandomChar = () => {
-        const index = Math.floor(Math.random() * characterPool.length);
-        return characterPool[index];
+        var chars = [];
+        if (isRetakingQuiz) {
+            chars = retakeQuizCharPool;
+            console.log('choosing characters from', retakeQuizCharPool);
+        } else {
+            chars = characters;
+            console.log('choosing characters from', characters);
+        }
+        const index = Math.floor(Math.random() * chars.length);
+        return chars[index];
     };
 
     const verifyChar = async (input) => {
@@ -123,18 +144,25 @@ const Quiz = () => {
             setStatus(states.correct);
             setCorrectQuizAnswers(correctQuizAnswers + 1);
 
-            console.log('char pool before', characterPool);
-            characterPool.splice(characterPool.indexOf(currentChar), 1);
-            setCharacterPool(characterPool);
-            console.log('char pool after', characterPool);
+            // Update the list of currently unseen or incorrect characters
+            curIncorrectOrUnseenChars.splice(
+                curIncorrectOrUnseenChars.indexOf(currentChar),
+                1
+            );
+            setCurIncorrectOrUnseenChars(curIncorrectOrUnseenChars);
+            console.log(
+                'current uncorrect or unseen chars',
+                curIncorrectOrUnseenChars
+            );
         } else {
             setStatus(states.incorrect);
         }
-    };
 
-    useEffect(() => {
-        console.log('chars left to choose from', characterPool);
-    }, [characterPool]);
+        console.log(
+            'current incorrect or unseen chars',
+            curIncorrectOrUnseenChars
+        );
+    };
 
     const reset = () => {
         setCurrentChar('');
@@ -179,20 +207,26 @@ const Quiz = () => {
     };
 
     const takeNewQuiz = () => {
-        // Reset the characterPool
-        setCharacterPool([...characters]);
+        // Reset everything
+        setRetakeQuizCharPool([...characters]);
+        setCurIncorrectOrUnseenChars([...characters]);
+        setIsRetakingQuiz(false);
 
-        setStatus(states.quizMenu);
-        setQuizQuestionCount(0);
-        setQuizQuestionsLeft(0);
-        setCorrectQuizAnswers(0);
+        resetQuizStates();
     };
 
     const retakeQuiz = () => {
-        // Do not reset the characterPool
+        // Populate the next array of incorrect or unseen chars
+        setRetakeQuizCharPool([...curIncorrectOrUnseenChars]);
+        setIsRetakingQuiz(true);
+
+        resetQuizStates();
+    };
+
+    const resetQuizStates = () => {
         setStatus(states.quizMenu);
         setQuizQuestionCount(0);
-        setQuizQuestionsLeft(0);
+        setQuizQuestionsLeft(-1);
         setCorrectQuizAnswers(0);
     };
 
@@ -223,13 +257,29 @@ const Quiz = () => {
                 Braille Quiz
             </Typography>
 
+            {quizQuestionsLeft !== -1 &&
+            status !== states.quizMenu &&
+            status !== states.quizDone ? (
+                <Typography
+                    variant='h6'
+                    sx={{
+                        padding: theme.spacing(2),
+                        fontStyle: 'italic',
+                    }}
+                >
+                    {quizQuestionsLeft} question(s) left
+                </Typography>
+            ) : null}
+
             {status === states.display ? (
                 <Typography variant='h5'>Displaying Character...</Typography>
             ) : status === states.listen ? (
                 <Typography variant='h5'>Listening...</Typography>
             ) : status === states.correct ? (
                 <Box>
-                    <Typography variant='h5'>{charInput}</Typography>
+                    <Typography variant='h5'>
+                        {charInput.toUpperCase()}
+                    </Typography>
                     <Typography variant='h6' color='success.main'>
                         Correct!
                     </Typography>
@@ -237,9 +287,15 @@ const Quiz = () => {
                 </Box>
             ) : status === states.incorrect ? (
                 <Box>
-                    <Typography variant='h5'>{charInput}</Typography>
+                    <Typography variant='h5'>
+                        {charInput === 'No input received' ||
+                        charInput === 'Something went wrong'
+                            ? charInput
+                            : charInput.toUpperCase()}
+                    </Typography>
                     <Typography variant='h6' color='error.main'>
-                        Incorrect, the correct answer was: {currentChar}
+                        Incorrect, the correct answer was:{' '}
+                        {currentChar.toUpperCase()}
                     </Typography>
                     <StyledButton onClick={reset}>Next</StyledButton>
                 </Box>
@@ -276,9 +332,15 @@ const Quiz = () => {
                     >
                         {correctQuizAnswers}/{quizQuestionCount}
                     </Typography>
-                    <StyledButton onClick={retakeQuiz}>
-                        Retest using unseen and incorrect characters
-                    </StyledButton>
+                    {curIncorrectOrUnseenChars.length !== 0 ? (
+                        <StyledButton onClick={retakeQuiz}>
+                            Retest using unseen and incorrect characters
+                        </StyledButton>
+                    ) : (
+                        <Typography>
+                            There are no more unseen or incorrect chars to quiz!
+                        </Typography>
+                    )}
                     <StyledButton onClick={takeNewQuiz}>
                         Retest using all characters
                     </StyledButton>

@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from "react";
-import BackButton from "../../components/BackButton";
-import characters from "../../utils/characters";
-import { states } from "../../utils/constants";
-import axios from "axios";
-import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
-import theme from "../../styles/theme";
-import { Box, Typography, Button } from "@mui/material"; // Importing Material-UI components for consistent styling.
-import StyledButton from "../../components/StyledButton";
+import React, { useState, useEffect } from 'react';
+import BackButton from '../../components/BackButton';
+import characters from '../../utils/characters';
+import { states } from '../../utils/constants';
+import axios from 'axios';
+import SpeechRecognition, {
+    useSpeechRecognition,
+} from 'react-speech-recognition';
+import theme from '../../styles/theme';
+import { Box, Typography, Button } from '@mui/material'; // Importing Material-UI components for consistent styling.
+import StyledButton from '../../components/StyledButton';
 
 const Practice = () => {
-    const [currentChar, setCurrentChar] = useState("");
+    const [currentChar, setCurrentChar] = useState('');
     const [status, setStatus] = useState(states.display);
-    const [charInput, setCharInput] = useState("");
+    const [charInput, setCharInput] = useState('');
     const [timerFlag, setTimerFlag] = useState(true);
     const [isListening, setIsListening] = useState(false);
 
@@ -25,7 +27,7 @@ const Practice = () => {
     useEffect(() => {
         if (status === states.display) {
             const char = getRandomChar();
-            console.log("char: ");
+            console.log('char: ');
             console.log(char);
             setCurrentChar(char);
 
@@ -34,9 +36,11 @@ const Practice = () => {
         } else if (status === states.listen) {
             listen();
         } else if (status === states.correct) {
-            speakText("Correct!");
+            speakText('Correct!');
         } else if (status === states.incorrect) {
-            speakText(`Incorrect, the correct answer was: ${currentChar}`);
+            speakText(
+                `Incorrect, the correct answer was: ${currentChar.toUpperCase()}`
+            );
         }
     }, [status]);
 
@@ -54,11 +58,11 @@ const Practice = () => {
 
     const listen = async () => {
         if (browserSupportsSpeechRecognition) {
-            await SpeechRecognition.startListening({ language: "en-US" });
+            await SpeechRecognition.startListening({ language: 'en-US' });
             setIsListening(true);
-            console.log("listening", listening);
+            console.log('listening', listening);
         } else {
-            console.log("browser does not support speech recognition");
+            console.log('browser does not support speech recognition');
         }
     };
 
@@ -66,15 +70,15 @@ const Practice = () => {
         const stopListen = async () => {
             await SpeechRecognition.stopListening();
             setIsListening(false);
-            const input = transcript.split(" ")[0];
+            const input = transcript.split(' ')[0];
             setCharInput(input);
             resetTranscript();
             await verifyChar(input);
         };
 
         if (!listening && !transcript && !timerFlag) {
-            console.log("no input received");
-            setCharInput("No input received");
+            console.log('no input received');
+            setCharInput('No input received');
             setStatus(states.incorrect);
         } else if (transcript) {
             stopListen();
@@ -82,7 +86,9 @@ const Practice = () => {
     }, [transcript, listening, timerFlag]);
 
     const sendChar = async (char) => {
-        const res = await axios.get(`http://localhost:3001/send-letter?letter=${char}`);
+        const res = await axios.get(
+            `http://localhost:3001/send-letter?letter=${char}`
+        );
         if (res.status === 200) {
             setStatus(states.listen);
         }
@@ -94,13 +100,15 @@ const Practice = () => {
     };
 
     const verifyChar = async (input) => {
-        console.log("current", currentChar);
-        console.log("input", input);
+        console.log('current', currentChar);
+        console.log('input', input);
 
-        const res = await axios.get(`http://localhost:3001/get-letter?input=${input}`);
+        const res = await axios.get(
+            `http://localhost:3001/get-letter?input=${input}`
+        );
         if (res.data.length !== 1) {
             setStatus(states.incorrect);
-            setCharInput("Something went wrong");
+            setCharInput('Something went wrong');
             return;
         }
 
@@ -113,10 +121,10 @@ const Practice = () => {
     };
 
     const reset = () => {
-        const clear = ".";
+        const clear = '.';
         // const res = axios.get(`http://localhost:3001/send-letter?letter=${clear}`);
-        setCurrentChar("");
-        setCharInput("");
+        setCurrentChar('');
+        setCharInput('');
         setTimerFlag(true);
         setStatus(states.display);
     };
@@ -137,48 +145,55 @@ const Practice = () => {
         <Box
             sx={{
                 padding: theme.spacing(4),
-                maxWidth: "800px",
-                margin: "0 auto",
-                textAlign: "center", // Center align content like Home page.
+                maxWidth: '800px',
+                margin: '0 auto',
+                textAlign: 'center', // Center align content like Home page.
             }}
         >
             {/* Back button positioned at top left */}
-            <Box sx={{ position: "absolute", top: theme.spacing(4), left: theme.spacing(4) }}>
+            <Box
+                sx={{
+                    position: 'absolute',
+                    top: theme.spacing(4),
+                    left: theme.spacing(4),
+                }}
+            >
                 <BackButton />
             </Box>
 
             {/* Main heading */}
-            <Typography variant="h4" sx={{ marginBottom: theme.spacing(4), fontWeight: "bold" }}>
+            <Typography
+                variant='h4'
+                sx={{ marginBottom: theme.spacing(4), fontWeight: 'bold' }}
+            >
                 Practice Braille
             </Typography>
 
             {status === states.display ? (
-                <Typography variant="h5">Displaying Character...</Typography>
+                <Typography variant='h5'>Displaying Character...</Typography>
             ) : status === states.listen ? (
-                <Typography variant="h5">Listening...</Typography>
+                <Typography variant='h5'>Listening...</Typography>
             ) : status === states.correct ? (
                 <Box>
-                    <Typography variant="h5">{charInput.toUpperCase()}</Typography>
-                    <Typography variant="h6" color="success.main">
+                    <Typography variant='h5'>
+                        {charInput.toUpperCase()}
+                    </Typography>
+                    <Typography variant='h6' color='success.main'>
                         Correct!
                     </Typography>
-                    <StyledButton onClick={reset}>
-                        Next
-                    </StyledButton>
+                    <StyledButton onClick={reset}>Next</StyledButton>
                 </Box>
             ) : status === states.incorrect ? (
                 <Box>
-                    <Typography variant="h5">{charInput}</Typography>
-                    <Typography variant="h6" color="error.main">
-                        Incorrect, the correct answer was: {currentChar}
+                    <Typography variant='h5'>{charInput}</Typography>
+                    <Typography variant='h6' color='error.main'>
+                        Incorrect, the correct answer was:{' '}
+                        {currentChar.toUpperCase()}
                     </Typography>
-                    <StyledButton onClick={reset}>
-                        Next
-                    </StyledButton>
+                    <StyledButton onClick={reset}>Next</StyledButton>
                 </Box>
             ) : null}
         </Box>
-
     );
 };
 
