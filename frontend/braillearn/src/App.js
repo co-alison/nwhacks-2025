@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './home/Home';
-import Learn from './learn/Learn';
-import Practice from './pages/Practice';
+import Learn from './pages/Learn/Learn';
+import Practice from './pages/Practice/Practice';
 
 function App() {
   return (
