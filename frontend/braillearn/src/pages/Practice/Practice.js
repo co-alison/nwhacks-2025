@@ -102,7 +102,7 @@ const Practice = () => {
             setStatus(states.incorrect);
             setCharInput("Something went wrong");
             return;
-        } 
+        }
 
         setCharInput(res.data);
         if (currentChar.toLowerCase() === res.data.toLowerCase()) {
@@ -114,7 +114,7 @@ const Practice = () => {
 
     const reset = () => {
         const clear = ".";
-        const res = axios.get(`http://localhost:3001/send-letter?letter=${clear}`);
+        // const res = axios.get(`http://localhost:3001/send-letter?letter=${clear}`);
         setCurrentChar("");
         setCharInput("");
         setTimerFlag(true);
