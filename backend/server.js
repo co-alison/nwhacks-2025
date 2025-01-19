@@ -65,6 +65,24 @@ app.get("/get-letter", (req, res) => {
     }
 });
 
+app.get('/get-letter', (req, res) => {
+    const input = req.query.input;
+    if (input) {
+        getLetterFromSpeech(input).then((letter) => {
+            if (letter) {
+                letter = letter.replace(/'/g, '');
+                console.log(`Predicted letter: ${letter}`);
+                res.send(letter);
+            } else {
+                console.log('Failed to predict the letter.');
+                res.status(500).send("Failed to predict the letter.");
+            }
+        });
+    } else {
+        res.status(400).send("No input provided");
+    }
+})
+
 app.listen(3001, () => {
     console.log("Server running on http://localhost:3001");
 });
