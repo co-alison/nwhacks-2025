@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createTheme, ThemeProvider, Typography, Button } from "@mui/material";
 import theme from '../../styles/theme';
+import BraillearnLogo from '../../braillearn_title.svg'
 
 function Home() {
   const [mode, setMode] = useState('practice');
@@ -13,15 +14,22 @@ function Home() {
     } else if (mode === 'practice') {
       navigate('/practice');
     } else if (mode === 'quiz') {
-        navigate('/quiz')
+      navigate('/quiz')
     }
   };
 
   return (
     <div style={{ textAlign: "center", padding: "2rem" }}>
       <header style={{ marginTop: "10rem", marginBottom: "2rem" }}>
-        <ThemeProvider theme={theme}>
+        {/* <ThemeProvider theme={theme}>
           <Typography sx={{ color: theme.palette.custom.textPurple }} variant="h7">Braillearn</Typography>
+        </ThemeProvider> */}
+        <ThemeProvider theme={theme}>
+          <img
+            src={BraillearnLogo}
+            alt="Braillearn Logo"
+            style={{ width: '25rem', height: 'auto' }} // Adjust width as needed
+          />
         </ThemeProvider>
         <div style={{ fontSize: "1.5rem", margin: "2rem 0", fontFamily: "Roboto, sans-serif" }}>
           <p>

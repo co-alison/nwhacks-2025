@@ -2,6 +2,7 @@ import React from 'react';
 import BackButton from '../../components/BackButton';
 import theme from '../../styles/theme';
 import { Box } from '@mui/material';
+import { createTheme, ThemeProvider, Typography, Button } from "@mui/material";
 
 const About = () => {
   return (
@@ -18,7 +19,10 @@ const About = () => {
         <BackButton />
       </Box>
       <div style={{ textAlign: "center", padding: "2rem" }}>
-        <h1>About</h1>
+        <ThemeProvider theme={theme}>
+          <Typography sx={{ color: theme.palette.custom.textPurple }} variant="h7">What is Braillearn?</Typography>
+        </ThemeProvider>
+        {/* <h1>About</h1> */}
         <Box
           sx={{
             border: `0.3rem solid #919bd9`,
