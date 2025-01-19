@@ -1,9 +1,5 @@
 export const states = {
     display: "display",
-    listen: "listen"
+    listen: "listen",
+    response: "response"
 };
-
-export const learnStates = {
-    textInput: "text",
-    speechInput: "speechInput"
-}
