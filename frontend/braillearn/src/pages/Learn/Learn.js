@@ -70,8 +70,9 @@ function Learn() {
         const stopListen = async () => {
             await SpeechRecognition.stopListening();
             const input = transcript.split(' ')[0];
-            setTextInput(input);
-            setDisplayedChar(input);
+            const res = await axios.get(`http://localhost:3001/get-letter?input=${input}`);
+            setTextInput(res.data);
+            setDisplayedChar(res.data);
 
             resetTranscript();
             setStatus(states.response);
@@ -133,7 +134,7 @@ function Learn() {
                     variant='h5'
                     sx={{ padding: '1rem', marginTop: '1rem' }}
                 >
-                    The character "{displayedChar}" is displayed.
+                    The character "{displayedChar.toUpperCase()}" is displayed.
                 </Typography>
             )}
             <StyledButton type='button' id='next-btn' onClick={reset}>
