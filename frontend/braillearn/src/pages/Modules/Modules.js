@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton';
 import theme from '../../styles/theme';
 
-const Learn = ({ modules, /*completedModules*/ }) => {
+const Modules = ({ modules, /*completedModules*/ }) => {
     const navigate = useNavigate();
 
   return (
@@ -29,4 +29,4 @@ const Learn = ({ modules, /*completedModules*/ }) => {
   );
 };
 
-export default Learn;
+export default Modules;

@@ -9,7 +9,7 @@ import Practice from './pages/Practice/Practice';
 import About from './pages/About/About';
 import Instructions from './pages/Instructions/Instructions';
 import Quiz from './pages/Quiz/Quiz';
-import Learn from './pages/Modules/Learn';
+import Modules from './pages/Modules/Modules';
 import ModulePage from './pages/Modules/ModulePages';
 
 const modules = [
@@ -44,14 +44,14 @@ function App() {
     // const [m2Completed, setm2Completed] = useState(false);
     // const [m3Completed, setm3Completed] = useState(false);
 
-    const [completedModules, setCompletedModules] = useState({});
+    // const [completedModules, setCompletedModules] = useState({});
 
-    const markComplete = (moduleId) => {
-        setCompletedModules((prev) => ({
-            ...prev,
-            [moduleId]: true,
-        }));
-    };
+    // const markComplete = (moduleId) => {
+    //     setCompletedModules((prev) => ({
+    //         ...prev,
+    //         [moduleId]: true,
+    //     }));
+    // };
 
     return (
         <Router>
@@ -93,16 +93,16 @@ function App() {
                 <Route path='/quiz' element={<Quiz />} />
 
                 <Route
-                    path='/learn'
+                    path='/modules'
                     element={
-                        <Learn
+                        <Modules
                             modules={modules}
                             /*completedModules={completedModules}*/
                         />
                     }
                 />
                 <Route
-                    path='/:moduleId' // TODO: can this be /learn/:moduleId?
+                    path='/:moduleId' // TODO: can this be /modules/:moduleId?
                     element={
                         <ModulePage
                             modules={modules}
