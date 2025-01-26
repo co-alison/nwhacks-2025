@@ -14,28 +14,60 @@ import ModulePage from './pages/Modules/ModulePages';
 
 const modules = [
     {
-        id: 'module1-intro',
+        id: '1-intro',
         title: 'Module 1 Introduction',
         type: 'introduction',
+        charsCovered: 'lowercase "a" through "j"',
+        charDescription:
+            'The lowercase letters “a” through “j” are represented using the dots in the top two rows. This is dots 1, 2, 4, and 5.',
     },
-    { id: 'learn1-1', title: 'Learn 1.1', type: 'learn' },
-    { id: 'learn1-2', title: 'Learn 1.2', type: 'learn' },
     {
-        id: 'practice-quiz-1-1',
+        id: '1-1-learn',
+        title: 'Learn 1.1',
+        type: 'learn',
+        char: 'lowercase "a"',
+        representation: 'dot 1, on the top left',
+    },
+    {
+        id: '1-2-learn',
+        title: 'Learn 1.2',
+        type: 'learn',
+        char: 'lowercase "b"',
+        representation: 'dots 1 and 3, forming a vertical line on the top left',
+    },
+    {
+        id: '1-1-practice-quiz',
         title: 'Practice Quiz 1.1',
         type: 'practice-quiz',
+        chars: 'lowercase "a" through "b"',
     },
     {
-        id: 'practice-quiz-1-2',
+        id: '1-2-practice-quiz',
         title: 'Practice Quiz 1.2',
         type: 'practice-quiz',
     },
     {
-        id: 'practice-quiz-1-2',
-        title: 'Practice Quiz 1.2',
+        id: '1-3-practice-quiz',
+        title: 'Practice Quiz 1.3',
         type: 'practice-quiz',
     },
-    { id: 'quiz-1', title: 'Quiz 1', type: 'quiz' },
+    {
+        id: '1-quiz',
+        title: 'Quiz 1',
+        type: 'quiz',
+        chars: 'lowercase "a" through "j"',
+        questionCount: 10,
+        passingPercentage: 80,
+    },
+    {
+        id: '2-intro',
+        title: 'Module 2 Introduction',
+        type: 'introduction',
+        charsCovered: 'lowercase "k" through "t"',
+        charsReviewed: 'lowercase "a" through "j"',
+        charDescription:
+            'The lowercase letters "k" through "t" are represented the same as the lowercase letters "a" through "j", except the bottom left dot, dot 3, is added.',
+    },
 ];
 
 function App() {
@@ -92,25 +124,27 @@ function App() {
                 <Route path='/practice' element={<Practice />} />
                 <Route path='/quiz' element={<Quiz />} />
 
-                <Route
-                    path='/modules'
-                    element={
-                        <Modules
-                            modules={modules}
-                            /*completedModules={completedModules}*/
-                        />
-                    }
-                />
-                <Route
-                    path='/:moduleId' // TODO: can this be /modules/:moduleId?
-                    element={
-                        <ModulePage
-                            modules={modules}
-                            /*completedModules={completedModules}*/
-                            /*markComplete={markComplete}*/
-                        />
-                    }
-                />
+                <Route path='/modules'>
+                    <Route
+                        index
+                        element={
+                            <Modules
+                                modules={modules}
+                                // completedModules={completedModules}
+                            />
+                        }
+                    />
+                    <Route
+                        path=':moduleId'
+                        element={
+                            <ModulePage
+                                modules={modules}
+                                // completedModules={completedModules}
+                                // markComplete={markComplete}
+                            />
+                        }
+                    />
+                </Route>
 
                 <Route path='/about' element={<About />} />
                 <Route path='/instructions' element={<Instructions />} />
