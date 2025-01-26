@@ -8,6 +8,7 @@ import { states } from '../../utils/constants';
 import StyledButton from '../../components/StyledButton';
 import { Box, TextField, Typography } from '@mui/material';
 import theme from '../../styles/theme';
+import { sendChar } from '../../utils/serverApi';
 
 function Display() {
     const [textInput, setTextInput] = useState('');
@@ -19,23 +20,15 @@ function Display() {
         SpeechRecognition.stopListening();
         if (textInput.length === 1) {
             setError(false);
-            sendChar(textInput);
+            sendChar(textInput, () => {
+                setTextInput(textInput);
+                setDisplayedChar(textInput);
+            });
         } else {
             setError(true);
         }
     };
 
-    const sendChar = async (char) => {
-        const res = await axios.get(
-            `http://localhost:3001/send-letter?letter=${char}`
-        );
-
-        if (res.status === 200) {
-            console.log('sent', char, 'to the arduino');
-            setTextInput(textInput);
-            setDisplayedChar(textInput);
-        }
-    };
     const handleChange = (e) => {
         setTextInput(e.target.value);
     };
@@ -79,8 +72,12 @@ function Display() {
             const res = await axios.get(
                 `http://localhost:3001/get-letter?input=${input}`
             );
+            console.log('HERE');
             setTextInput(res.data);
-            sendChar(textInput);
+            sendChar(res.data, () => {
+                setTextInput(res.data);
+                setDisplayedChar(res.data);
+            });
             setDisplayedChar(res.data);
 
             resetTranscript();

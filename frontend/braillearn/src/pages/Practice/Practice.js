@@ -9,6 +9,7 @@ import SpeechRecognition, {
 import theme from '../../styles/theme';
 import { Box, Typography, Button } from '@mui/material'; // Importing Material-UI components for consistent styling.
 import StyledButton from '../../components/StyledButton';
+import { sendChar } from '../../utils/serverApi';
 
 const Practice = () => {
     const [currentChar, setCurrentChar] = useState('');
@@ -33,7 +34,9 @@ const Practice = () => {
             setCurrentChar(char);
 
             // send char to API
-            sendChar(char);
+            sendChar(char, () => {
+                setStatus(states.listen);
+            });
         } else if (status === states.listen) {
             listen();
         } else if (status === states.correct) {
@@ -85,15 +88,6 @@ const Practice = () => {
             stopListen();
         }
     }, [transcript, listening, timerFlag]);
-
-    const sendChar = async (char) => {
-        const res = await axios.get(
-            `http://localhost:3001/send-letter?letter=${char}`
-        );
-        if (res.status === 200) {
-            setStatus(states.listen);
-        }
-    };
 
     const getRandomChar = () => {
         const index = Math.floor(Math.random() * characters.length);
@@ -165,6 +159,7 @@ const Practice = () => {
                 }}
             >
                 <BackButton />
+                {/* TODO: turn off microphone after clicking back button */}
             </Box>
 
             {/* Main heading */}
