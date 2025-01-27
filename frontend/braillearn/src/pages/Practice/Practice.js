@@ -1,90 +1,95 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import BackButton from '../../components/BackButton';
 import characters from '../../utils/characters';
 import { states } from '../../utils/constants';
 import axios from 'axios';
-import SpeechRecognition, {
-    useSpeechRecognition,
-} from 'react-speech-recognition';
 import theme from '../../styles/theme';
-import { Box, Typography, Button } from '@mui/material'; // Importing Material-UI components for consistent styling.
+import { Box, Typography, Button } from '@mui/material';
 import StyledButton from '../../components/StyledButton';
 
 const Practice = () => {
     const [currentChar, setCurrentChar] = useState('');
     const [status, setStatus] = useState(states.display);
     const [charInput, setCharInput] = useState('');
-    const [timerFlag, setTimerFlag] = useState(true);
-    const [isListening, setIsListening] = useState(false);
     const [showingCorrectAnswer, setShowingCorrectAnswer] = useState(false);
-
-    const {
-        transcript,
-        listening,
-        resetTranscript,
-        browserSupportsSpeechRecognition,
-    } = useSpeechRecognition();
+    const recognitionRef = useRef(null);
+    const timerRef = useRef(null);
 
     useEffect(() => {
         if (status === states.display) {
             const char = getRandomChar();
-            console.log('char: ');
-            console.log(char);
+            console.log('char: ', char);
             setCurrentChar(char);
-
-            // send char to API
             sendChar(char);
         } else if (status === states.listen) {
-            listen();
+            startListeningWithTimer();
         } else if (status === states.correct) {
             speakText('Correct!');
         } else if (status === states.incorrect) {
             speakText(
                 `Incorrect, the correct answer was: ${currentChar.toUpperCase()}`
             );
+        } else if (status === states.retry) {
+            speakText("Sorry, we didn’t catch that. Please say 'letter' before your answer, like 'letter A.'");
+            startListeningWithTimer();
         }
     }, [status]);
 
-    useEffect(() => {
-        if (isListening && timerFlag) {
-            const timer = setTimeout(() => {
-                setTimerFlag(0);
-                SpeechRecognition.stopListening();
-                setIsListening(false);
+    const startListeningWithTimer = () => {
+        try {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            const speechGrammarList = new (window.SpeechGrammarList || window.webkitSpeechGrammarList)();
+
+            const grammar = '#JSGF V1.0; grammar letters; public <letter> = A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R | S | T | U | V | W | X | Y | Z ;';
+            speechGrammarList.addFromString(grammar, 1);
+
+            recognition.grammars = speechGrammarList;
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onresult = (event) => {
+                clearTimeout(timerRef.current);
+                const spokenInput = event.results[0][0].transcript.trim().toLowerCase();
+                const confidence = event.results[0][0].confidence;
+                setCharInput(spokenInput);
+                verifyChar(spokenInput, confidence);
+            }
+
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+
+                if (event.error === "no-speech") {
+                    setStatus(states.noInput);
+                    setCharInput("No input received");
+                    return;
+                }
+
+                clearTimeout(timerRef.current);
+                setStatus(states.incorrect);
+                setCharInput('Something went wrong');
+            };
+
+            recognition.onend = () => {};
+
+            recognition.start();
+            recognitionRef.current = recognition;
+
+            timerRef.current = setTimeout(() => {
+                stopListeningDueToTimeout();
             }, 10000);
-
-            return () => clearTimeout(timer);
+        } catch (error) {
+            console.error('Error starting speech recognition:', error);
         }
-    }, [timerFlag, isListening]);
+    }
 
-    const listen = async () => {
-        if (browserSupportsSpeechRecognition) {
-            await SpeechRecognition.startListening({ language: 'en-US' });
-            setIsListening(true);
-            console.log('listening', listening);
-        } else {
-            console.log('browser does not support speech recognition');
+    const stopListeningDueToTimeout = () => {
+        if (recognitionRef.current) {
+            recognitionRef.current.stop();
         }
-    };
-
-    useEffect(() => {
-        const stopListen = async () => {
-            await SpeechRecognition.stopListening();
-            setIsListening(false);
-            const input = transcript.split(' ')[0];
-            setCharInput(input);
-            resetTranscript();
-            await verifyChar(input);
-        };
-
-        if (!listening && !transcript && !timerFlag) {
-            console.log('no input received');
-            setCharInput('No input received');
-            setStatus(states.noInput);
-        } else if (transcript) {
-            stopListen();
-        }
-    }, [transcript, listening, timerFlag]);
+        setStatus(states.noInput);
+        setCharInput("No input received");
+    }
 
     const sendChar = async (char) => {
         const res = await axios.get(
@@ -100,42 +105,55 @@ const Practice = () => {
         return characters[index];
     };
 
-    const verifyChar = async (input) => {
+    const verifyChar = async (input, confidence) => {
         console.log('current', currentChar);
         console.log('input', input);
+        console.log('confidence', confidence);
 
-        const res = await axios.get(
-            `http://localhost:3001/get-letter?input=${input}`
-        );
-        if (res.data.length !== 1) {
-            setStatus(states.incorrect);
-            setCharInput('Something went wrong');
+        if (input.trim().toLowerCase() === currentChar) {
+            setStatus(states.correct);
             return;
         }
 
-        setCharInput(res.data);
-        if (currentChar.toLowerCase() === res.data.toLowerCase()) {
-            setStatus(states.correct);
+        if (input.startsWith("letter ") && input.length > 7) {
+            const detectedLetter = input.split(" ")[1];
+            console.log(`detectedLetter: ${detectedLetter}`);
+
+            if (detectedLetter.trim().toLowerCase() === currentChar.trim().toLowerCase()) {
+                setStatus(states.correct);
+            } else {
+                setStatus(states.incorrect);
+            }
+        } else if (confidence < 0.5 || !input.startsWith("letter")) {
+            // TODO: further process the input using NLP, currently asks user to try again on low confidence
+            // const splitInput = input.split(" ");
+            // for (const word of splitInput) {
+            //     const res = await axios.get(`http://localhost:3001/get-letter-nlp?input=${input}`);
+                
+            // }
+            console.log("low confidence");
+            setStatus(states.retry);
         } else {
-            setStatus(states.incorrect);
+            console.log("unrecognized input", input);
+            setStatus(states.retry);
         }
-    };
+    }
 
     const reset = () => {
-        const clear = '.';
+        // const clear = '.';
         // const res = axios.get(`http://localhost:3001/send-letter?letter=${clear}`);
         setCurrentChar('');
         setCharInput('');
-        setTimerFlag(true);
+        clearTimeout(timerRef.current);
         setShowingCorrectAnswer(false);
         setStatus(states.display);
+
+        if (recognitionRef.current) {
+            recognitionRef.current.abort();
+        }
     };
 
     const speakText = (text) => {
-        // const voices = speechSynthesis.getVoices();
-        // voices.forEach(voice => {
-        //     console.log(`Name: ${voice.name}, Lang: ${voice.lang}, Voice URI: ${voice.voiceURI}`);
-        // });
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.pitch = 1;
         utterance.rate = 1;
@@ -153,10 +171,9 @@ const Practice = () => {
                 padding: theme.spacing(4),
                 maxWidth: '800px',
                 margin: '0 auto',
-                textAlign: 'center', // Center align content like Home page.
+                textAlign: 'center',
             }}
         >
-            {/* Back button positioned at top left */}
             <Box
                 sx={{
                     position: 'absolute',
@@ -167,7 +184,6 @@ const Practice = () => {
                 <BackButton />
             </Box>
 
-            {/* Main heading */}
             <Typography
                 variant='h4'
                 sx={{ marginBottom: theme.spacing(4), fontWeight: 'bold' }}
@@ -211,6 +227,14 @@ const Practice = () => {
                         Show correct answer
                     </StyledButton>
                     <StyledButton onClick={reset}>Next</StyledButton>
+                </Box>
+            ) : status === states.retry ? (
+                <Box>
+                    <Typography variant='h5'>{charInput}</Typography>
+                    <Typography variant='h6' color='error.main'>
+                        Sorry, we didn’t catch that. Please say 'letter' before your answer, like 'letter A.'
+                    </Typography>
+                    <StyledButton onClick={(e) => setStatus(states.listen)}>Retry</StyledButton>
                 </Box>
             ) : null}
         </Box>
