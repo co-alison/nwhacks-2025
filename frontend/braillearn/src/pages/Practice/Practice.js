@@ -54,7 +54,6 @@ const Practice = () => {
                 clearTimeout(timerRef.current);
                 const spokenInput = event.results[0][0].transcript.trim().toLowerCase();
                 const confidence = event.results[0][0].confidence;
-                setCharInput(spokenInput);
                 verifyChar(spokenInput, confidence);
             }
 
@@ -65,11 +64,10 @@ const Practice = () => {
                     setStatus(states.noInput);
                     setCharInput("No input received");
                     return;
-                }
+                } 
 
                 clearTimeout(timerRef.current);
-                setStatus(states.incorrect);
-                setCharInput('Something went wrong');
+                setStatus(states.retry);
             };
 
             recognition.onend = () => {};
@@ -115,12 +113,14 @@ const Practice = () => {
 
         if (input.trim().toLowerCase() === currentChar) {
             setStatus(states.correct);
+            setCharInput(currentChar);
             return;
         }
 
-        if (input.startsWith("letter ") && input.length > 7) {
+        if (input.startsWith("letter ") && input.length > 7 && confidence >= 0.5) {
             const detectedLetter = input.split(" ")[1];
             console.log(`detectedLetter: ${detectedLetter}`);
+            setCharInput(detectedLetter.toLowerCase());
 
             if (detectedLetter.trim().toLowerCase() === currentChar.trim().toLowerCase()) {
                 setStatus(states.correct);
@@ -211,7 +211,7 @@ const Practice = () => {
                 </Box>
             ) : status === states.incorrect ? (
                 <Box>
-                    <Typography variant='h5'>{charInput}</Typography>
+                    <Typography variant='h5'>{charInput.toUpperCase()}</Typography>
                     <Typography variant='h6' color='error.main'>
                         Incorrect, the correct answer was:{' '}
                         {currentChar.toUpperCase()}
