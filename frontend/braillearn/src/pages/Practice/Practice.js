@@ -32,6 +32,8 @@ const Practice = () => {
         } else if (status === states.retry) {
             speakText("Sorry, we didn’t catch that. Please say 'letter' before your answer, like 'letter A.'");
             startListeningWithTimer();
+        } else if (status === states.noInput) {
+            speakText("No input received.");
         }
     }, [status]);
 
@@ -92,12 +94,13 @@ const Practice = () => {
     }
 
     const sendChar = async (char) => {
-        const res = await axios.get(
-            `http://localhost:3001/send-letter?letter=${char}`
-        );
-        if (res.status === 200) {
-            setStatus(states.listen);
-        }
+        // const res = await axios.get(
+        //     `http://localhost:3001/send-letter?letter=${char}`
+        // );
+        // if (res.status === 200) {
+        //     setStatus(states.listen);
+        // }
+        setStatus(states.listen);
     };
 
     const getRandomChar = () => {
@@ -162,6 +165,7 @@ const Practice = () => {
     };
 
     const showCorrectAnswer = () => {
+        speakText(`The correct answer was: ${currentChar.toUpperCase()}`);
         setShowingCorrectAnswer(true);
     };
 
