@@ -48,6 +48,7 @@ const ModulePage = ({ modules /*completedModules, markComplete*/ }) => {
                 return (
                     <PracticeQuizPage
                         module={module}
+                        nextModule={nextModule}
                         // isCompleted={isCompleted}
                         // onComplete={() => markComplete(moduleId)}
                     />
@@ -56,6 +57,7 @@ const ModulePage = ({ modules /*completedModules, markComplete*/ }) => {
                 return (
                     <QuizPage
                         module={module}
+                        nextModule={nextModule}
                         // isCompleted={isCompleted}
                         // onComplete={() => markComplete(moduleId)}
                     />
@@ -78,12 +80,15 @@ const ModulePage = ({ modules /*completedModules, markComplete*/ }) => {
             </Box>
             <Typography variant='h2'>{module.title}</Typography>
             {renderPage()}
-            <Button
-                onClick={() => navigate(`/modules/${nextModule.id}`)}
-                disabled={!nextModule}
-            >
-                Next
-            </Button>
+            {module.type === 'introduction' || module.type == 'learn' ? (
+                // Practice Quiz and Quiz are responsible for displaying their own Next button
+                <Button
+                    onClick={() => navigate(`/modules/${nextModule.id}`)}
+                    disabled={!nextModule}
+                >
+                    Next
+                </Button>
+            ) : null}
         </div>
     );
 };

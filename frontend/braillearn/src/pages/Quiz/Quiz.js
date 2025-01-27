@@ -7,7 +7,7 @@ import SpeechRecognition, {
     useSpeechRecognition,
 } from 'react-speech-recognition';
 import theme from '../../styles/theme';
-import { Box, Typography } from '@mui/material'; // Importing Material-UI components for consistent styling.
+import { Box, Typography } from '@mui/material';
 import StyledButton from '../../components/StyledButton';
 import CustomNumberInput from '../../components/NumberPicker';
 import { sendChar } from '../../utils/serverApi';
@@ -188,10 +188,6 @@ const Quiz = () => {
         utterance.volume = 1;
         speechSynthesis.speak(utterance);
     };
-
-    useEffect(() => {
-        console.log('quiz questions left', quizQuestionsLeft);
-    }, [quizQuestionsLeft]); // Runs when `quizQuestionsLeft` changes
 
     const handleQuizQuestionChange = (event, val) => {
         console.log('number of questions chosen', val);
