@@ -10,7 +10,7 @@ import About from './pages/About/About';
 import Instructions from './pages/Instructions/Instructions';
 import Quiz from './pages/Quiz/Quiz';
 import Modules from './pages/Modules/Modules';
-import ModulePage from './pages/Modules/ModulePages';
+import ModulePage from './pages/Modules/ModulePage';
 
 const modules = [
     {
