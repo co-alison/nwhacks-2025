@@ -13,10 +13,26 @@ import Modules from './pages/Modules/Modules';
 import ModulePage from './pages/Modules/ModulePage';
 
 const modules = [
+    {
+        id: 'overview',
+        title: 'Modules Overview',
+        type: 'overview',
+    },
+
     // {
-    //     id: 'overview',
-    //     title: 'Modules Overview',
-    //     type: 'overview',
+    //     id: '0-intro',
+    //     title: 'Module 0 Introduction',
+    //     type: 'introduction',
+    //     charsCovered: 'the locations of the braille dots 1 to 6',
+    //     charDescription:
+    //         'Braille is represented with six dots numbered 1 through 6. These dots form two vertical columns of three dots each.',
+    // },
+    // {
+    //     id: '0-1-learn',
+    //     title: 'Learn Dot 1',
+    //     type: 'learn',
+    //     char: 'dot 1',
+    //     representation: '',
     // },
     {
         id: '1-intro',

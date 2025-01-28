@@ -272,10 +272,7 @@ const PracticeQuizPage = ({
                 <Box>
                     <Typography variant='p'>
                         You will now take a practice quiz on the characters{' '}
-                        {module.chars}. The braille display will show a
-                        character. Guess what the character is by speaking your
-                        answer into the microphone. The “Next” button will
-                        appear when you get each character correct 3 times. Tap
+                        {module.chars}.  Tap
                         "Start" to begin.
                     </Typography>
                     <Button onClick={startQuiz}>Start</Button>

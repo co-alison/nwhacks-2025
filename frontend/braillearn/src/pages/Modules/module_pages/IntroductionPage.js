@@ -17,20 +17,6 @@ const IntroductionPage = ({ module /*isCompleted, onComplete*/ }) => {
                 <Typography variant='p'>{description}</Typography>
                 <Typography>{module.charDescription}</Typography>
                 <Typography>
-                    This module contains Learn pages and Practice Quiz pages.
-                </Typography>
-                <Typography>
-                    On each Learn page, the character being taught will
-                    repeatedly appear and disappear on the braille display. Stay
-                    on each Learn page as long as you need to become familiar
-                    with the character.
-                </Typography>
-                <Typography>
-                    Every few characters or so, there will be a Practice Quiz
-                    page. Practice Quiz instructions will be provided upon
-                    reaching the page.
-                </Typography>
-                <Typography>
                     When you’re ready to proceed, tap the “Next” button.
                 </Typography>
             </ThemeProvider>

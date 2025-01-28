@@ -52,11 +52,8 @@ const LearnPage = ({
         <Box>
             <Typography variant='p'>
                 On this page, you will learn the character {module.char}, which
-                is represented with {module.representation}. Place your finger
-                over the braille display to feel the character
-                {/* appear and
-                reappear*/}
-                . When you’re ready to proceed, tap the “Next” button.
+                is represented with {module.representation}. When you’re ready
+                to proceed, tap the “Next” button.
             </Typography>
             {/* <button onClick={onComplete} disabled={isCompleted}>
             {isCompleted ? 'Completed' : 'Mark as Complete'}
