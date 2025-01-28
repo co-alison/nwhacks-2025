@@ -6,4 +6,5 @@ export const states = {
     noInput: 'noInput',
     quizMenu: 'quizMenu',
     quizDone: 'quizDone',
+    retry: 'retry'
 };
