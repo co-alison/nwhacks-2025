@@ -6,6 +6,7 @@ import axios from 'axios';
 import theme from '../../styles/theme';
 import { Box, Typography, Button, CircularProgress } from '@mui/material';
 import StyledButton from '../../components/StyledButton';
+import { sendChar } from '../../utils/serverApi';
 
 const Practice = () => {
     const [currentChar, setCurrentChar] = useState('');
@@ -25,7 +26,11 @@ const Practice = () => {
             const char = getRandomChar();
             console.log('char: ', char);
             setCurrentChar(char);
-            sendChar(char);
+
+            // send char to API
+            sendChar(char, () => {
+                setStatus(states.listen);
+            });
         } else if (status === states.listen) {
             // setupAudio();
             startListeningWithTimer();
@@ -183,16 +188,6 @@ const Practice = () => {
         }
     }
 
-    const sendChar = async (char) => {
-        const res = await axios.get(
-            `http://localhost:3001/send-letter?letter=${char}`
-        );
-        if (res.status === 200) {
-            setStatus(states.listen);
-        }
-        setStatus(states.listen);
-    };
-
     const getRandomChar = () => {
         const index = Math.floor(Math.random() * characters.length);
         return characters[index];
@@ -284,6 +279,7 @@ const Practice = () => {
                 }}
             >
                 <BackButton />
+                {/* TODO: turn off microphone after clicking back button */}
             </Box>
 
             <Typography
