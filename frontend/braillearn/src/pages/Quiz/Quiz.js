@@ -7,10 +7,10 @@ import SpeechRecognition, {
     useSpeechRecognition,
 } from 'react-speech-recognition';
 import theme from '../../styles/theme';
-import { Box, Typography } from '@mui/material'; // Importing Material-UI components for consistent styling.
+import { Box, Typography } from '@mui/material';
 import StyledButton from '../../components/StyledButton';
-
 import CustomNumberInput from '../../components/NumberPicker';
+import { sendChar } from '../../utils/serverApi';
 
 const Quiz = () => {
     const [currentChar, setCurrentChar] = useState('');
@@ -53,7 +53,9 @@ const Quiz = () => {
             setCurrentChar(char);
 
             // send char to API
-            sendChar(char);
+            sendChar(char, () => {
+                setStatus(states.listen);
+            });
         } else if (status === states.listen) {
             listen();
         } else if (status === states.correct) {
@@ -105,15 +107,6 @@ const Quiz = () => {
             stopListen();
         }
     }, [transcript, listening, timerFlag]);
-
-    const sendChar = async (char) => {
-        const res = await axios.get(
-            `http://localhost:3001/send-letter?letter=${char}`
-        );
-        if (res.status === 200) {
-            setStatus(states.listen);
-        }
-    };
 
     const getRandomChar = () => {
         var chars = [];
@@ -195,10 +188,6 @@ const Quiz = () => {
         utterance.volume = 1;
         speechSynthesis.speak(utterance);
     };
-
-    useEffect(() => {
-        console.log('quiz questions left', quizQuestionsLeft);
-    }, [quizQuestionsLeft]); // Runs when `quizQuestionsLeft` changes
 
     const handleQuizQuestionChange = (event, val) => {
         console.log('number of questions chosen', val);
