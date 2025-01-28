@@ -8,6 +8,7 @@ import LearnPage from './module_pages/LearnPage';
 import IntroductionPage from './module_pages/IntroductionPage';
 import PracticeQuizPage from './module_pages/PracticeQuizPage';
 import QuizPage from './module_pages/QuizPage';
+import ModuleOverviewPage from './module_pages/ModuleOverviewPage';
 
 const ModulePage = ({ modules /*completedModules, markComplete*/ }) => {
     const { moduleId } = useParams(); // get module id from parameters
@@ -28,6 +29,8 @@ const ModulePage = ({ modules /*completedModules, markComplete*/ }) => {
     // Render the appropriate page type
     const renderPage = () => {
         switch (module.type) {
+            case 'overview':
+                return <ModuleOverviewPage />;
             case 'introduction':
                 return (
                     <IntroductionPage
