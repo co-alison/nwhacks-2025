@@ -26,7 +26,8 @@ const ModuleOverviewPage = ({ module /*isCompleted, onComplete*/ }) => {
                     After a few characters are introduced, there will be a
                     Practice Quiz. During the practice quiz, the braille display
                     will show a character. Guess what the character is by
-                    speaking your answer into the microphone. After you get each
+                    speaking your answer into the microphone. Be sure to say the
+                    word "letter" before your answer. After you get each
                     character correct 3 times, the “Next” button will appear and
                     you can proceed.
                 </Typography>
