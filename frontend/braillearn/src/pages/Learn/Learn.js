@@ -6,7 +6,7 @@ import SpeechRecognition, {
 } from 'react-speech-recognition';
 import { states } from '../../utils/constants';
 import StyledButton from '../../components/StyledButton';
-import { Box, TextField, Typography } from '@mui/material';
+import { Box, TextField, Typography, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import theme from '../../styles/theme';
 
 function Learn() {
@@ -14,12 +14,16 @@ function Learn() {
     const [displayedChar, setDisplayedChar] = useState('');
     const [status, setStatus] = useState(states.listen);
     const [error, setError] = useState(false);
+    const [mode, setMode] = useState('character'); // New state for mode selection
 
     const getCharacterValue = async () => {
         SpeechRecognition.stopListening();
-        if (textInput.length === 1) {
+        if (textInput.length === 1 && mode === 'character') {
             setError(false);
-            sendChar(textInput);
+            sendChar(textInput.toLowerCase());
+        } else if (mode === 'word') {
+            setError(false);
+            sendWord(textInput.toLowerCase());
         } else {
             setError(true);
         }
@@ -36,8 +40,26 @@ function Learn() {
             setDisplayedChar(textInput);
         }
     };
+
+    const sendWord = async (word) => {
+        const res = await axios.get(
+            `http://localhost:3001/send-word?word=${word}`
+        );
+
+        if (res.status === 200) {
+            console.log('sent', word, 'to the arduino');
+            setTextInput(textInput);
+            setDisplayedChar(textInput);
+        }
+    };
+
     const handleChange = (e) => {
         setTextInput(e.target.value);
+    };
+
+    const handleModeChange = (event) => {
+        setMode(event.target.value);
+        setError(false); // Reset error when mode changes
     };
 
     const reset = () => {
@@ -72,8 +94,6 @@ function Learn() {
         }
     };
 
-
-
     useEffect(() => {
         const stopListen = async () => {
             await SpeechRecognition.stopListening();
@@ -81,7 +101,6 @@ function Learn() {
             const res = await axios.get(`http://localhost:3001/get-letter?input=${input}`);
             setTextInput(res.data);
             setDisplayedChar(res.data);
-
             resetTranscript();
             setStatus(states.response);
         };
@@ -119,10 +138,23 @@ function Learn() {
                 Learn Braille
             </Typography>
 
+            <FormControl sx={{ marginBottom: theme.spacing(2), minWidth: 120 }}>
+                <InputLabel id="mode-select-label">Mode</InputLabel>
+                <Select
+                    labelId="mode-select-label"
+                    id="mode-select"
+                    value={mode}
+                    onChange={handleModeChange}
+                >
+                    <MenuItem value="character">Character</MenuItem>
+                    <MenuItem value="word">Word</MenuItem>
+                </Select>
+            </FormControl>
+
             <Box display='flex' justifyContent='center' alignItems='center'>
                 <TextField
                     error={error}
-                    helperText={error ? 'Input must be exactly one character' : 'Character to display'}
+                    helperText={error ? 'Invalid input for selected mode' : 'Input text'}
                     variant='outlined'
                     value={textInput}
                     onChange={handleChange}
@@ -137,12 +169,12 @@ function Learn() {
                 </StyledButton>
             </Box>
 
-            {displayedChar.length === 1 && (
+            {displayedChar && (
                 <Typography
                     variant='h5'
                     sx={{ padding: '1rem', marginTop: '1rem' }}
                 >
-                    The character "{displayedChar}" is displayed.
+                    The {mode} "{displayedChar}" is displayed.
                 </Typography>
             )}
             <StyledButton type='button' id='next-btn' onClick={reset}>

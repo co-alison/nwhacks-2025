@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 
 // Initialize SerialPort
-const port = new SerialPort({ path: "COM4", baudRate: 9600 });
+const port = new SerialPort({ path: "COM6", baudRate: 9600 });
 const parser = port.pipe(new ReadlineParser({ delimiter: "\n" }));
 
 port.on("open", () => {
@@ -44,6 +44,37 @@ app.get("/send-letter", (req, res) => {
         });
     } else {
         res.status(400).send("No letter provided");
+    }
+});
+
+app.get("/send-word", (req, res) => {
+    console.log
+    const word = req.query.word;
+    if (word) {
+        // Reader only takes one letter at a time
+        const letters = word.split("");
+        let i = 0;
+        const interval = setInterval(() => {
+            if (i < letters.length) {
+                const letter = letters[i];
+                // Handle duplicate letters
+                // TODO
+
+                console.log("Sending letter:", letter);
+                port.write(letter + "\n", (err) => {
+                    if (err) {
+                        clearInterval(interval);
+                        return res.status(500).send("Error on write: " + err.message);
+                    }
+                });
+                i++;
+            } else {
+                clearInterval(interval);
+                res.send("Word sent: " + word);
+            }
+        }, 2000);
+    } else {
+        res.status(400).send("No word provided");
     }
 });
 

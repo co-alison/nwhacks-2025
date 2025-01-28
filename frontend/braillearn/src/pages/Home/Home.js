@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createTheme, ThemeProvider, Typography, Button } from "@mui/material";
 import theme from '../../styles/theme';
 import BraillearnLogo from '../../braillearn_title.svg'
+import axios from 'axios';
 
 function Home() {
   const [mode, setMode] = useState('practice');
@@ -17,6 +18,11 @@ function Home() {
       navigate('/quiz')
     }
   };
+
+  useEffect(() => {
+    const clear = ".";
+    axios.get(`http://localhost:3001/send-letter?letter=${clear}`);
+  })
 
   return (
     <div style={{ textAlign: "center", padding: "2rem" }}>

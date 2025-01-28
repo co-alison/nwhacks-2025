@@ -4,80 +4,79 @@ import { styled } from '@mui/system';
 import { unstable_useForkRef as useForkRef } from '@mui/utils';
 
 const CustomNumberInput = React.forwardRef(function CustomNumberInput(
-    props,
-    ref
+  props,
+  ref
 ) {
-    const {
-        getRootProps,
-        getInputProps,
-        getIncrementButtonProps,
-        getDecrementButtonProps,
-        focused,
-    } = useNumberInput(props);
+  const {
+    getRootProps,
+    getInputProps,
+    getIncrementButtonProps,
+    getDecrementButtonProps,
+    focused,
+  } = useNumberInput(props);
 
-    const inputProps = getInputProps();
+  const inputProps = getInputProps();
 
-    // Make sure that both the forwarded ref and the ref returned from the getInputProps are applied on the input element
-    inputProps.ref = useForkRef(inputProps.ref, ref);
+  // Make sure that both the forwarded ref and the ref returned from the getInputProps are applied on the input element
+  inputProps.ref = useForkRef(inputProps.ref, ref);
 
-    return (
-        <StyledInputRoot
-            {...getRootProps()}
-            className={focused ? 'focused' : null}
-        >
-            <StyledStepperButton
-                {...getIncrementButtonProps()}
-                className='increment'
-            >
-                ▴
-            </StyledStepperButton>
-            <StyledStepperButton
-                {...getDecrementButtonProps()}
-                className='decrement'
-            >
-                ▾
-            </StyledStepperButton>
-            <StyledInputElement {...inputProps} />
-        </StyledInputRoot>
-    );
+  return (
+    <StyledInputRoot
+      {...getRootProps()}
+      className={focused ? 'focused' : null}
+    >
+      <StyledStepperButton
+        {...getIncrementButtonProps()}
+        className='increment'
+      >
+        ▴
+      </StyledStepperButton>
+      <StyledStepperButton
+        {...getDecrementButtonProps()}
+        className='decrement'
+      >
+        ▾
+      </StyledStepperButton>
+      <StyledInputElement {...inputProps} />
+    </StyledInputRoot>
+  );
 });
 
 export default CustomNumberInput;
 
 const blue = {
-    100: '#DAECFF',
-    200: '#B6DAFF',
-    400: '#3399FF',
-    500: '#007FFF',
-    600: '#0072E5',
-    700: '#0059B2',
-    900: '#003A75',
+  100: '#DAECFF',
+  200: '#B6DAFF',
+  400: '#3399FF',
+  500: '#007FFF',
+  600: '#0072E5',
+  700: '#0059B2',
+  900: '#003A75',
 };
 
 const grey = {
-    50: '#F3F6F9',
-    100: '#E5EAF2',
-    200: '#DAE2ED',
-    300: '#C7D0DD',
-    400: '#B0B8C4',
-    500: '#9DA8B7',
-    600: '#6B7A90',
-    700: '#434D5B',
-    800: '#303740',
-    900: '#1C2025',
+  50: '#F3F6F9',
+  100: '#E5EAF2',
+  200: '#DAE2ED',
+  300: '#C7D0DD',
+  400: '#B0B8C4',
+  500: '#9DA8B7',
+  600: '#6B7A90',
+  700: '#434D5B',
+  800: '#303740',
+  900: '#1C2025',
 };
 
 const StyledInputRoot = styled('div')(
-    ({ theme }) => `
+  ({ theme }) => `
   font-family: 'IBM Plex Sans', sans-serif;
   font-weight: 400;
   border-radius: 8px;
   color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
   background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
   border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
-  box-shadow: 0 2px 4px ${
-      theme.palette.mode === 'dark' ? 'rgba(0,0,0, 0.5)' : 'rgba(0,0,0, 0.05)'
-  };
+  box-shadow: 0 2px 4px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0, 0.5)' : 'rgba(0,0,0, 0.05)'
+    };
   display: grid;
   grid-template-columns: 1fr 19px;
   grid-template-rows: 1fr 1fr;
@@ -85,15 +84,14 @@ const StyledInputRoot = styled('div')(
   column-gap: 8px;
   padding: 4px;
 
-  width: 200px; /* Fixed width */
-  max-width: 300px; /* Maximum width */
+  width: 300px; /* Fixed width */
+  max-width: 500px; /* Maximum width */
   min-width: 150px;
 
     &.focused {
       border-color: ${blue[400]};
-      box-shadow: 0 0 0 3px ${
-          theme.palette.mode === 'dark' ? blue[700] : blue[200]
-      };
+      box-shadow: 0 0 0 3px ${theme.palette.mode === 'dark' ? blue[700] : blue[200]
+    };
 
       & button:hover {
         background: ${blue[400]};
@@ -108,7 +106,7 @@ const StyledInputRoot = styled('div')(
 );
 
 const StyledInputElement = styled('input')(
-    ({ theme }) => `
+  ({ theme }) => `
   font-size: 0.875rem;
   font-family: inherit;
   font-weight: 400;
@@ -125,7 +123,7 @@ const StyledInputElement = styled('input')(
 );
 
 const StyledStepperButton = styled('button')(
-    ({ theme }) => `
+  ({ theme }) => `
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
