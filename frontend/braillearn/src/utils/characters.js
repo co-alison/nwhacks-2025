@@ -1,4 +1,4 @@
-const characters = ['a', 'b', 'c', 'd', "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+const characters = ['a', 'b', 'c', "l", "z", "f", "h"];
 
 const characterMap = {
     hey: 'a',

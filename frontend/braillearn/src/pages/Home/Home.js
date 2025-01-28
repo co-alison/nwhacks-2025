@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createTheme, ThemeProvider, Typography, Button } from '@mui/material';
 import theme from '../../styles/theme';
@@ -21,8 +21,8 @@ function Home() {
     };
 
     return (
-        <div style={{ textAlign: 'center', padding: '2rem' }}>
-            <header style={{ marginTop: '10rem', marginBottom: '2rem' }}>
+        <div style={{ textAlign: "center", padding: "2rem" }}>
+            <header style={{ marginTop: "10rem", marginBottom: "2rem" }}>
                 {/* <ThemeProvider theme={theme}>
           <Typography sx={{ color: theme.palette.custom.textPurple }} variant="h7">Braillearn</Typography>
         </ThemeProvider> */}

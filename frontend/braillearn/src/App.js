@@ -307,7 +307,7 @@ function App() {
                         sx={{
                             color: theme.palette.custom.textPurple,
                             fontSize: '1.4rem',
-                            fontFamily: 'Roboto',
+                            fontFamily: 'Roboto, sans-serif',
                             padding: '1.5rem',
                         }}
                     >
@@ -318,7 +318,7 @@ function App() {
                         to='/instructions'
                         sx={{
                             fontSize: '1.4rem',
-                            fontFamily: 'Roboto',
+                            fontFamily: 'Roboto, sans-serif',
                             padding: '1.5rem',
                         }}
                     >

@@ -6,7 +6,7 @@ import SpeechRecognition, {
 } from 'react-speech-recognition';
 import { states } from '../../utils/constants';
 import StyledButton from '../../components/StyledButton';
-import { Box, TextField, Typography } from '@mui/material';
+import { Box, TextField, Typography, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import theme from '../../styles/theme';
 import { sendChar } from '../../utils/serverApi';
 
@@ -15,22 +15,43 @@ function Display() {
     const [displayedChar, setDisplayedChar] = useState('');
     const [status, setStatus] = useState(states.listen);
     const [error, setError] = useState(false);
+    const [mode, setMode] = useState('character'); // New state for mode selection
 
     const getCharacterValue = async () => {
         SpeechRecognition.stopListening();
-        if (textInput.length === 1) {
+        if (textInput.length === 1 && mode === 'character') {
             setError(false);
             sendChar(textInput, () => {
                 setTextInput(textInput);
                 setDisplayedChar(textInput);
             });
+        } else if (mode === 'word') {
+            setError(false);
+            sendWord(textInput.toLowerCase());
         } else {
             setError(true);
         }
     };
 
+    const sendWord = async (word) => {
+        const res = await axios.get(
+            `http://localhost:3001/send-word?word=${word}`
+        );
+
+        if (res.status === 200) {
+            console.log('sent', word, 'to the arduino');
+            setTextInput(textInput);
+            setDisplayedChar(textInput);
+        }
+    };
+
     const handleChange = (e) => {
         setTextInput(e.target.value);
+    };
+
+    const handleModeChange = (event) => {
+        setMode(event.target.value);
+        setError(false); // Reset error when mode changes
     };
 
     const reset = () => {
@@ -79,7 +100,6 @@ function Display() {
                 setDisplayedChar(res.data);
             });
             setDisplayedChar(res.data);
-
             resetTranscript();
             setStatus(states.response);
         };
@@ -117,6 +137,19 @@ function Display() {
                 Display Braille
             </Typography>
 
+            <FormControl sx={{ marginBottom: theme.spacing(2), minWidth: 120 }}>
+                <InputLabel id="mode-select-label">Mode</InputLabel>
+                <Select
+                    labelId="mode-select-label"
+                    id="mode-select"
+                    value={mode}
+                    onChange={handleModeChange}
+                >
+                    <MenuItem value="character">Character</MenuItem>
+                    <MenuItem value="word">Word</MenuItem>
+                </Select>
+            </FormControl>
+
             <Box display='flex' justifyContent='center' alignItems='center'>
                 <TextField
                     error={error}
@@ -139,12 +172,12 @@ function Display() {
                 </StyledButton>
             </Box>
 
-            {displayedChar.length === 1 && (
+            {displayedChar && (
                 <Typography
                     variant='h5'
                     sx={{ padding: '1rem', marginTop: '1rem' }}
                 >
-                    The character "{displayedChar}" is displayed.
+                    The {mode} "{displayedChar}" is displayed.
                 </Typography>
             )}
             <StyledButton type='button' id='next-btn' onClick={reset}>
