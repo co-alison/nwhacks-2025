@@ -83,7 +83,7 @@ const ModulePage = ({ modules /*completedModules, markComplete*/ }) => {
             </Box>
             <Typography variant='h2'>{module.title}</Typography>
             {renderPage()}
-            {module.type === 'introduction' || module.type == 'learn' ? (
+            {module.type !== 'practice-quiz' && module.type !== 'quiz' ? (
                 // Practice Quiz and Quiz are responsible for displaying their own Next button
                 <Button
                     onClick={() => navigate(`/modules/${nextModule.id}`)}
