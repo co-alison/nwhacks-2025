@@ -27,7 +27,7 @@ const Practice = () => {
             setCurrentChar(char);
             sendChar(char);
         } else if (status === states.listen) {
-            setupAudio();
+            // setupAudio();
             startListeningWithTimer();
         } else if (status === states.correct) {
             speakText('Correct!');
@@ -42,7 +42,7 @@ const Practice = () => {
         }
 
         return () => {
-            stopAudio();
+            // stopAudio();
         };
     }, [status]);
 
@@ -90,7 +90,12 @@ const Practice = () => {
     // }
 
     const stopAudio = () => {
+        if (microphoneRef.current) {
+            console.log('disconnect');
+            microphoneRef.current.disconnect();
+        }
         if (audioContextRef.current) {
+            console.log("close");
             audioContextRef.current.close();
             audioContextRef.current = null;
         }
@@ -147,12 +152,15 @@ const Practice = () => {
             recognition.onspeechend = () => {
                 console.log('speech end');
                 // recognition.abort();
-                stopAudio();
-                recognitionRef.current = null;
+                // stopAudio();
+                // recognitionRef.current = null;
             };
 
             recognition.onend = () => {
                 console.log("stopped");
+                recognition.abort();
+                recognitionRef.current = null;
+                // stopAudio();
             }
 
             recognition.start();
@@ -169,19 +177,19 @@ const Practice = () => {
     const stopListeningDueToTimeout = () => {
         if (recognitionRef.current) {
             recognitionRef.current.stop();
-            stopAudio();
+            // stopAudio();
             setStatus(states.noInput);
             setCharInput("No input received");
         }
     }
 
     const sendChar = async (char) => {
-        // const res = await axios.get(
-        //     `http://localhost:3001/send-letter?letter=${char}`
-        // );
-        // if (res.status === 200) {
-        //     setStatus(states.listen);
-        // }
+        const res = await axios.get(
+            `http://localhost:3001/send-letter?letter=${char}`
+        );
+        if (res.status === 200) {
+            setStatus(states.listen);
+        }
         setStatus(states.listen);
     };
 
@@ -240,7 +248,7 @@ const Practice = () => {
         clearTimeout(timerRef.current);
         setShowingCorrectAnswer(false);
         setStatus(states.display);
-        stopAudio();
+        // stopAudio();
         if (recognitionRef.current) {
             recognitionRef.current.abort();
         }
