@@ -122,9 +122,9 @@ const Practice = () => {
     //         const grammar = `
     //             #JSGF V1.0;
     //             grammar letters;
-    //             public <letter> = A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R | S | T | U | V | W | X | Y | Z 
-    //              | letter A | letter B | letter C | letter D | letter E | letter F | letter G | letter H | letter I 
-    //              | letter J | letter K | letter L | letter M | letter N | letter O | letter P | letter Q | letter R 
+    //             public <letter> = A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R | S | T | U | V | W | X | Y | Z
+    //              | letter A | letter B | letter C | letter D | letter E | letter F | letter G | letter H | letter I
+    //              | letter J | letter K | letter L | letter M | letter N | letter O | letter P | letter Q | letter R
     //              | letter S | letter T | letter U | letter V | letter W | letter X | letter Y | letter Z;
     //             `;
     //         speechGrammarList.addFromString(grammar, 1);

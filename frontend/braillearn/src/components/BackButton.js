@@ -17,7 +17,7 @@ const BackButton = () => {
             sx={{
                 backgroundColor: theme.palette.custom.buttonBackground,
                 color: '#fff',
-                fontSize: '1.2rem', // Reduced font size
+                fontSize: '1.5rem', // Reduced font size
                 padding: '0.5rem 1rem', // Reduced padding
                 height: '2.5rem', // Reduced height
                 borderRadius: '8px',
