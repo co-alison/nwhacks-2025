@@ -2,6 +2,18 @@ import { createTheme } from '@mui/material';
 
 const theme = createTheme({
     typography: {
+        h4: {
+            fontSize: '2.5rem',
+            fontWeight: 700,
+        },
+        h5: {
+            fontSize: '2rem',
+            fontWeight: 600,
+        },
+        h6: {
+            fontSize: '1.75rem',
+            fontWeight: 500,
+        },
         h7: {
             fontSize: '3rem',
             fontWeight: 700,

@@ -50,7 +50,7 @@ const LearnPage = ({
 
     return (
         <Box>
-            <Typography variant='p'>
+            <Typography variant='p' sx={{ fontSize: '1.5rem' }}>
                 On this page, you will learn the character {module.char}, which
                 is represented with {module.representation}. When you’re ready
                 to proceed, tap the “Next” button.

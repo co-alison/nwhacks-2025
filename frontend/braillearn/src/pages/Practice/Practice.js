@@ -5,6 +5,7 @@ import { states } from '../../utils/constants';
 import axios from 'axios';
 import theme from '../../styles/theme';
 import { Box, Typography, Button, CircularProgress } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
 import StyledButton from '../../components/StyledButton';
 import { sendChar } from '../../utils/serverApi';
 import { startListeningWithTimer } from '../../utils/speechRecognition';
@@ -285,16 +286,16 @@ const Practice = () => {
 
             <Typography
                 variant='h4'
-                sx={{ marginBottom: theme.spacing(4), fontWeight: 'bold' }}
+                sx={{ fontSize: '2.8rem', marginTop: theme.spacing(10), marginBottom: theme.spacing(4), fontWeight: 'bold' }}
             >
                 Practice Braille
             </Typography>
 
             {status === states.display ? (
-                <Typography variant='h5'>Displaying Character...</Typography>
+                <Typography variant='h5' sx={{ fontSize: '2rem' }}>Displaying Character...</Typography>
             ) : status === states.listen ? (
                 <Box>
-                    <Typography variant="h5">Listening...</Typography>
+                    <Typography variant="h5" sx={{ fontSize: '2rem' }}>Listening...</Typography>
                     {/* <Box sx={{ position: 'relative', margin: '20px auto', width: '100px', height: '100px' }}>
                         <CircularProgress
                             variant="determinate"
@@ -320,18 +321,18 @@ const Practice = () => {
                 </Box>
             ) : status === states.correct ? (
                 <Box>
-                    <Typography variant='h5'>
+                    <Typography variant='h5' sx={{ fontSize: '2rem' }}>
                         {charInput.toUpperCase()}
                     </Typography>
-                    <Typography variant='h6' color='success.main'>
+                    <Typography variant='h6' sx={{ fontSize: '1.75rem' }} color='success.main'>
                         Correct!
                     </Typography>
                     <StyledButton onClick={reset}>Next</StyledButton>
                 </Box>
             ) : status === states.incorrect ? (
                 <Box>
-                    <Typography variant='h5'>{charInput.toUpperCase()}</Typography>
-                    <Typography variant='h6' color='error.main'>
+                    <Typography variant='h5' sx={{ fontSize: '2rem' }}>{charInput.toUpperCase()}</Typography>
+                    <Typography variant='h6' sx={{ fontSize: '1.75rem' }} color='error.main'>
                         Incorrect, the correct answer was:{' '}
                         {currentChar.toUpperCase()}
                     </Typography>
@@ -339,9 +340,9 @@ const Practice = () => {
                 </Box>
             ) : status === states.noInput ? (
                 <Box>
-                    <Typography variant='h5'>{charInput}</Typography>
+                    <Typography variant='h5' sx={{ fontSize: '2rem' }}>{charInput}</Typography>
                     {showingCorrectAnswer && (
-                        <Typography variant='h6'>
+                        <Typography variant='h6' sx={{ fontSize: '1.75rem' }}>
                             The correct answer was: {currentChar.toUpperCase()}
                         </Typography>
                     )}
@@ -353,8 +354,8 @@ const Practice = () => {
                 </Box>
             ) : status === states.retry ? (
                 <Box>
-                    <Typography variant='h5'>{charInput}</Typography>
-                    <Typography variant='h6' color='error.main'>
+                    <Typography variant='h5' sx={{ fontSize: '2rem' }}>{charInput}</Typography>
+                    <Typography variant='h6' sx={{ fontSize: '1.75rem' }} color='error.main'>
                         Sorry, we didn’t catch that. Please say 'letter' before your answer, like 'letter A.'
                     </Typography>
                     <StyledButton onClick={(e) => setStatus(states.listen)}>Retry</StyledButton>

@@ -1,30 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, ThemeProvider, Button } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 import theme from '../../styles/theme';
 import BackButton from '../../components/BackButton';
-import { sendChar } from '../../utils/serverApi';
 import LearnPage from './module_pages/LearnPage';
 import IntroductionPage from './module_pages/IntroductionPage';
 import PracticeQuizPage from './module_pages/PracticeQuizPage';
 import QuizPage from './module_pages/QuizPage';
 import ModuleOverviewPage from './module_pages/ModuleOverviewPage';
 
-const ModulePage = ({ modules /*completedModules, markComplete*/ }) => {
-    const { moduleId } = useParams(); // get module id from parameters
+const ModulePage = ({ modules }) => {
+    const { moduleId } = useParams();
     const navigate = useNavigate();
 
     // Find the current module and determine the next module
     const currentIndex = modules.findIndex((mod) => mod.id === moduleId);
-    const nextModule = modules[currentIndex + 1] || null; // Get the next module, or null if none
-
+    const nextModule = modules[currentIndex + 1] || null;
     const module = modules[currentIndex];
 
     if (!module) {
-        return <div>Module not found</div>;
+        return <Typography variant="h5">Module not found</Typography>;
     }
-
-    // const isCompleted = completedModules[moduleId] || false;
 
     // Render the appropriate page type
     const renderPage = () => {
@@ -32,46 +28,30 @@ const ModulePage = ({ modules /*completedModules, markComplete*/ }) => {
             case 'overview':
                 return <ModuleOverviewPage />;
             case 'introduction':
-                return (
-                    <IntroductionPage
-                        module={module}
-                        // isCompleted={isCompleted}
-                        // onComplete={() => markComplete(moduleId)}
-                    />
-                );
+                return <IntroductionPage module={module} />;
             case 'learn':
-                return (
-                    <LearnPage
-                        module={module}
-                        // isCompleted={isCompleted}
-                        // onComplete={() => markComplete(moduleId)}
-                    />
-                );
+                return <LearnPage module={module} />;
             case 'practice-quiz':
-                return (
-                    <PracticeQuizPage
-                        module={module}
-                        nextModule={nextModule}
-                        // isCompleted={isCompleted}
-                        // onComplete={() => markComplete(moduleId)}
-                    />
-                );
+                return <PracticeQuizPage module={module} nextModule={nextModule} />;
             case 'quiz':
-                return (
-                    <QuizPage
-                        module={module}
-                        nextModule={nextModule}
-                        // isCompleted={isCompleted}
-                        // onComplete={() => markComplete(moduleId)}
-                    />
-                );
+                return <QuizPage module={module} nextModule={nextModule} />;
             default:
-                return <div>Unknown module type</div>;
+                return <Typography variant="h6">Unknown module type</Typography>;
         }
     };
 
     return (
-        <div>
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+                height: '100vh',
+                textAlign: 'center',
+                paddingTop: theme.spacing(8),
+            }}
+        >
             <Box
                 sx={{
                     position: 'absolute',
@@ -81,18 +61,32 @@ const ModulePage = ({ modules /*completedModules, markComplete*/ }) => {
             >
                 <BackButton />
             </Box>
-            <Typography variant='h2'>{module.title}</Typography>
-            {renderPage()}
-            {module.type !== 'practice-quiz' && module.type !== 'quiz' ? (
-                // Practice Quiz and Quiz are responsible for displaying their own Next button
+
+            <Typography variant="h2" sx={{ fontSize: '3rem', marginBottom: theme.spacing(2) }}>
+                {module.title}
+            </Typography>
+
+            <Box sx={{ width: '100%', maxWidth: '70rem', padding: theme.spacing(2) }}>
+                {renderPage()}
+            </Box>
+
+            {module.type !== 'practice-quiz' && module.type !== 'quiz' && (
                 <Button
+                    variant="outlined"
+                    sx={{
+                        fontSize: '1.8rem',
+                        color: theme.palette.custom.buttonBackground,
+                        padding: '1rem',
+                        width: '8rem',
+                        height: '3.5rem',
+                    }}
                     onClick={() => navigate(`/modules/${nextModule.id}`)}
                     disabled={!nextModule}
                 >
                     Next
                 </Button>
-            ) : null}
-        </div>
+            )}
+        </Box>
     );
 };
 

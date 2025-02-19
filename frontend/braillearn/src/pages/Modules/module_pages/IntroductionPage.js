@@ -14,9 +14,9 @@ const IntroductionPage = ({ module /*isCompleted, onComplete*/ }) => {
     return (
         <Box>
             <ThemeProvider theme={theme}>
-                <Typography variant='p'>{description}</Typography>
-                <Typography>{module.charDescription}</Typography>
-                <Typography>
+                <Typography variant='p' sx={{ fontSize: '1.5rem' }}>{description}{" "}</Typography>
+                <Typography variant='p' sx={{ fontSize: '1.5rem' }}>{module.charDescription}</Typography>
+                <Typography vairant='p' sx={{ fontSize: '1.5rem' }}>
                     When you’re ready to proceed, tap the “Next” button.
                 </Typography>
             </ThemeProvider>
