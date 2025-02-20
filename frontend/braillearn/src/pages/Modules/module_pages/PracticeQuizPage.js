@@ -239,52 +239,72 @@ const PracticeQuizPage = ({
             }}
         >
             {status === states.display ? (
-                <Typography variant='h5'>Displaying Character...</Typography>
+                <Typography variant='h5' sx={{ fontSize: '1.5rem' }}>Displaying Character...</Typography>
             ) : status === states.listen ? (
-                <Typography variant='h5'>
+                <Typography variant='h5' sx={{ fontSize: '1.5rem' }}>
                     Listening for a character...
                 </Typography>
             ) : status === states.correct ? (
                 <Box>
-                    <Typography variant='h5'>
+                    <Typography variant='h5' sx={{ fontSize: '1.5rem' }}>
                         {charInput.toUpperCase()}
                     </Typography>
-                    <Typography variant='h6' color='success.main'>
+                    <Typography variant='h6' sx={{ fontSize: '1.5rem' }} color='success.main'>
                         Correct!
-                    </Typography>
-                    <Button onClick={reset}>Continue</Button>
+                    </Typography><br /><br /><br />
+                    <Button onClick={reset} variant='outlined' sx={{
+                        fontSize: '1.8rem', color: theme.palette.custom.buttonBackground,
+                        padding: '1rem',
+                        width: '10rem',
+                        height: '3.5rem',
+                    }}>Continue</Button>
                 </Box>
             ) : status === states.incorrect ? (
                 <Box>
-                    <Typography variant='h5'>
+                    <Typography variant='h5' sx={{ fontSize: '1.5rem' }}>
                         {charInput === 'No input received' ||
-                        charInput === 'Something went wrong'
+                            charInput === 'Something went wrong'
                             ? charInput
                             : charInput.toUpperCase()}
                     </Typography>
-                    <Typography variant='h6' color='error.main'>
+                    <Typography variant='h6' sx={{ fontSize: '1.5rem' }} color='error.main'>
                         Incorrect, the correct answer was:{' '}
                         {currentChar.toUpperCase()}
-                    </Typography>
-                    <Button onClick={reset}>Continue</Button>
+                    </Typography><br /><br /><br />
+
+                    <Button onClick={reset} variant='outlined' sx={{
+                        fontSize: '1.8rem',
+                        color: theme.palette.custom.buttonBackground,
+                        padding: '1rem',
+                        width: '10rem',
+                        height: '3.5rem',
+                    }}>Continue</Button>
                 </Box>
             ) : status === states.quizMenu ? (
                 <Box>
-                    <Typography variant='p'>
+                    <Typography variant='p' sx={{ fontSize: '1.5rem' }}>
                         You will now take a practice quiz on the characters{' '}
                         {module.chars}.  Tap
                         "Start" to begin.
-                    </Typography>
-                    <Button onClick={startQuiz}>Start</Button>
+                    </Typography><br /><br /><br />
+
+                    <Button onClick={startQuiz} variant='outlined' sx={{
+                        fontSize: '1.8rem',
+                        color: theme.palette.custom.buttonBackground,
+                        padding: '1rem',
+                        width: '8rem',
+                        height: '3.5rem',
+                    }}>Start</Button>
                 </Box>
             ) : status === states.quizDone ? (
                 <Box>
-                    <Typography variant='h6'>
+                    <Typography variant='h6' sx={{ fontSize: '1.5rem' }}>
                         Practice Quiz complete! Your score is:
                     </Typography>
                     <Typography
                         variant='h5'
                         sx={{
+                            fontSize: '1.5rem',
                             marginTop: theme.spacing(4),
                             fontWeight: 'bold',
                         }}
@@ -292,10 +312,22 @@ const PracticeQuizPage = ({
                         {correctQuizAnswers}/{quizQuestionCount}
                     </Typography>
 
-                    <Button onClick={restartQuiz}>Retake Practice Quiz</Button>
+                    <Button onClick={restartQuiz} variant='outlined' sx={{
+                        fontSize: '1.8rem',
+                        color: theme.palette.custom.buttonBackground,
+                        padding: '1rem',
+                        width: '8rem',
+                        height: '3.5rem',
+                    }}>Retake Practice Quiz</Button>
 
                     <Button
-                        onClick={() => navigate(`/modules/${nextModule.id}`)}
+                        onClick={() => navigate(`/modules/${nextModule.id}`)} variant='outlined' sx={{
+                            fontSize: '1.8rem',
+                            color: theme.palette.custom.buttonBackground,
+                            padding: '1rem',
+                            width: '8rem',
+                            height: '3.5rem',
+                        }}
                         disabled={!nextModule}
                     >
                         Next
@@ -303,25 +335,43 @@ const PracticeQuizPage = ({
                 </Box>
             ) : status === states.noInput ? (
                 <Box>
-                    <Typography variant='h5'>{charInput}</Typography>
+                    <Typography variant='h5' sx={{ fontSize: '1.5rem' }}>{charInput}</Typography>
                     {showingCorrectAnswer && (
-                        <Typography variant='h6'>
+                        <Typography variant='h6' sx={{ fontSize: '1.5rem' }}>
                             The correct answer was: {currentChar.toUpperCase()}
                         </Typography>
                     )}
 
-                    <Button onClick={showCorrectAnswer}>
+                    <Button onClick={showCorrectAnswer} variant='outlined' sx={{
+                        fontSize: '1.8rem',
+                        color: theme.palette.custom.buttonBackground,
+                        padding: '1rem',
+                        width: '8rem',
+                        height: '3.5rem',
+                    }}>
                         Show correct answer
                     </Button>
-                    <Button onClick={reset}>Next</Button>
+                    <Button onClick={reset} variant='outlined' sx={{
+                        fontSize: '1.8rem',
+                        color: theme.palette.custom.buttonBackground,
+                        padding: '1rem',
+                        width: '8rem',
+                        height: '3.5rem',
+                    }}>Next</Button>
                 </Box>
             ) : status === states.retry ? (
                 <Box>
-                    <Typography variant='h5'>{charInput}</Typography>
-                    <Typography variant='h6' color='error.main'>
+                    <Typography variant='h5' sx={{ fontSize: '1.5rem' }}>{charInput}</Typography>
+                    <Typography variant='h6' sx={{ fontSize: '1.5rem' }} color='error.main'>
                         Sorry, we didn’t catch that. Please say 'letter' before your answer, like 'letter A.'
-                    </Typography>
-                    <StyledButton onClick={(e) => setStatus(states.listen)}>Retry</StyledButton>
+                    </Typography><br /><br /><br />
+                    <StyledButton onClick={(e) => setStatus(states.listen)} variant='outlined' sx={{
+                        fontSize: '1.8rem',
+                        color: theme.palette.custom.buttonBackground,
+                        padding: '1rem',
+                        width: '8rem',
+                        height: '3.5rem',
+                    }}>Retry</StyledButton>
                 </Box>
             ) : null}
         </Box>

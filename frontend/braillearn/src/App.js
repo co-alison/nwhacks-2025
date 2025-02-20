@@ -322,7 +322,7 @@ function App() {
                         to='/about'
                         sx={{
                             color: theme.palette.custom.textPurple,
-                            fontSize: '1.4rem',
+                            fontSize: '1.6rem',
                             fontFamily: 'Roboto, sans-serif',
                             padding: '1.5rem',
                         }}
@@ -333,7 +333,7 @@ function App() {
                         component={Link}
                         to='/instructions'
                         sx={{
-                            fontSize: '1.4rem',
+                            fontSize: '1.6rem',
                             fontFamily: 'Roboto, sans-serif',
                             padding: '1.5rem',
                         }}
@@ -354,7 +354,7 @@ function App() {
                         element={
                             <Modules
                                 modules={modules}
-                                // completedModules={completedModules}
+                            // completedModules={completedModules}
                             />
                         }
                     />
@@ -363,8 +363,8 @@ function App() {
                         element={
                             <ModulePage
                                 modules={modules}
-                                // completedModules={completedModules}
-                                // markComplete={markComplete}
+                            // completedModules={completedModules}
+                            // markComplete={markComplete}
                             />
                         }
                     />
