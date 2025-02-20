@@ -292,6 +292,94 @@ const modules = [
         questionCount: 10,
         passingPercentage: 80,
     },
+    {
+        id: '3-intro',
+        title: 'Module 3 Introduction',
+        type: 'introduction',
+        charsCovered: 'lowercase "u" through "z"',
+        charsReviewed: 'lowercase "a" through "t"',
+        charDescription:
+            'The lowercase letters "u" through "z" are represented the same as the lowercase letters "a" through "e", except the bottom row, dots 3 and 6, are added. The exception to the pattern is the letter "w", which does not match any previous characters seen before. More information on the letter "w" will be provided later.',
+    },
+    {
+        id: '3-1-learn',
+        title: 'Learn "u"',
+        type: 'learn',
+        char: 'lowercase "u"',
+        representation:
+            'dots 1, 3, and 6, which is the character "a" plus the bottom row',
+    },
+    {
+        id: '3-2-learn',
+        title: 'Learn "v"',
+        type: 'learn',
+        char: 'lowercase "v"',
+        representation:
+            'dots 1, 2, 3, and 6, which is the character "b" plus the bottom row',
+    },
+    {
+        id: '3-1-practice-quiz',
+        title: 'Practice Quiz 3.1',
+        type: 'practice-quiz',
+        chars: 'lowercase "a", "b", "k", "l", "u", and "v"',
+        charsList: ['a', 'b', 'k', 'l', 'u', 'v'],
+    },
+    {
+        id: '3-3-learn',
+        title: 'Learn "w"',
+        type: 'learn',
+        char: 'lowercase "w"',
+        representation:
+            'dots 2, 4, 5, and 6. Notice that the letter "w" does not follow the pattern of the rest of the braille dots',
+    },
+    {
+        id: '3-4-learn',
+        title: 'Learn "x"',
+        type: 'learn',
+        char: 'lowercase "x"',
+        representation:
+            'dots 1, 3, 4, and 6, which is the character "c" plus the bottom row',
+    },
+
+    {
+        id: '3-2-practice-quiz',
+        title: 'Practice Quiz 3.2',
+        type: 'practice-quiz',
+        chars: 'lowercase "c", "m", "w", and "x"',
+        charsList: ['c', 'm', 'w', 'x'],
+    },
+    {
+        id: '3-5-learn',
+        title: 'Learn "y"',
+        type: 'learn',
+        char: 'lowercase "y"',
+        representation:
+            'dots 1, 3, 4, 5, and 6, which is the character "d" plus the bottom row',
+    },
+    {
+        id: '3-6-learn',
+        title: 'Learn "z"',
+        type: 'learn',
+        char: 'lowercase "z"',
+        representation:
+            'dots 1, 5, 3, and 6, which is the character "e" plus the bottom row',
+    },
+    {
+        id: '3-3-practice-quiz',
+        title: 'Practice Quiz 2.3',
+        type: 'practice-quiz',
+        chars: 'lowercase "d", "e", "n", "o", "y", and "z"',
+        charsList: ['d', 'e', 'n', 'o', 'y', 'z'],
+    },
+    {
+        id: '3-quiz',
+        title: 'Quiz 3',
+        type: 'quiz',
+        chars: 'lowercase "u" through "z"',
+        charsList: ['u', 'v', 'w', 'x', 'y', 'z'],
+        questionCount: 10,
+        passingPercentage: 80,
+    },
 ];
 
 function App() {
