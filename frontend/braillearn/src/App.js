@@ -314,7 +314,7 @@ const modules = [
         type: 'learn',
         char: 'lowercase "w"',
         representation:
-            'dots 2, 4, 5, and 6, which does not follow the pattern of the rest of the braille dots',
+            'dots 2, 4, 5, and 6. Notice that the letter "w" does not follow the pattern of the rest of the braille dots',
     },
     {
         id: '3-4-learn',
