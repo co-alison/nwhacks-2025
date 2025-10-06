@@ -7,14 +7,14 @@ const app = express();
 
 app.use(cors());
 
-// Initialize SerialPort
+// TODO: Add error handling and logging
+
 const port = new SerialPort({ path: "COM6", baudRate: 9600 });
 const parser = port.pipe(new ReadlineParser({ delimiter: "\n" }));
 
 port.on("open", () => {
     console.log("Serial port open on COM4");
 
-    // Listen for data on the serial port
     parser.on("data", (data) => {
         console.log("Received:", data.trim());
         if (data.trim() === "Done") {
@@ -35,7 +35,6 @@ app.get("/send-letter", (req, res) => {
     const letter = req.query.letter;
     if (letter) {
         console.log("Sending letter:", letter);
-        // res.send("Letter sent: " + letter);
         port.write(letter + "\n", (err) => {
             if (err) {
                 return res.status(500).send("Error on write: " + err.message);
@@ -51,14 +50,12 @@ app.get("/send-word", (req, res) => {
     console.log
     const word = req.query.word;
     if (word) {
-        // Reader only takes one letter at a time
         const letters = word.split("");
         let i = 0;
         const interval = setInterval(() => {
             if (i < letters.length) {
                 const letter = letters[i];
-                // Handle duplicate letters
-                // TODO
+                // TODO: Handle duplicate letters
 
                 console.log("Sending letter:", letter);
                 port.write(letter + "\n", (err) => {
