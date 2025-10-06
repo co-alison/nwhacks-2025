@@ -9,11 +9,12 @@ import PracticeQuizPage from './module_pages/PracticeQuizPage';
 import QuizPage from './module_pages/QuizPage';
 import ModuleOverviewPage from './module_pages/ModuleOverviewPage';
 
+// TODO: improve styling of modules and each module page
+
 const ModulePage = ({ modules }) => {
     const { moduleId } = useParams();
     const navigate = useNavigate();
 
-    // Find the current module and determine the next module
     const currentIndex = modules.findIndex((mod) => mod.id === moduleId);
     const nextModule = modules[currentIndex + 1] || null;
     const module = modules[currentIndex];
@@ -22,7 +23,6 @@ const ModulePage = ({ modules }) => {
         return <Typography variant="h5">Module not found</Typography>;
     }
 
-    // Render the appropriate page type
     const renderPage = () => {
         switch (module.type) {
             case 'overview':

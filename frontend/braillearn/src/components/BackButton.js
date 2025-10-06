@@ -17,9 +17,9 @@ const BackButton = () => {
             sx={{
                 backgroundColor: theme.palette.custom.buttonBackground,
                 color: '#fff',
-                fontSize: '1.5rem', // Reduced font size
-                padding: '0.5rem 1rem', // Reduced padding
-                height: '2.5rem', // Reduced height
+                fontSize: '1.5rem',
+                padding: '0.5rem 1rem', 
+                height: '2.5rem', 
                 borderRadius: '8px',
                 '&:hover': {
                     backgroundColor: theme.palette.custom.buttonHover,

@@ -18,22 +18,6 @@ const modules = [
         title: 'Modules Overview',
         type: 'overview',
     },
-
-    // {
-    //     id: '0-intro',
-    //     title: 'Module 0 Introduction',
-    //     type: 'introduction',
-    //     charsCovered: 'the locations of the braille dots 1 to 6',
-    //     charDescription:
-    //         'Braille is represented with six dots numbered 1 through 6. These dots form two vertical columns of three dots each.',
-    // },
-    // {
-    //     id: '0-1-learn',
-    //     title: 'Learn Dot 1',
-    //     type: 'learn',
-    //     char: 'dot 1',
-    //     representation: '',
-    // },
     {
         id: '1-intro',
         title: 'Module 1 Introduction',
@@ -383,19 +367,6 @@ const modules = [
 ];
 
 function App() {
-    // const [introCompleted, setIntroCompleted] = useState(false);
-    // const [m1Completed, setm1Completed] = useState(false);
-    // const [m2Completed, setm2Completed] = useState(false);
-    // const [m3Completed, setm3Completed] = useState(false);
-
-    // const [completedModules, setCompletedModules] = useState({});
-
-    // const markComplete = (moduleId) => {
-    //     setCompletedModules((prev) => ({
-    //         ...prev,
-    //         [moduleId]: true,
-    //     }));
-    // };
 
     return (
         <Router>
@@ -442,7 +413,6 @@ function App() {
                         element={
                             <Modules
                                 modules={modules}
-                            // completedModules={completedModules}
                             />
                         }
                     />
@@ -451,8 +421,6 @@ function App() {
                         element={
                             <ModulePage
                                 modules={modules}
-                            // completedModules={completedModules}
-                            // markComplete={markComplete}
                             />
                         }
                     />

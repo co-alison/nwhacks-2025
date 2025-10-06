@@ -1,5 +1,11 @@
 import { states } from "./constants";
 
+// TODO: Fix bug
+// After no input timeout, state remains in listening. Console logs show:
+// start
+// speech end
+// stopped
+
 export const startListeningWithTimer = (timerRef, recognitionRef, setStatus, setCharInput, currentChar) => {
     console.log("start");
     try {
@@ -44,16 +50,12 @@ export const startListeningWithTimer = (timerRef, recognitionRef, setStatus, set
 
         recognition.onspeechend = () => {
             console.log('speech end');
-            // recognition.abort();
-            // stopAudio();
-            // recognitionRef.current = null;
         };
 
         recognition.onend = () => {
             console.log("stopped");
             recognition.abort();
             recognitionRef.current = null;
-            // stopAudio();
         }
 
         recognition.start();
@@ -70,72 +72,10 @@ export const startListeningWithTimer = (timerRef, recognitionRef, setStatus, set
 export const stopListeningDueToTimeout = (recognitionRef, setStatus, setCharInput) => {
     if (recognitionRef.current) {
         recognitionRef.current.stop();
-        // stopAudio();
         setStatus(states.noInput);
         setCharInput("No input received");
     }
 };
-
-// export const stopAudio = () => {
-//     if (microphoneRef.current) {
-//         console.log('disconnect');
-//         microphoneRef.current.disconnect();
-//     }
-//     if (audioContextRef.current) {
-//         console.log("close");
-//         audioContextRef.current.close();
-//         audioContextRef.current = null;
-//     }
-
-//     if (volumeIntervalRef.current) {
-//         clearInterval(volumeIntervalRef.current);
-//     }
-
-//     setVolume(0);
-// };
-
-// export const setupAudio = async () => {
-//     try {
-//         const audioContext = new window.AudioContext();
-//         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-//         const microphone = audioContext.createMediaStreamSource(stream);
-
-//         const gainNode = audioContext.createGain();
-//         gainNode.gain.value = 2;
-
-//         const noiseSuppressionFilter = audioContext.createBiquadFilter();
-//         noiseSuppressionFilter.type = 'lowpass';
-//         noiseSuppressionFilter.frequency.value = 3000;
-
-//         // const analyser = audioContext.createAnalyser();
-//         // analyser.fftSize = 256;
-
-//         microphone.connect(gainNode);
-//         gainNode.connect(noiseSuppressionFilter);
-//         // noiseSuppressionFilter.connect(analyser);
-
-//         audioContextRef.current = audioContext;
-//         // analyserRef.current = analyser;
-//         microphoneRef.current = microphone;
-
-//         // monitorVolume();
-//     } catch (error) {
-//         console.error("Error setting up audio:", error)
-//     }
-// };
-
-// export const monitorVolume = () => {
-//     const analyser = analyserRef.current;
-//     const dataArray = new Uint8Array(analyser.fftSize);
-
-//     const updateVolume = () => {
-//         analyser.getByteFrequencyData(dataArray);
-//         const maxVolume = Math.max(...dataArray) / 255;
-//         setVolume(maxVolume);
-//     };
-
-//     volumeIntervalRef.current = setInterval(updateVolume, 100);
-// };
 
 export const verifyChar = async (input, confidence, currentChar, setStatus, setCharInput) => {
     console.log('current', currentChar);
@@ -166,11 +106,6 @@ export const verifyChar = async (input, confidence, currentChar, setStatus, setC
         }
     } else if (confidence < 0.5 || !input.startsWith("letter")) {
         // TODO: further process the input using NLP, currently asks user to try again on low confidence
-        // const splitInput = input.split(" ");
-        // for (const word of splitInput) {
-        //     const res = await axios.get(`http://localhost:3001/get-letter-nlp?input=${input}`);
-
-        // }
         console.log("low confidence");
         setStatus(states.retry);
     } else {

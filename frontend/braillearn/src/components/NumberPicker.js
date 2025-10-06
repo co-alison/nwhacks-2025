@@ -17,7 +17,6 @@ const CustomNumberInput = React.forwardRef(function CustomNumberInput(
 
   const inputProps = getInputProps();
 
-  // Make sure that both the forwarded ref and the ref returned from the getInputProps are applied on the input element
   inputProps.ref = useForkRef(inputProps.ref, ref);
 
   return (

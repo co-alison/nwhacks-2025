@@ -23,14 +23,11 @@ function Home() {
     return (
         <div style={{ textAlign: "center", padding: "2rem" }}>
             <header style={{ marginTop: "10rem", marginBottom: "2rem" }}>
-                {/* <ThemeProvider theme={theme}>
-          <Typography sx={{ color: theme.palette.custom.textPurple }} variant="h7">Braillearn</Typography>
-        </ThemeProvider> */}
                 <ThemeProvider theme={theme}>
                     <img
                         src={BraillearnLogo}
                         alt='Braillearn Logo'
-                        style={{ width: '30rem', height: 'auto' }} // Adjust width as needed
+                        style={{ width: '30rem', height: 'auto' }} 
                     />
                 </ThemeProvider>
                 <div

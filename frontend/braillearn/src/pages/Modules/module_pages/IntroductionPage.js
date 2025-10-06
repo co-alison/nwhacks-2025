@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, ThemeProvider, Button } from '@mui/material';
+import React from 'react';
+import { Box, Typography, ThemeProvider } from '@mui/material';
 import theme from '../../../styles/theme';
-import BackButton from '../../../components/BackButton';
-import { sendChar } from '../../../utils/serverApi';
 
-const IntroductionPage = ({ module /*isCompleted, onComplete*/ }) => {
+const IntroductionPage = ({ module }) => {
     const reviews = module.charsReviewed
         ? ` and reviews characters ${module.charsReviewed}`
         : '';
@@ -20,9 +17,7 @@ const IntroductionPage = ({ module /*isCompleted, onComplete*/ }) => {
                     When you’re ready to proceed, tap the “Next” button.
                 </Typography>
             </ThemeProvider>
-            {/* <button onClick={onComplete} disabled={isCompleted}>
-            {isCompleted ? 'Practice Quiz Completed' : 'Submit Practice Quiz'}
-        </button> */}
+
         </Box>
     );
 };

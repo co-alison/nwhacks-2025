@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, ThemeProvider, Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Box, Typography, Button } from '@mui/material';
 import theme from '../../../styles/theme';
-import axios from 'axios';
 import { sendChar } from '../../../utils/serverApi';
 import { states } from '../../../utils/constants';
-import SpeechRecognition, {
+import  {
     useSpeechRecognition,
 } from 'react-speech-recognition';
 import { startListeningWithTimer } from '../../../utils/speechRecognition';
 import StyledButton from '../../../components/StyledButton';
 
+// TODO: lots of duplicate code, is it possible to reuse Practice.js?
 const PracticeQuizPage = ({
-    module /*isCompleted, onComplete*/,
+    module,
     nextModule,
 }) => {
     const navigate = useNavigate();
@@ -20,8 +20,6 @@ const PracticeQuizPage = ({
     const [currentChar, setCurrentChar] = useState('');
     const [status, setStatus] = useState(states.quizMenu);
     const [charInput, setCharInput] = useState('');
-    const [timerFlag, setTimerFlag] = useState(true);
-    const [isListening, setIsListening] = useState(false);
 
     const [quizQuestionCount, setQuizQuestionCount] = useState(0);
     const [correctQuizAnswers, setCorrectQuizAnswers] = useState(0);
@@ -29,13 +27,8 @@ const PracticeQuizPage = ({
     const [showingCorrectAnswer, setShowingCorrectAnswer] = useState(false);
     const [characterPool, setCharacterPool] = useState({});
 
-    const [volume, setVolume] = useState(0);
     const recognitionRef = useRef(null);
     const timerRef = useRef(null);
-    const audioContextRef = useRef(null);
-    const analyserRef = useRef(null);
-    const microphoneRef = useRef(null);
-    const volumeIntervalRef = useRef(null);
 
     useEffect(() => {
         resetCharacterPool();
@@ -61,7 +54,6 @@ const PracticeQuizPage = ({
         }
     };
 
-    // helper
     useEffect(() => {
         console.log(characterPool);
     }, [characterPool]);
@@ -81,7 +73,6 @@ const PracticeQuizPage = ({
                 console.log(char);
                 setCurrentChar(char);
 
-                // send char to API
                 sendChar(char, () => {
                     setStatus(states.listen);
                 });
@@ -101,47 +92,6 @@ const PracticeQuizPage = ({
         }
     }, [status]);
 
-    // useEffect(() => {
-    //     if (isListening && timerFlag) {
-    //         const timer = setTimeout(() => {
-    //             setTimerFlag(0);
-    //             SpeechRecognition.stopListening();
-    //             setIsListening(false);
-    //         }, 5000);
-
-    //         return () => clearTimeout(timer);
-    //     }
-    // }, [timerFlag, isListening]);
-
-    // const listen = async () => {
-    //     if (browserSupportsSpeechRecognition) {
-    //         await SpeechRecognition.startListening({ language: 'en-US' });
-    //         setIsListening(true);
-    //         console.log('listening', listening);
-    //     } else {
-    //         console.log('browser does not support speech recognition');
-    //     }
-    // };
-
-    // useEffect(() => {
-    //     const stopListen = async () => {
-    //         await SpeechRecognition.stopListening();
-    //         setIsListening(false);
-    //         const input = transcript.split(' ')[0];
-    //         setCharInput(input);
-    //         resetTranscript();
-    //         verifyChar(input);
-    //     };
-
-    //     if (!listening && !transcript && !timerFlag) {
-    //         console.log('no input received');
-    //         setCharInput('No input received');
-    //         setStatus(states.noInput);
-    //     } else if (transcript) {
-    //         stopListen();
-    //     }
-    // }, [transcript, listening, timerFlag]);
-
     const getRandomChar = () => {
         const keys = Object.keys(characterPool);
         console.log('pulling chars from ', keys);
@@ -149,37 +99,10 @@ const PracticeQuizPage = ({
         return keys[index];
     };
 
-    // const verifyChar = async (input) => {
-    //     console.log('current', currentChar);
-    //     console.log('input', input);
-
-    //     const res = await axios.get(
-    //         `http://localhost:3001/get-letter?input=${input}`
-    //     );
-    //     if (res.data.length !== 1) {
-    //         setStatus(states.incorrect);
-    //         setCharInput('Something went wrong');
-    //         return;
-    //     }
-
-    //     setCharInput(res.data.toLowerCase());
-    //     if (currentChar === res.data.toLowerCase()) {
-    //         setStatus(states.correct);
-    //         setCorrectQuizAnswers(correctQuizAnswers + 1);
-    //         updateCharValue(currentChar);
-    //         if (characterPool.length === 0) {
-    //             setQuizComplete(true);
-    //         }
-    //     } else {
-    //         setStatus(states.incorrect);
-    //     }
-    //     setQuizQuestionCount(quizQuestionCount + 1);
-    // };
 
     const reset = () => {
         setCurrentChar('');
         setCharInput('');
-        // setTimerFlag(true);
         setShowingCorrectAnswer(false);
 
         if (quizComplete) {
@@ -198,10 +121,6 @@ const PracticeQuizPage = ({
     };
 
     const speakText = (text) => {
-        // const voices = speechSynthesis.getVoices();
-        // voices.forEach(voice => {
-        //     console.log(`Name: ${voice.name}, Lang: ${voice.lang}, Voice URI: ${voice.voiceURI}`);
-        // });
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.pitch = 1;
         utterance.rate = 1;
@@ -213,7 +132,6 @@ const PracticeQuizPage = ({
     };
 
     const restartQuiz = () => {
-        // Reset everything
         setStatus(states.quizMenu);
         setQuizComplete(false);
         setQuizQuestionCount(0);
@@ -376,12 +294,6 @@ const PracticeQuizPage = ({
             ) : null}
         </Box>
     );
-
-    {
-        /* <button onClick={onComplete} disabled={isCompleted}>
-            {isCompleted ? 'Practice Quiz Completed' : 'Submit Practice Quiz'}
-        </button> */
-    }
 };
 
 export default PracticeQuizPage;
