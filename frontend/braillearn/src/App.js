@@ -227,7 +227,7 @@ const modules = [
         type: 'learn',
         char: 'lowercase "q"',
         representation:
-            'dots 1, 2, 4, 5, and 3, which is the character "g" plus dot 3', // TODO: add extra descriptions, like 'You can also think of this as all dots except dot 6'
+            'dots 1, 2, 4, 5, and 3, which is the character "g" plus dot 3', 
     },
     {
         id: '2-8-learn',

@@ -44,13 +44,11 @@ const Practice = () => {
         return () => {};
     }, [status]);
 
-    // TODO: improve randomness, consider using a learning algorithm (e.g. spaced repetition)
     const getRandomChar = () => {
         const index = Math.floor(Math.random() * characters.length);
         return characters[index];
     };
 
-    // TODO: add logging
     const reset = () => {
         const clear = '.';
         const res = axios.get(`http://localhost:3001/send-letter?letter=${clear}`);
@@ -64,7 +62,6 @@ const Practice = () => {
         }
     };
 
-    // TODO: update voice to sound more human-like
     const speakText = (text) => {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.pitch = 1;
@@ -95,7 +92,6 @@ const Practice = () => {
                 }}
             >
                 <BackButton />
-                {/* TODO: turn off microphone after clicking back button, microphone eventually turns off after timeout but should happen immediately. */}
             </Box>
 
             <Typography

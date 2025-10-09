@@ -7,8 +7,6 @@ const app = express();
 
 app.use(cors());
 
-// TODO: Add error handling and logging
-
 const port = new SerialPort({ path: "COM6", baudRate: 9600 });
 const parser = port.pipe(new ReadlineParser({ delimiter: "\n" }));
 
@@ -55,7 +53,6 @@ app.get("/send-word", (req, res) => {
         const interval = setInterval(() => {
             if (i < letters.length) {
                 const letter = letters[i];
-                // TODO: Handle duplicate letters
 
                 console.log("Sending letter:", letter);
                 port.write(letter + "\n", (err) => {

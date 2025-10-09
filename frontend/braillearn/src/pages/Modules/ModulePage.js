@@ -9,8 +9,6 @@ import PracticeQuizPage from './module_pages/PracticeQuizPage';
 import QuizPage from './module_pages/QuizPage';
 import ModuleOverviewPage from './module_pages/ModuleOverviewPage';
 
-// TODO: improve styling of modules and each module page
-
 const ModulePage = ({ modules }) => {
     const { moduleId } = useParams();
     const navigate = useNavigate();

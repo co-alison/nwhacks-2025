@@ -116,7 +116,6 @@ const Quiz = () => {
         return chars[index];
     };
 
-    // TODO: should use same verification as Practice page
     const verifyChar = async (input) => {
         console.log('current', currentChar);
         console.log('input', input);

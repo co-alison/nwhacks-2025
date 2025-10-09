@@ -1,11 +1,5 @@
 import { states } from "./constants";
 
-// TODO: Fix bug
-// After no input timeout, state remains in listening. Console logs show:
-// start
-// speech end
-// stopped
-
 export const startListeningWithTimer = (timerRef, recognitionRef, setStatus, setCharInput, currentChar) => {
     console.log("start");
     try {
@@ -105,7 +99,6 @@ export const verifyChar = async (input, confidence, currentChar, setStatus, setC
             setStatus(states.incorrect);
         }
     } else if (confidence < 0.5 || !input.startsWith("letter")) {
-        // TODO: further process the input using NLP, currently asks user to try again on low confidence
         console.log("low confidence");
         setStatus(states.retry);
     } else {

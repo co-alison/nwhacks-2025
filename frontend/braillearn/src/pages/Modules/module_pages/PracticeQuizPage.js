@@ -10,7 +10,6 @@ import  {
 import { startListeningWithTimer } from '../../../utils/speechRecognition';
 import StyledButton from '../../../components/StyledButton';
 
-// TODO: lots of duplicate code, is it possible to reuse Practice.js?
 const PracticeQuizPage = ({
     module,
     nextModule,
@@ -95,7 +94,7 @@ const PracticeQuizPage = ({
     const getRandomChar = () => {
         const keys = Object.keys(characterPool);
         console.log('pulling chars from ', keys);
-        const index = Math.floor(Math.random() * keys.length); // TODO: this is not weighted based on the number of times a character has left to appear
+        const index = Math.floor(Math.random() * keys.length); 
         return keys[index];
     };
 

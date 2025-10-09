@@ -8,7 +8,6 @@ import { sendChar } from '../../../utils/serverApi';
 const LearnPage = ({
     module
 }) => {
-    // TODO: do we want to repeatedly display and clear the same character?
     const charToSend = module.char[module.char.indexOf('"') + 1];
     sendChar(charToSend);
 
