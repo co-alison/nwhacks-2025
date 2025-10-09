@@ -15,7 +15,7 @@ function Display() {
     const [displayedChar, setDisplayedChar] = useState('');
     const [status, setStatus] = useState(states.listen);
     const [error, setError] = useState(false);
-    const [mode, setMode] = useState('character'); // New state for mode selection
+    const [mode, setMode] = useState('character'); 
 
     const getCharacterValue = async () => {
         SpeechRecognition.stopListening();
@@ -51,7 +51,7 @@ function Display() {
 
     const handleModeChange = (event) => {
         setMode(event.target.value);
-        setError(false); // Reset error when mode changes
+        setError(false); 
     };
 
     const reset = () => {

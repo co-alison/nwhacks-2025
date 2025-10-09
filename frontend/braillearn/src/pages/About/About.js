@@ -11,10 +11,9 @@ const About = () => {
         padding: theme.spacing(4),
         maxWidth: "800px",
         margin: "0 auto",
-        textAlign: "center", // Center align content like Home page.
+        textAlign: "center", 
       }}
     >
-      {/* Back button positioned at top left */}
       <Box sx={{ position: "absolute", top: theme.spacing(4), left: theme.spacing(4) }}>
         <BackButton />
       </Box>
@@ -22,7 +21,6 @@ const About = () => {
         <ThemeProvider theme={theme}>
           <Typography sx={{ color: theme.palette.custom.textPurple }} variant="h7">What is Braillearn?</Typography>
         </ThemeProvider>
-        {/* <h1>About</h1> */}
         <Box
           sx={{
             border: `0.3rem solid #919bd9`,

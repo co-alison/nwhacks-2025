@@ -5,6 +5,5 @@ import App from './App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  // Remove the <React.StrictMode> wrapper to disable Strict Mode
   <App />
 );

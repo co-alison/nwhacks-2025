@@ -1,11 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, ThemeProvider, Button } from '@mui/material';
-import theme from '../../../styles/theme';
-import BackButton from '../../../components/BackButton';
-import { sendChar } from '../../../utils/serverApi';
+import React from 'react';
+import { Box, Typography } from '@mui/material';
 
-const QuizPage = ({ module /*isCompleted, onComplete*/ }) => (
+const QuizPage = ({ module }) => (
     <Box>
         <Typography variant='p' sx={{ fontSize: '1.5rem' }}>
             This quiz covers the characters {module.chars} and contains{' '}
@@ -13,9 +9,6 @@ const QuizPage = ({ module /*isCompleted, onComplete*/ }) => (
             you must achieve a score of at least {module.passingPercentage}%.
             Tap "Start" to begin.
         </Typography>
-        {/* <button onClick={onComplete} disabled={isCompleted}>
-            {isCompleted ? 'Quiz Completed' : 'Submit Quiz'}
-        </button> */}
     </Box>
 );
 

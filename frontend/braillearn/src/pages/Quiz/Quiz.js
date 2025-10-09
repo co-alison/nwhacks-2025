@@ -24,14 +24,10 @@ const Quiz = () => {
     const [correctQuizAnswers, setCorrectQuizAnswers] = useState(0);
 
     const [showingCorrectAnswer, setShowingCorrectAnswer] = useState(false);
-
-    // if the user chooses to retake the quiz with their previously incorrect or unseen
-    // characters, getRandomChar() will pull from this list
     const [retakeQuizCharPool, setRetakeQuizCharPool] = useState([
         ...characters,
     ]);
 
-    // a list of the incorrect or unseen chars in this quiz instance
     const [curIncorrectOrUnseenChars, setCurIncorrectOrUnseenChars] = useState([
         ...characters,
     ]);
@@ -52,7 +48,6 @@ const Quiz = () => {
             console.log(char);
             setCurrentChar(char);
 
-            // send char to API
             sendChar(char, () => {
                 setStatus(states.listen);
             });
@@ -139,7 +134,6 @@ const Quiz = () => {
             setStatus(states.correct);
             setCorrectQuizAnswers(correctQuizAnswers + 1);
 
-            // Update the list of currently unseen or incorrect characters
             curIncorrectOrUnseenChars.splice(
                 curIncorrectOrUnseenChars.indexOf(currentChar),
                 1
@@ -178,10 +172,6 @@ const Quiz = () => {
     };
 
     const speakText = (text) => {
-        // const voices = speechSynthesis.getVoices();
-        // voices.forEach(voice => {
-        //     console.log(`Name: ${voice.name}, Lang: ${voice.lang}, Voice URI: ${voice.voiceURI}`);
-        // });
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.pitch = 1;
         utterance.rate = 1;
@@ -203,7 +193,6 @@ const Quiz = () => {
     };
 
     const takeNewQuiz = () => {
-        // Reset everything
         setRetakeQuizCharPool([...characters]);
         setCurIncorrectOrUnseenChars([...characters]);
         setIsRetakingQuiz(false);
@@ -212,7 +201,6 @@ const Quiz = () => {
     };
 
     const retakeQuiz = () => {
-        // Populate the next array of incorrect or unseen chars
         setRetakeQuizCharPool([...curIncorrectOrUnseenChars]);
         setIsRetakingQuiz(true);
 
@@ -232,10 +220,9 @@ const Quiz = () => {
                 padding: theme.spacing(4),
                 maxWidth: '800px',
                 margin: '0 auto',
-                textAlign: 'center', // Center align content like Home page.
+                textAlign: 'center',
             }}
         >
-            {/* Back button positioned at top left */}
             <Box
                 sx={{
                     position: 'absolute',
