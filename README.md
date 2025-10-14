@@ -5,7 +5,8 @@
 ### Frontend
 
 1. From root directory, `cd frontend/braillearn`
-2. Run `npm start`
+2. Run `npm install`
+3. Run `npm start`
 
 ### Backend
 
