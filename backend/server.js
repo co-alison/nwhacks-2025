@@ -7,7 +7,8 @@ const app = express();
 
 app.use(cors());
 
-const port = new SerialPort({ path: 'COM6', baudRate: 9600 });
+// change path to your serial port
+const port = new SerialPort({ path: "/dev/cu.usbserial-110", baudRate: 9600 });
 const parser = port.pipe(new ReadlineParser({ delimiter: '\n' }));
 
 port.on('open', () => {
