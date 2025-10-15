@@ -2,6 +2,8 @@
 
 ## Instructions
 
+> If you are not connected to the hardware, flip the `usingHardware` feature flag in `/frontend/braillearn/src/featureFlags.js` to `false`. Otherwise, keep it at `true`. 
+
 ### Frontend
 
 1. From root directory, `cd frontend/braillearn`
