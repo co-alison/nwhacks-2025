@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import BackButton from '../../components/BackButton';
 import SpeechRecognition, {
@@ -21,6 +21,7 @@ import {
     sendWord as sendWordToHardware,
     getLetter,
 } from '../../utils/serverApi';
+import { startListeningWithTimer } from '../../utils/speechRecognition';
 
 function Display() {
     const [textInput, setTextInput] = useState('');
@@ -28,6 +29,10 @@ function Display() {
     const [status, setStatus] = useState(states.listen);
     const [error, setError] = useState(false);
     const [mode, setMode] = useState('character');
+
+    // for speechRecognition
+    const recognitionRef = useRef(null);
+    const timerRef = useRef(null);
 
     const getCharacterValue = async () => {
         SpeechRecognition.stopListening();
@@ -85,38 +90,40 @@ function Display() {
 
     const listen = async () => {
         if (browserSupportsSpeechRecognition) {
-            await SpeechRecognition.startListening({
-                continuous: true,
-                language: 'en-US',
-            });
-            console.log('listening', listening);
+            startListeningWithTimer(
+                timerRef,
+                recognitionRef,
+                setStatus,
+                setTextInput,
+                displayedChar
+            );
         } else {
             console.log('browser does not support speech recognition');
         }
     };
 
-    useEffect(() => {
-        const stopListen = async () => {
-            await SpeechRecognition.stopListening();
-            const input = transcript.split(' ')[0];
-            const res = await getLetter(input);
-            console.log('HERE');
-            setTextInput(res.data);
-            sendChar(res.data, () => {
-                setTextInput(res.data);
-                setDisplayedChar(res.data);
-            });
-            setDisplayedChar(res.data);
-            resetTranscript();
-            setStatus(states.response);
-        };
+    // useEffect(() => {
+    //     const stopListen = async () => {
+    //         await SpeechRecognition.stopListening();
+    //         const input = transcript.split(' ')[0];
+    //         const res = await getLetter(input);
+    //         console.log('HERE');
+    //         setTextInput(res.data);
+    //         sendChar(res.data, () => {
+    //             setTextInput(res.data);
+    //             setDisplayedChar(res.data);
+    //         });
+    //         setDisplayedChar(res.data);
+    //         resetTranscript();
+    //         setStatus(states.response);
+    //     };
 
-        if (!listening && !transcript) {
-            setStatus(states.response);
-        } else if (transcript) {
-            stopListen();
-        }
-    }, [transcript, listening]);
+    //     if (!listening && !transcript) {
+    //         setStatus(states.response);
+    //     } else if (transcript) {
+    //         stopListen();
+    //     }
+    // }, [transcript, listening]);
 
     return (
         <Box
