@@ -60,7 +60,7 @@ const Practice = () => {
 
     const reset = () => {
         const clear = '.';
-        sendChar(clear);
+        // sendChar(clear);
         setCurrentChar('');
         setCharInput('');
         clearTimeout(timerRef.current);

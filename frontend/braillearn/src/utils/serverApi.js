@@ -44,6 +44,7 @@ export const sendWord = async (word, callback) => {
             if (callback) {
                 callback();
             }
+            return res;
         } catch (e) {
             console.log(`Error sending word to the arduino: ${e}`);
         }

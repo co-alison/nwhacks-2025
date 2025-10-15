@@ -48,7 +48,7 @@ app.get('/send-letter', (req, res) => {
 app.get('/send-word', (req, res) => {
     const word = req.query.word;
     if (word) {
-        const letters = word.split('');
+        const letters = word.split('').join('.').split(''); // clear each char before sending next
         let i = 0;
         const interval = setInterval(() => {
             if (i < letters.length) {
