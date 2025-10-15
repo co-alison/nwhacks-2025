@@ -10,7 +10,7 @@ import theme from '../../styles/theme';
 import { Box, Typography } from '@mui/material';
 import StyledButton from '../../components/StyledButton';
 import CustomNumberInput from '../../components/NumberPicker';
-import { sendChar } from '../../utils/serverApi';
+import { sendChar, getLetter } from '../../utils/serverApi';
 
 const Quiz = () => {
     const [currentChar, setCurrentChar] = useState('');
@@ -120,10 +120,9 @@ const Quiz = () => {
         console.log('current', currentChar);
         console.log('input', input);
 
-        const res = await axios.get(
-            `http://localhost:3001/get-letter?input=${input}`
-        );
-        if (res.data.length !== 1) {
+        // TODO: quiz speech-to-text is VERY finnicky. shouldn't be demo-ed
+        const res = await getLetter(input);
+        if (!res.data || !res.data.length !== -1) {
             setStatus(states.incorrect);
             setCharInput('Something went wrong');
             return;

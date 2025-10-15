@@ -6,16 +6,28 @@ import SpeechRecognition, {
 } from 'react-speech-recognition';
 import { states } from '../../utils/constants';
 import StyledButton from '../../components/StyledButton';
-import { Box, TextField, Typography, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import {
+    Box,
+    TextField,
+    Typography,
+    MenuItem,
+    Select,
+    FormControl,
+    InputLabel,
+} from '@mui/material';
 import theme from '../../styles/theme';
-import { sendChar } from '../../utils/serverApi';
+import {
+    sendChar,
+    sendWord as sendWordToHardware,
+    getLetter,
+} from '../../utils/serverApi';
 
 function Display() {
     const [textInput, setTextInput] = useState('');
     const [displayedChar, setDisplayedChar] = useState('');
     const [status, setStatus] = useState(states.listen);
     const [error, setError] = useState(false);
-    const [mode, setMode] = useState('character'); 
+    const [mode, setMode] = useState('character');
 
     const getCharacterValue = async () => {
         SpeechRecognition.stopListening();
@@ -34,10 +46,7 @@ function Display() {
     };
 
     const sendWord = async (word) => {
-        const res = await axios.get(
-            `http://localhost:3001/send-word?word=${word}`
-        );
-
+        const res = await sendWordToHardware(word);
         if (res.status === 200) {
             console.log('sent', word, 'to the arduino');
             setTextInput(textInput);
@@ -51,7 +60,7 @@ function Display() {
 
     const handleModeChange = (event) => {
         setMode(event.target.value);
-        setError(false); 
+        setError(false);
     };
 
     const reset = () => {
@@ -90,9 +99,7 @@ function Display() {
         const stopListen = async () => {
             await SpeechRecognition.stopListening();
             const input = transcript.split(' ')[0];
-            const res = await axios.get(
-                `http://localhost:3001/get-letter?input=${input}`
-            );
+            const res = await getLetter(input);
             console.log('HERE');
             setTextInput(res.data);
             sendChar(res.data, () => {
@@ -138,15 +145,15 @@ function Display() {
             </Typography>
 
             <FormControl sx={{ marginBottom: theme.spacing(2), minWidth: 120 }}>
-                <InputLabel id="mode-select-label">Mode</InputLabel>
+                <InputLabel id='mode-select-label'>Mode</InputLabel>
                 <Select
-                    labelId="mode-select-label"
-                    id="mode-select"
+                    labelId='mode-select-label'
+                    id='mode-select'
                     value={mode}
                     onChange={handleModeChange}
                 >
-                    <MenuItem value="character">Character</MenuItem>
-                    <MenuItem value="word">Word</MenuItem>
+                    <MenuItem value='character'>Character</MenuItem>
+                    <MenuItem value='word'>Word</MenuItem>
                 </Select>
             </FormControl>
 

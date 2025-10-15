@@ -27,8 +27,15 @@ const Practice = () => {
             sendChar(char, () => {
                 setStatus(states.listen);
             });
+            setStatus(states.listen);
         } else if (status === states.listen) {
-            startListeningWithTimer(timerRef, recognitionRef, setStatus, setCharInput, currentChar);
+            startListeningWithTimer(
+                timerRef,
+                recognitionRef,
+                setStatus,
+                setCharInput,
+                currentChar
+            );
         } else if (status === states.correct) {
             speakText('Correct!');
         } else if (status === states.incorrect) {
@@ -36,9 +43,11 @@ const Practice = () => {
                 `Incorrect, the correct answer was: ${currentChar.toUpperCase()}`
             );
         } else if (status === states.retry) {
-            speakText("Sorry, we didn’t catch that. Please say 'letter' before your answer, like 'letter A.'");
+            speakText(
+                "Sorry, we didn’t catch that. Please say 'letter' before your answer, like 'letter A.'"
+            );
         } else if (status === states.noInput) {
-            speakText("No input received.");
+            speakText('No input received.');
         }
 
         return () => {};
@@ -51,7 +60,7 @@ const Practice = () => {
 
     const reset = () => {
         const clear = '.';
-        const res = axios.get(`http://localhost:3001/send-letter?letter=${clear}`);
+        sendChar(clear);
         setCurrentChar('');
         setCharInput('');
         clearTimeout(timerRef.current);
@@ -96,31 +105,50 @@ const Practice = () => {
 
             <Typography
                 variant='h4'
-                sx={{ fontSize: '2.8rem', marginTop: theme.spacing(10), marginBottom: theme.spacing(4), fontWeight: 'bold' }}
+                sx={{
+                    fontSize: '2.8rem',
+                    marginTop: theme.spacing(10),
+                    marginBottom: theme.spacing(4),
+                    fontWeight: 'bold',
+                }}
             >
                 Practice Braille
             </Typography>
 
             {status === states.display ? (
-                <Typography variant='h5' sx={{ fontSize: '2rem' }}>Displaying Character...</Typography>
+                <Typography variant='h5' sx={{ fontSize: '2rem' }}>
+                    Displaying Character...
+                </Typography>
             ) : status === states.listen ? (
                 <Box>
-                    <Typography variant="h5" sx={{ fontSize: '2rem' }}>Listening...</Typography>
+                    <Typography variant='h5' sx={{ fontSize: '2rem' }}>
+                        Listening...
+                    </Typography>
                 </Box>
             ) : status === states.correct ? (
                 <Box>
                     <Typography variant='h5' sx={{ fontSize: '2rem' }}>
                         {charInput.toUpperCase()}
                     </Typography>
-                    <Typography variant='h6' sx={{ fontSize: '1.75rem' }} color='success.main'>
+                    <Typography
+                        variant='h6'
+                        sx={{ fontSize: '1.75rem' }}
+                        color='success.main'
+                    >
                         Correct!
                     </Typography>
                     <StyledButton onClick={reset}>Next</StyledButton>
                 </Box>
             ) : status === states.incorrect ? (
                 <Box>
-                    <Typography variant='h5' sx={{ fontSize: '2rem' }}>{charInput.toUpperCase()}</Typography>
-                    <Typography variant='h6' sx={{ fontSize: '1.75rem' }} color='error.main'>
+                    <Typography variant='h5' sx={{ fontSize: '2rem' }}>
+                        {charInput.toUpperCase()}
+                    </Typography>
+                    <Typography
+                        variant='h6'
+                        sx={{ fontSize: '1.75rem' }}
+                        color='error.main'
+                    >
                         Incorrect, the correct answer was:{' '}
                         {currentChar.toUpperCase()}
                     </Typography>
@@ -128,7 +156,9 @@ const Practice = () => {
                 </Box>
             ) : status === states.noInput ? (
                 <Box>
-                    <Typography variant='h5' sx={{ fontSize: '2rem' }}>{charInput}</Typography>
+                    <Typography variant='h5' sx={{ fontSize: '2rem' }}>
+                        {charInput}
+                    </Typography>
                     {showingCorrectAnswer && (
                         <Typography variant='h6' sx={{ fontSize: '1.75rem' }}>
                             The correct answer was: {currentChar.toUpperCase()}
@@ -142,11 +172,20 @@ const Practice = () => {
                 </Box>
             ) : status === states.retry ? (
                 <Box>
-                    <Typography variant='h5' sx={{ fontSize: '2rem' }}>{charInput}</Typography>
-                    <Typography variant='h6' sx={{ fontSize: '1.75rem' }} color='error.main'>
-                        Sorry, we didn’t catch that. Please say 'letter' before your answer, like 'letter A.'
+                    <Typography variant='h5' sx={{ fontSize: '2rem' }}>
+                        {charInput}
                     </Typography>
-                    <StyledButton onClick={(e) => setStatus(states.listen)}>Retry</StyledButton>
+                    <Typography
+                        variant='h6'
+                        sx={{ fontSize: '1.75rem' }}
+                        color='error.main'
+                    >
+                        Sorry, we didn’t catch that. Please say 'letter' before
+                        your answer, like 'letter A.'
+                    </Typography>
+                    <StyledButton onClick={(e) => setStatus(states.listen)}>
+                        Retry
+                    </StyledButton>
                 </Box>
             ) : null}
         </Box>
