@@ -12,6 +12,7 @@ const ModuleOverviewPage = ({ module }) => {
                     be followed by a series of Learn, Practice Quiz, and Quiz
                     pages.
                 </Typography>
+                <br></br>
                 <Typography sx={{ fontSize: '1.5rem' }}>
                     On each Learn page, the character being taught will appear
                     on the braille display. Place your finger over the braille
@@ -19,6 +20,7 @@ const ModuleOverviewPage = ({ module }) => {
                     long as you need to become familiar with the character. When
                     you’re ready to proceed, you can tap the “Next” button.
                 </Typography>
+                <br></br>
                 <Typography sx={{ fontSize: '1.5rem' }}>
                     After a few characters are introduced, there will be a
                     Practice Quiz. During the practice quiz, the braille display
@@ -28,6 +30,7 @@ const ModuleOverviewPage = ({ module }) => {
                     character correct 3 times, the “Next” button will appear and
                     you can proceed.
                 </Typography>
+                <br></br>
                 <Typography sx={{ fontSize: '1.5rem' }}>
                     At the end of each module, there will be a Quiz. The quiz
                     will contain a pre-determined number of questions and you
