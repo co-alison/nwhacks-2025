@@ -1,9 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect, useRef } from 'react';
 import BackButton from '../../components/BackButton';
-import SpeechRecognition, {
-    useSpeechRecognition,
-} from 'react-speech-recognition';
 import { states } from '../../utils/constants';
 import StyledButton from '../../components/StyledButton';
 import {
@@ -19,25 +15,27 @@ import theme from '../../styles/theme';
 import {
     sendChar,
     sendWord as sendWordToHardware,
-    getLetter,
 } from '../../utils/serverApi';
+import { startListeningWithTimer } from '../../utils/speechRecognition';
 
 function Display() {
     const [textInput, setTextInput] = useState('');
     const [displayedChar, setDisplayedChar] = useState('');
     const [status, setStatus] = useState(states.listen);
     const [error, setError] = useState(false);
-    const [mode, setMode] = useState('character');
+    const [mode, setMode] = useState('speech');
 
-    const getCharacterValue = async () => {
-        SpeechRecognition.stopListening();
-        if (textInput.length === 1 && mode === 'character') {
+    const recognitionRef = useRef(null);
+    const timerRef = useRef(null);
+
+    const sendInputValue = async () => {
+        if (textInput.length === 1) {
             setError(false);
             sendChar(textInput, () => {
                 setTextInput(textInput);
                 setDisplayedChar(textInput);
             });
-        } else if (mode === 'word') {
+        } else if (textInput.length > 1) {
             setError(false);
             sendWord(textInput.toLowerCase());
         } else {
@@ -70,53 +68,29 @@ function Display() {
         setStatus(states.listen);
     };
 
-    const {
-        transcript,
-        listening,
-        resetTranscript,
-        browserSupportsSpeechRecognition,
-    } = useSpeechRecognition();
-
     useEffect(() => {
         if (status === states.listen) {
-            listen();
+            startListeningWithTimer(
+                timerRef,
+                recognitionRef,
+                setStatus,
+                setTextInput,
+                '' // TODO: fix this 'properly' - hack to get startListeningWithTimer to work w/o currentChar input
+            );
+        } else if (status === states.display) {
+            if (textInput) {
+                if (textInput.length == 1) {
+                    sendChar(textInput, () => {
+                        setDisplayedChar(textInput);
+                    });
+                } else {
+                    sendWord(textInput);
+                }
+            } else {
+                console.error('Unexpected empty text input');
+            }
         }
     }, [status]);
-
-    const listen = async () => {
-        if (browserSupportsSpeechRecognition) {
-            await SpeechRecognition.startListening({
-                continuous: true,
-                language: 'en-US',
-            });
-            console.log('listening', listening);
-        } else {
-            console.log('browser does not support speech recognition');
-        }
-    };
-
-    useEffect(() => {
-        const stopListen = async () => {
-            await SpeechRecognition.stopListening();
-            const input = transcript.split(' ')[0];
-            const res = await getLetter(input);
-            console.log('HERE');
-            setTextInput(res.data);
-            sendChar(res.data, () => {
-                setTextInput(res.data);
-                setDisplayedChar(res.data);
-            });
-            setDisplayedChar(res.data);
-            resetTranscript();
-            setStatus(states.response);
-        };
-
-        if (!listening && !transcript) {
-            setStatus(states.response);
-        } else if (transcript) {
-            stopListen();
-        }
-    }, [transcript, listening]);
 
     return (
         <Box
@@ -152,31 +126,41 @@ function Display() {
                     value={mode}
                     onChange={handleModeChange}
                 >
-                    <MenuItem value='character'>Character</MenuItem>
-                    <MenuItem value='word'>Word</MenuItem>
+                    <MenuItem value='speech'>Speech</MenuItem>
+                    <MenuItem value='text'>Text</MenuItem>
                 </Select>
             </FormControl>
+
+            {mode === 'speech' ? (
+                <Typography
+                    variant='h6'
+                    sx={{ padding: '1rem', marginTop: '1rem' }}
+                >
+                    To display a character, say the word 'letter' followed by
+                    your character. To display a word, simply say the word.
+                </Typography>
+            ) : (
+                <Typography
+                    variant='h6'
+                    sx={{ padding: '1rem', marginTop: '1rem' }}
+                >
+                    Type the character or word you want to display.
+                </Typography>
+            )}
 
             <Box display='flex' justifyContent='center' alignItems='center'>
                 <TextField
                     error={error}
                     helperText={
                         error
-                            ? 'Input must be exactly one character'
-                            : 'Character to display'
+                            ? 'Unexpected Error'
+                            : 'Character or word to display'
                     }
                     variant='outlined'
                     value={textInput}
                     onChange={handleChange}
                     sx={{ marginTop: '1rem', padding: '1rem', height: '3rem' }}
                 />
-                <StyledButton
-                    type='button'
-                    id='display-btn'
-                    onClick={getCharacterValue}
-                >
-                    Display
-                </StyledButton>
             </Box>
 
             {displayedChar && (
@@ -184,12 +168,28 @@ function Display() {
                     variant='h5'
                     sx={{ padding: '1rem', marginTop: '1rem' }}
                 >
-                    The {mode} "{displayedChar}" is displayed.
+                    "{displayedChar}" is displayed.
                 </Typography>
             )}
-            <StyledButton type='button' id='next-btn' onClick={reset}>
-                Next
-            </StyledButton>
+            {mode === 'speech' ? (
+                <StyledButton
+                    key='speech'
+                    type='button'
+                    id='display-btn'
+                    onClick={reset}
+                >
+                    Listen for new input
+                </StyledButton>
+            ) : (
+                <StyledButton
+                    key='text'
+                    type='button'
+                    id='display-btn'
+                    onClick={sendInputValue}
+                >
+                    Display
+                </StyledButton>
+            )}
         </Box>
     );
 }

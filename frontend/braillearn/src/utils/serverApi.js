@@ -52,6 +52,7 @@ export const sendWord = async (word, callback) => {
         if (callback) {
             callback();
         }
+        return { status: 200, mock: true }; 
     }
 };
 

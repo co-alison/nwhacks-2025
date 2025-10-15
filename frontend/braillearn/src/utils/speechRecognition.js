@@ -25,7 +25,13 @@ export const startListeningWithTimer = (timerRef, recognitionRef, setStatus, set
             clearTimeout(timerRef.current);
             const spokenInput = event.results[0][0].transcript.trim().toLowerCase();
             const confidence = event.results[0][0].confidence;
-            verifyChar(spokenInput, confidence, currentChar, setStatus, setCharInput);
+            if (currentChar) {
+                console.log("verify and set char")
+                verifyAndSetChar(spokenInput, confidence, currentChar, setStatus, setCharInput);
+            } else {
+                console.log("set char only")
+                setCharOnly(spokenInput, confidence, setStatus, setCharInput)
+            }
             recognition.stop();
         }
 
@@ -71,7 +77,7 @@ export const stopListeningDueToTimeout = (recognitionRef, setStatus, setCharInpu
     }
 };
 
-export const verifyChar = async (input, confidence, currentChar, setStatus, setCharInput) => {
+export const verifyAndSetChar = async (input, confidence, currentChar, setStatus, setCharInput) => {
     console.log('current', currentChar);
     console.log('input', input);
     console.log('confidence', confidence);
@@ -104,5 +110,28 @@ export const verifyChar = async (input, confidence, currentChar, setStatus, setC
     } else {
         console.log("unrecognized input", input);
         setStatus(states.retry);
+    }
+};
+
+export const setCharOnly = async (input, confidence, setStatus, setCharInput) => {
+    console.log('input', input);
+    console.log('confidence', confidence);
+
+    if (input.trim().length === 1) {
+        setCharInput(input);
+    }
+
+    if (input.startsWith("letter ") && input.length > 75) {
+        const detectedLetter = input.split(" ")[1];
+        console.log(`detectedLetter: ${detectedLetter}`);
+        setCharInput(detectedLetter.toLowerCase());
+
+        setStatus(states.display)
+    } else if (input.trim().length > 1) {
+        const detectedWord = input;
+        console.log(`detectedWord: ${detectedWord}`);
+        setCharInput(detectedWord.toLowerCase());
+
+        setStatus(states.display)
     }
 };
