@@ -4,6 +4,7 @@ export const startListeningWithTimer = (timerRef, recognitionRef, setStatus, set
     console.log("start");
     try {
         const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.continuous = true;
         const speechGrammarList = new (window.SpeechGrammarList || window.webkitSpeechGrammarList)();
 
         const grammar = `
@@ -47,6 +48,12 @@ export const startListeningWithTimer = (timerRef, recognitionRef, setStatus, set
             clearTimeout(timerRef.current);
             setStatus(states.retry);
         };
+
+        recognition.onnomatch = (event) => {
+            console.log('no match found:', event);
+            setStatus(states.retry);
+        }
+
 
         recognition.onspeechend = () => {
             console.log('speech end');
@@ -96,6 +103,11 @@ export const verifyAndSetChar = async (input, confidence, currentChar, setStatus
 
     if (input.startsWith("letter ") && input.length > 7 && confidence >= 0.5) {
         const detectedLetter = input.split(" ")[1];
+        if (!detectedLetter || detectedLetter.length !== 1) {
+            console.log("invalid letter detected");
+            setStatus(states.retry);
+            return;
+        }
         console.log(`detectedLetter: ${detectedLetter}`);
         setCharInput(detectedLetter.toLowerCase());
 

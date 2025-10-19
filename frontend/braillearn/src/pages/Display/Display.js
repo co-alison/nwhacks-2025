@@ -126,7 +126,7 @@ function Display() {
                     value={mode}
                     onChange={handleModeChange}
                 >
-                    {/* <MenuItem value='speech'>Speech</MenuItem> */}
+                    <MenuItem value='speech'>Speech</MenuItem>
                     <MenuItem value='text'>Text</MenuItem>
                 </Select>
             </FormControl>

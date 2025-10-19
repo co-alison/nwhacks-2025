@@ -33,7 +33,7 @@ const About = () => {
         >
           <h2>Braillearn is created by:</h2>
           <ul>
-            <li>Allison Co</li>
+            <li>Alison Co</li>
             <li>Cindy Cui</li>
             <li>Mayank Rastogi</li>
             <li>Tammy Kim</li>
