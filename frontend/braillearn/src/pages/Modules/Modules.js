@@ -1,6 +1,5 @@
 import { Box, Typography, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import BackButton from '../../components/BackButton';
 import theme from '../../styles/theme';
 
 const Modules = ({ modules }) => {
@@ -64,7 +63,6 @@ const Modules = ({ modules }) => {
                     left: theme.spacing(4),
                 }}
             >
-                <BackButton />
             </Box>
 
             <Typography

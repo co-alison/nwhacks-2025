@@ -2,7 +2,6 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, Button } from '@mui/material';
 import theme from '../../styles/theme';
-import BackButton from '../../components/BackButton';
 import LearnPage from './module_pages/LearnPage';
 import IntroductionPage from './module_pages/IntroductionPage';
 import PracticeQuizPage from './module_pages/PracticeQuizPage';
@@ -57,7 +56,6 @@ const ModulePage = ({ modules }) => {
                     left: theme.spacing(4),
                 }}
             >
-                <BackButton />
             </Box>
 
             <Typography variant="h2" sx={{ fontSize: '3rem', marginBottom: theme.spacing(2) }}>

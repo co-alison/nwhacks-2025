@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import BackButton from '../../components/BackButton';
 import { states } from '../../utils/constants';
 import StyledButton from '../../components/StyledButton';
 import {
@@ -200,7 +199,6 @@ function Display() {
                             marginBottom: '2rem',
                         }}
                     >
-                        <BackButton />
                         <Typography
                             variant='h4'
                             component="h1"
