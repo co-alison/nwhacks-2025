@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import BackButton from '../../components/BackButton';
 import characters from '../../utils/characters';
 import { states } from '../../utils/constants';
-import axios from 'axios';
 import SpeechRecognition, {
     useSpeechRecognition,
 } from 'react-speech-recognition';

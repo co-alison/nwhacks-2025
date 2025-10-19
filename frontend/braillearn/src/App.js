@@ -1,7 +1,6 @@
-import { React, useState } from 'react';
+import { React } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { AppBar, Toolbar, Button, Box } from '@mui/material';
-import { createTheme, ThemeProvider, Typography } from '@mui/material';
 import theme from './styles/theme';
 import Home from './pages/Home/Home';
 import Display from './pages/Display/Display';

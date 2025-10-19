@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import BackButton from '../../components/BackButton';
 import characters from '../../utils/characters';
 import { states } from '../../utils/constants';
-import axios from 'axios';
 import theme from '../../styles/theme';
 import { Box, Typography } from '@mui/material';
 import StyledButton from '../../components/StyledButton';

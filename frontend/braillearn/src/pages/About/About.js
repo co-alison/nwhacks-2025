@@ -2,7 +2,7 @@ import React from 'react';
 import BackButton from '../../components/BackButton';
 import theme from '../../styles/theme';
 import { Box } from '@mui/material';
-import { createTheme, ThemeProvider, Typography, Button } from "@mui/material";
+import { ThemeProvider, Typography } from "@mui/material";
 
 const About = () => {
   return (

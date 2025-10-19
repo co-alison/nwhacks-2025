@@ -21,9 +21,9 @@ import { startListeningWithTimer } from '../../utils/speechRecognition';
 function Display() {
     const [textInput, setTextInput] = useState('');
     const [displayedChar, setDisplayedChar] = useState('');
-    const [status, setStatus] = useState(states.listen);
+    const [status, setStatus] = useState(null);
     const [error, setError] = useState(false);
-    const [mode, setMode] = useState('speech');
+    const [mode, setMode] = useState('text');
 
     const recognitionRef = useRef(null);
     const timerRef = useRef(null);
@@ -79,7 +79,7 @@ function Display() {
             );
         } else if (status === states.display) {
             if (textInput) {
-                if (textInput.length == 1) {
+                if (textInput.length === 1) {
                     sendChar(textInput, () => {
                         setDisplayedChar(textInput);
                     });
@@ -126,7 +126,7 @@ function Display() {
                     value={mode}
                     onChange={handleModeChange}
                 >
-                    <MenuItem value='speech'>Speech</MenuItem>
+                    {/* <MenuItem value='speech'>Speech</MenuItem> */}
                     <MenuItem value='text'>Text</MenuItem>
                 </Select>
             </FormControl>

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createTheme, ThemeProvider, Typography, Button } from '@mui/material';
+import { ThemeProvider, Button } from '@mui/material';
 import theme from '../../styles/theme';
 import BraillearnLogo from '../../braillearn_title.svg';
 
