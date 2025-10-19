@@ -1,7 +1,6 @@
 import { React } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { AppBar, Toolbar, Button, Box } from '@mui/material';
-import theme from './styles/theme';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navigation from './components/Navigation';
 import Home from './pages/Home/Home';
 import Display from './pages/Display/Display';
 import Practice from './pages/Practice/Practice';
@@ -414,37 +413,7 @@ const modules = [
 function App() {
     return (
         <Router>
-            <AppBar
-                position='static'
-                sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}
-            >
-                <Toolbar>
-                    <Box sx={{ flexGrow: 1 }} />
-                    <Button
-                        component={Link}
-                        to='/about'
-                        sx={{
-                            color: theme.palette.custom.textPurple,
-                            fontSize: '1.6rem',
-                            fontFamily: 'Roboto, sans-serif',
-                            padding: '1.5rem',
-                        }}
-                    >
-                        About
-                    </Button>
-                    <Button
-                        component={Link}
-                        to='/instructions'
-                        sx={{
-                            fontSize: '1.6rem',
-                            fontFamily: 'Roboto, sans-serif',
-                            padding: '1.5rem',
-                        }}
-                    >
-                        Instructions
-                    </Button>
-                </Toolbar>
-            </AppBar>
+            <Navigation />
             <Routes>
                 <Route path='/' element={<Home />} />
                 <Route path='/display' element={<Display />} />
