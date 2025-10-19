@@ -429,7 +429,7 @@ function App() {
                 </Route>
 
                 <Route path='/about' element={<About />} />
-                <Route path='/instructions' element={<Instructions />} />
+                {/* <Route path='/instructions' element={<Instructions />} /> */}
             </Routes>
         </Router>
     );

@@ -127,7 +127,7 @@ function Navigation() {
                     >
                         About
                     </Button>
-                    <Button
+                    {/* <Button
                         component={Link}
                         to='/instructions'
                         disableRipple
@@ -145,7 +145,7 @@ function Navigation() {
                         }}
                     >
                         Instructions
-                    </Button>
+                    </Button> */}
                 </Box>
             </Toolbar>
         </AppBar>
