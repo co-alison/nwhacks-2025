@@ -32,7 +32,8 @@ const Practice = () => {
                 recognitionRef,
                 setStatus,
                 setCharInput,
-                currentChar
+                currentChar,
+                'letter'
             );
         } else if (status === states.correct) {
             speakText('Correct!');
