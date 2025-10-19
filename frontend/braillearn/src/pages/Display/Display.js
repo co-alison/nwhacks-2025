@@ -24,6 +24,7 @@ function Display() {
     const [status, setStatus] = useState(null);
     const [error, setError] = useState(false);
     const [mode, setMode] = useState('text');
+    const [infoText, setInfoText] = useState(''); // TODO: make the info text dynamically display info like 'no input received' or 'error occurred'
 
     const recognitionRef = useRef(null);
     const timerRef = useRef(null);
@@ -34,6 +35,7 @@ function Display() {
             sendChar(textInput, () => {
                 setTextInput(textInput);
                 setDisplayedChar(textInput);
+                speakText(`${textInput} is being displayed`);
             });
         } else if (textInput.length > 1) {
             setError(false);
@@ -44,11 +46,12 @@ function Display() {
     };
 
     const sendWord = async (word) => {
+        setDisplayedChar(textInput);
+        speakText(`${textInput} is being displayed`);
         const res = await sendWordToHardware(word);
         if (res.status === 200) {
             console.log('sent', word, 'to the arduino');
             setTextInput(textInput);
-            setDisplayedChar(textInput);
         }
     };
 
@@ -66,9 +69,15 @@ function Display() {
         setDisplayedChar('');
         setError(false);
         setStatus(states.listen);
+        console.log('status: ', status);
     };
 
     useEffect(() => {
+        // TODO: bug - sometimes when you speak incoherently, no status is set,no error messages are sent,
+        // you just get 'start', 'speech end', and 'stop' output to the console.
+        // After that, hitting the 'listen for new input' button doesn't restart the speech recognition
+
+        console.log('status has changed to ', status);
         if (status === states.listen) {
             startListeningWithTimer(
                 timerRef,
@@ -86,11 +95,33 @@ function Display() {
                 } else {
                     sendWord(textInput);
                 }
+                setInfoText(`${textInput} is being displayed`);
             } else {
                 console.error('Unexpected empty text input');
             }
+        } else if (status === states.noInput) {
+            setInfoText('No input received.');
+            speakText('No input received.');
+        } else {
+            setInfoText('An error occurred, please refresh and try again.');
+            console.log('state == ', status);
         }
     }, [status]);
+
+    const onKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            console.log('enter button');
+            sendInputValue();
+        }
+    };
+
+    const speakText = (text) => {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.pitch = 1;
+        utterance.rate = 1;
+        utterance.volume = 1;
+        speechSynthesis.speak(utterance);
+    };
 
     return (
         <Box
@@ -119,27 +150,19 @@ function Display() {
             </Typography>
 
             <FormControl sx={{ marginBottom: theme.spacing(2), minWidth: 120 }}>
-                <InputLabel id='mode-select-label'>Mode</InputLabel>
+                <InputLabel id='mode-select-label'></InputLabel>
                 <Select
                     labelId='mode-select-label'
                     id='mode-select'
                     value={mode}
                     onChange={handleModeChange}
                 >
-                    {/* <MenuItem value='speech'>Speech</MenuItem> */}
+                    {<MenuItem value='speech'>Speech</MenuItem>}
                     <MenuItem value='text'>Text</MenuItem>
                 </Select>
             </FormControl>
 
-            {mode === 'speech' ? (
-                <Typography
-                    variant='h6'
-                    sx={{ padding: '1rem', marginTop: '1rem' }}
-                >
-                    To display a character, say the word 'letter' followed by
-                    your character. To display a word, simply say the word.
-                </Typography>
-            ) : (
+            {mode === 'text' && (
                 <Typography
                     variant='h6'
                     sx={{ padding: '1rem', marginTop: '1rem' }}
@@ -149,18 +172,25 @@ function Display() {
             )}
 
             <Box display='flex' justifyContent='center' alignItems='center'>
-                <TextField
-                    error={error}
-                    helperText={
-                        error
-                            ? 'Unexpected Error'
-                            : 'Character or word to display'
-                    }
-                    variant='outlined'
-                    value={textInput}
-                    onChange={handleChange}
-                    sx={{ marginTop: '1rem', padding: '1rem', height: '3rem' }}
-                />
+                {mode === 'text' && (
+                    <TextField
+                        error={error}
+                        helperText={
+                            error
+                                ? 'Unexpected Error'
+                                : 'Character or word to display'
+                        }
+                        variant='outlined'
+                        value={textInput}
+                        onChange={handleChange}
+                        onKeyPress={onKeyPress}
+                        sx={{
+                            marginTop: '1rem',
+                            padding: '1rem',
+                            height: '3rem',
+                        }}
+                    />
+                )}
             </Box>
 
             {displayedChar && (
@@ -168,7 +198,7 @@ function Display() {
                     variant='h5'
                     sx={{ padding: '1rem', marginTop: '1rem' }}
                 >
-                    "{displayedChar}" is displayed.
+                    "{displayedChar}" is being displayed.
                 </Typography>
             )}
             {mode === 'speech' ? (

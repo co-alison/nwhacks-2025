@@ -22,6 +22,7 @@ export const startListeningWithTimer = (timerRef, recognitionRef, setStatus, set
         recognition.maxAlternatives = 1;
 
         recognition.onresult = (event) => {
+            console.log("on result");
             clearTimeout(timerRef.current);
             const spokenInput = event.results[0][0].transcript.trim().toLowerCase();
             const confidence = event.results[0][0].confidence;
@@ -29,8 +30,8 @@ export const startListeningWithTimer = (timerRef, recognitionRef, setStatus, set
                 console.log("verify and set char")
                 verifyAndSetChar(spokenInput, confidence, currentChar, setStatus, setCharInput);
             } else {
-                console.log("set char only")
-                setCharOnly(spokenInput, confidence, setStatus, setCharInput)
+                console.log("set input only")
+                setInputOnly(spokenInput, confidence, setStatus, setCharInput)
             }
             recognition.stop();
         }
@@ -113,25 +114,9 @@ export const verifyAndSetChar = async (input, confidence, currentChar, setStatus
     }
 };
 
-export const setCharOnly = async (input, confidence, setStatus, setCharInput) => {
+export const setInputOnly = async (input, confidence, setStatus, setCharInput) => {
     console.log('input', input);
     console.log('confidence', confidence);
-
-    if (input.trim().length === 1) {
-        setCharInput(input);
-    }
-
-    if (input.startsWith("letter ") && input.length > 75) {
-        const detectedLetter = input.split(" ")[1];
-        console.log(`detectedLetter: ${detectedLetter}`);
-        setCharInput(detectedLetter.toLowerCase());
-
-        setStatus(states.display)
-    } else if (input.trim().length > 1) {
-        const detectedWord = input;
-        console.log(`detectedWord: ${detectedWord}`);
-        setCharInput(detectedWord.toLowerCase());
-
-        setStatus(states.display)
-    }
+    setCharInput(input);
+    setStatus(states.display);
 };
