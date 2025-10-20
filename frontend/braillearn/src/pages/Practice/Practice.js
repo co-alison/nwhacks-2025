@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import characters from '../../utils/characters';
 import { states } from '../../utils/constants';
-import { Box, Chip } from '@mui/material';
 import StyledButton from '../../components/StyledButton';
 import PageContainer from '../../components/PageContainer';
 import StatusCard from '../../components/StatusCard';

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import characters from '../../utils/characters';
 import { states } from '../../utils/constants';
-import theme from '../../styles/theme';
 import { Box, Card, CardContent, Typography, Chip } from '@mui/material';
 import { CheckCircle } from '@mui/icons-material';
 import StyledButton from '../../components/StyledButton';

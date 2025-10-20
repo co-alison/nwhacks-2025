@@ -1,6 +1,6 @@
 import React from 'react';
 import theme from '../../styles/theme';
-import { Box, Container, Card, CardContent, Typography, Avatar, Chip } from '@mui/material';
+import { Box, Container, Card, CardContent, Typography, Avatar } from '@mui/material';
 import { School, EmojiEvents, Accessible, Groups } from '@mui/icons-material';
 
 const About = () => {
