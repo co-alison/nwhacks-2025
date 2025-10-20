@@ -16,9 +16,9 @@ export const useStatusConfig = (status, charInput = '', currentChar = '', displa
             return {
                 icon: <VolumeUp sx={{ fontSize: '3rem' }} />,
                 title: 'Displaying Character',
-                subtitle: displayedChar 
-                    ? `"${displayedChar.toUpperCase()}" is being displayed`
-                    : 'Feel the Braille pattern on your device',
+                // subtitle: displayedChar 
+                //     ? `"${displayedChar.toUpperCase()}" is being displayed`
+                //     : 'Feel the Braille pattern on your device',
                 color: '#5e67bf',
                 bgColor: 'rgba(94, 103, 191, 0.1)',
             };

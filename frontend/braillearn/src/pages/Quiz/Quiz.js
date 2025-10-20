@@ -383,7 +383,7 @@ const Quiz = () => {
                                             fontSize: '1.125rem',
                                         }}
                                     >
-                                        Next Character
+                                        {quizQuestionsLeft === 0 ? 'Next' : 'Next Character'}
                                     </StyledButton>
                                 )}
 
@@ -395,7 +395,7 @@ const Quiz = () => {
                                             fontSize: '1.125rem',
                                         }}
                                     >
-                                        Next Character
+                                        {quizQuestionsLeft === 0 ? 'Next' : 'Next Character'}
                                     </StyledButton>
                                 )}
 
@@ -419,7 +419,7 @@ const Quiz = () => {
                                                 fontSize: '1.125rem',
                                             }}
                                         >
-                                            Next Character
+                                            {quizQuestionsLeft === 1 ? 'Next' : 'Next Character'}
                                         </StyledButton>
                                     </>
                                 )}
