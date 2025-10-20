@@ -2,10 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import characters from '../../utils/characters';
 import { states } from '../../utils/constants';
 import theme from '../../styles/theme';
-import { Box, Typography, Container, Card, CardContent, LinearProgress, Chip } from '@mui/material';
-import { Mic, CheckCircle, Cancel, VolumeUp, Refresh } from '@mui/icons-material';
+import { Box, Card, CardContent, Typography, Chip } from '@mui/material';
+import { CheckCircle } from '@mui/icons-material';
 import StyledButton from '../../components/StyledButton';
 import CustomNumberInput from '../../components/NumberPicker';
+import PageContainer from '../../components/PageContainer';
+import StatusCard from '../../components/StatusCard';
+import InstructionCard from '../../components/InstructionCard';
+import { useStatusConfig } from '../../hooks/useStatusConfig';
 import { sendChar } from '../../utils/serverApi';
 import { startListeningWithTimer } from '../../utils/speechRecognition';
 
@@ -193,111 +197,32 @@ const Quiz = () => {
         setStatus(states.display);
     };
 
-    const getStatusConfig = () => {
-        switch (status) {
-            case states.display:
-                return {
-                    icon: <VolumeUp sx={{ fontSize: '4rem' }} />,
-                    title: 'Displaying Character',
-                    subtitle: 'Feel the Braille pattern on your device',
-                    color: '#5e67bf',
-                    bgColor: 'rgba(94, 103, 191, 0.1)',
-                };
-            case states.listen:
-                return {
-                    icon: <Mic sx={{ fontSize: '4rem' }} />,
-                    title: 'Listening',
-                    subtitle: 'Say "letter" followed by your answer (e.g., "letter A")',
-                    color: '#5e67bf',
-                    bgColor: 'rgba(94, 103, 191, 0.1)',
-                    showProgress: true,
-                };
-            case states.correct:
-                return {
-                    icon: <CheckCircle sx={{ fontSize: '4rem' }} />,
-                    title: 'Correct!',
-                    subtitle: `You said: ${charInput.toUpperCase()}`,
-                    color: '#10b981',
-                    bgColor: 'rgba(16, 185, 129, 0.1)',
-                };
-            case states.incorrect:
-                return {
-                    icon: <Cancel sx={{ fontSize: '4rem' }} />,
-                    title: 'Incorrect',
-                    subtitle: `You said: ${charInput.toUpperCase()}. The correct answer was: ${currentChar.toUpperCase()}`,
-                    color: '#ef4444',
-                    bgColor: 'rgba(239, 68, 68, 0.1)',
-                };
-            case states.retry:
-                return {
-                    icon: <Refresh sx={{ fontSize: '4rem' }} />,
-                    title: 'Try Again',
-                    subtitle: 'Say "letter" before your answer',
-                    color: '#f59e0b',
-                    bgColor: 'rgba(245, 158, 11, 0.1)',
-                };
-            case states.noInput:
-                return {
-                    icon: <Mic sx={{ fontSize: '4rem' }} />,
-                    title: 'No Input Received',
-                    subtitle: 'We didn\'t hear anything',
-                    color: '#6b7280',
-                    bgColor: 'rgba(107, 114, 128, 0.1)',
-                };
-            default:
-                return {
-                    icon: null,
-                    title: '',
-                    subtitle: '',
-                    color: '#5e67bf',
-                    bgColor: 'rgba(94, 103, 191, 0.1)',
-                };
-        }
-    };
+    const statusConfig = useStatusConfig(status, charInput, currentChar);
 
     return (
-        <Box
-            sx={{
-                minHeight: '100vh',
-                background: 'linear-gradient(to bottom, #f0f4f8, #d9e2ec)',
-                padding: theme.spacing(4),
-            }}
+        <PageContainer 
+            title="Braille Quiz"
+            headerContent={
+                quizQuestionsLeft !== -1 &&
+                status !== states.quizMenu &&
+                status !== states.quizDone && (
+                    <Box sx={{ textAlign: 'center' }}>
+                        <Chip
+                            label={`${quizQuestionsLeft} question(s) left`}
+                            sx={{
+                                fontSize: '1rem',
+                                padding: '0.5rem 1rem',
+                                height: 'auto',
+                                backgroundColor: '#5e67bf',
+                                color: 'white',
+                                fontWeight: 600,
+                            }}
+                        />
+                    </Box>
+                )
+            }
         >
-            <Container maxWidth="md">
-                <Box sx={{ marginTop: theme.spacing(4) }}>
-                    <Typography
-                        variant="h3"
-                        component="h1"
-                        sx={{
-                            fontSize: { xs: '2rem', md: '2.5rem' },
-                            fontWeight: 700,
-                            color: '#1a1a1a',
-                            marginBottom: '1rem',
-                            textAlign: 'center',
-                        }}
-                    >
-                        Braille Quiz
-                    </Typography>
-
-                    {quizQuestionsLeft !== -1 &&
-                    status !== states.quizMenu &&
-                    status !== states.quizDone && (
-                        <Box sx={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-                            <Chip
-                                label={`${quizQuestionsLeft} question(s) left`}
-                                sx={{
-                                    fontSize: '1rem',
-                                    padding: '0.5rem 1rem',
-                                    height: 'auto',
-                                    backgroundColor: '#5e67bf',
-                                    color: 'white',
-                                    fontWeight: 600,
-                                }}
-                            />
-                        </Box>
-                    )}
-
-                    {status === states.quizMenu ? (
+            {status === states.quizMenu ? (
                         <Card
                             sx={{
                                 borderRadius: '12px',
@@ -444,244 +369,106 @@ const Quiz = () => {
                         </Card>
                     ) : (
                         <>
-                            <Card
-                                sx={{
-                                    borderRadius: '12px',
-                                    backgroundColor: '#ffffff',
-                                    border: '2px solid #e2e8f0',
-                                }}
+                            <StatusCard
+                                statusConfig={statusConfig}
+                                status={status}
+                                showingCorrectAnswer={showingCorrectAnswer}
+                                correctAnswerText={currentChar.toUpperCase()}
+                                listenStates={[states.listen]}
                             >
-                                <CardContent
+                                {status === states.correct && (
+                                    <StyledButton 
+                                        onClick={reset}
+                                        sx={{
+                                            minWidth: '150px',
+                                            fontSize: '1.125rem',
+                                        }}
+                                    >
+                                        Next Character
+                                    </StyledButton>
+                                )}
+
+                                {status === states.incorrect && (
+                                    <StyledButton 
+                                        onClick={reset}
+                                        sx={{
+                                            minWidth: '150px',
+                                            fontSize: '1.125rem',
+                                        }}
+                                    >
+                                        Next Character
+                                    </StyledButton>
+                                )}
+
+                                {status === states.noInput && (
+                                    <>
+                                        {!showingCorrectAnswer && (
+                                            <StyledButton 
+                                                onClick={showCorrectAnswer}
+                                                sx={{
+                                                    minWidth: '180px',
+                                                    fontSize: '1.125rem',
+                                                }}
+                                            >
+                                                Show Answer
+                                            </StyledButton>
+                                        )}
+                                        <StyledButton 
+                                            onClick={reset}
+                                            sx={{
+                                                minWidth: '150px',
+                                                fontSize: '1.125rem',
+                                            }}
+                                        >
+                                            Next Character
+                                        </StyledButton>
+                                    </>
+                                )}
+
+                                {status === states.retry && (
+                                    <StyledButton 
+                                        onClick={() => setStatus(states.listen)}
+                                        sx={{
+                                            minWidth: '150px',
+                                            fontSize: '1.125rem',
+                                        }}
+                                    >
+                                        Try Again
+                                    </StyledButton>
+                                )}
+                            </StatusCard>
+
+                            <InstructionCard title="Quiz Progress">
+                                <Box
                                     sx={{
-                                        padding: { xs: '2rem', md: '3rem' },
-                                        textAlign: 'center',
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        gap: '1rem',
                                     }}
                                 >
-                                    {/* Status Icon */}
-                                    <Box
-                                        sx={{
-                                            width: '120px',
-                                            height: '120px',
-                                            borderRadius: '50%',
-                                            background: getStatusConfig().bgColor,
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            margin: '0 auto 2rem',
-                                            color: getStatusConfig().color,
-                                            animation: status === states.listen ? 'pulse 2s ease-in-out infinite' : 'none',
-                                            '@keyframes pulse': {
-                                                '0%, 100%': {
-                                                    opacity: 1,
-                                                    transform: 'scale(1)',
-                                                },
-                                                '50%': {
-                                                    opacity: 0.8,
-                                                    transform: 'scale(1.05)',
-                                                },
-                                            },
-                                        }}
-                                        aria-hidden="true"
-                                    >
-                                        {getStatusConfig().icon}
-                                    </Box>
-
-                                    {/* Status Title */}
                                     <Typography
-                                        variant="h5"
-                                        component="h2"
+                                        variant="body2"
                                         sx={{
-                                            fontSize: { xs: '1.75rem', md: '2rem' },
-                                            fontWeight: 600,
-                                            color: '#1a1a1a',
-                                            marginBottom: '1rem',
-                                        }}
-                                        aria-live="polite"
-                                        aria-atomic="true"
-                                    >
-                                        {getStatusConfig().title}
-                                    </Typography>
-
-                                    {/* Status Subtitle */}
-                                    <Typography
-                                        variant="body1"
-                                        component="p"
-                                        sx={{
-                                            fontSize: { xs: '1rem', md: '1.125rem' },
+                                            fontSize: '1rem',
                                             color: '#4a5568',
-                                            marginBottom: '1.5rem',
-                                            lineHeight: 1.6,
                                         }}
                                     >
-                                        {getStatusConfig().subtitle}
+                                        Correct: {correctQuizAnswers}
                                     </Typography>
-
-                                    {/* Showing Correct Answer for No Input */}
-                                    {status === states.noInput && showingCorrectAnswer && (
-                                        <Chip
-                                            label={`Correct Answer: ${currentChar.toUpperCase()}`}
-                                            sx={{
-                                                fontSize: '1.125rem',
-                                                padding: '1.5rem 1rem',
-                                                height: 'auto',
-                                                backgroundColor: '#10b98115',
-                                                color: '#059669',
-                                                fontWeight: 600,
-                                                marginBottom: '1.5rem',
-                                                border: '2px solid #10b981',
-                                            }}
-                                        />
-                                    )}
-
-                                    {/* Progress Bar for Listening */}
-                                    {getStatusConfig().showProgress && (
-                                        <Box
-                                            sx={{
-                                                width: '100%',
-                                                maxWidth: '400px',
-                                                margin: '0 auto 1.5rem',
-                                            }}
-                                        >
-                                            <LinearProgress
-                                                sx={{
-                                                    height: '8px',
-                                                    borderRadius: '4px',
-                                                    backgroundColor: 'rgba(94, 103, 191, 0.2)',
-                                                    '& .MuiLinearProgress-bar': {
-                                                        backgroundColor: '#5e67bf',
-                                                    },
-                                                }}
-                                            />
-                                        </Box>
-                                    )}
-
-                                    {/* Action Buttons */}
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            gap: '1rem',
-                                            justifyContent: 'center',
-                                            flexWrap: 'wrap',
-                                        }}
-                                    >
-                                        {status === states.correct && (
-                                            <StyledButton 
-                                                onClick={reset}
-                                                sx={{
-                                                    minWidth: '150px',
-                                                    fontSize: '1.125rem',
-                                                }}
-                                            >
-                                                Next Character
-                                            </StyledButton>
-                                        )}
-
-                                        {status === states.incorrect && (
-                                            <StyledButton 
-                                                onClick={reset}
-                                                sx={{
-                                                    minWidth: '150px',
-                                                    fontSize: '1.125rem',
-                                                }}
-                                            >
-                                                Next Character
-                                            </StyledButton>
-                                        )}
-
-                                        {status === states.noInput && (
-                                            <>
-                                                {!showingCorrectAnswer && (
-                                                    <StyledButton 
-                                                        onClick={showCorrectAnswer}
-                                                        sx={{
-                                                            minWidth: '180px',
-                                                            fontSize: '1.125rem',
-                                                        }}
-                                                    >
-                                                        Show Answer
-                                                    </StyledButton>
-                                                )}
-                                                <StyledButton 
-                                                    onClick={reset}
-                                                    sx={{
-                                                        minWidth: '150px',
-                                                        fontSize: '1.125rem',
-                                                    }}
-                                                >
-                                                    Next Character
-                                                </StyledButton>
-                                            </>
-                                        )}
-
-                                        {status === states.retry && (
-                                            <StyledButton 
-                                                onClick={() => setStatus(states.listen)}
-                                                sx={{
-                                                    minWidth: '150px',
-                                                    fontSize: '1.125rem',
-                                                }}
-                                            >
-                                                Try Again
-                                            </StyledButton>
-                                        )}
-                                    </Box>
-                                </CardContent>
-                            </Card>
-
-                            <Card
-                                sx={{
-                                    marginTop: '2rem',
-                                    borderRadius: '12px',
-                                    backgroundColor: '#ffffff',
-                                    border: '2px solid #e2e8f0',
-                                }}
-                            >
-                                <CardContent sx={{ padding: '1.5rem' }}>
                                     <Typography
-                                        variant="h6"
-                                        component="h3"
+                                        variant="body2"
                                         sx={{
-                                            fontSize: '1.125rem',
-                                            fontWeight: 600,
-                                            color: '#1a1a1a',
-                                            marginBottom: '0.75rem',
+                                            fontSize: '1rem',
+                                            color: '#4a5568',
                                         }}
                                     >
-                                        Quiz Progress
+                                        Remaining: {quizQuestionsLeft}
                                     </Typography>
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            gap: '1rem',
-                                        }}
-                                    >
-                                        <Typography
-                                            variant="body2"
-                                            sx={{
-                                                fontSize: '1rem',
-                                                color: '#4a5568',
-                                            }}
-                                        >
-                                            Correct: {correctQuizAnswers}
-                                        </Typography>
-                                        <Typography
-                                            variant="body2"
-                                            sx={{
-                                                fontSize: '1rem',
-                                                color: '#4a5568',
-                                            }}
-                                        >
-                                            Remaining: {quizQuestionsLeft}
-                                        </Typography>
-                                    </Box>
-                                </CardContent>
-                            </Card>
+                                </Box>
+                            </InstructionCard>
                         </>
                     )}
-                </Box>
-            </Container>
-        </Box>
+        </PageContainer>                
     );
 };
 
