@@ -7,16 +7,16 @@ Servo servo3; // Servo controlling dot 4
 Servo servo4; // Servo controlling dot 5
 Servo servo5; // Servo controlling dot 6
 
-const int raised0 = 2;
-const int raised1 = 3;
-const int raised2 = 4;
+const int raised0 = 19;
+const int raised1 = 19;
+const int raised2 = 19;
 const int raised3 = 22;
-const int raised4 = 12;
+const int raised4 = 30;
 const int raised5 = 20;
 
-const int lowered0 = 30;
-const int lowered1 = 30;
-const int lowered2 = 30;
+const int lowered0 = 40;
+const int lowered1 = 40;
+const int lowered2 = 40;
 const int lowered3 = 0;
 const int lowered4 = 0;
 const int lowered5 = 0;
@@ -39,7 +39,7 @@ void setup() {
 void loop() {
     if (Serial.available() > 0) {
         char input = Serial.read();  
-        if (((input >= '1' && input <= '6') || input == '.' || (input >= 'a' && input <= 'z')) && input != NULL && input != '\0') {
+        if (((input >= '0' && input <= '9') || input == '.' || input == '#' || (input >= 'a' && input <= 'z')) && input != '\0') {
             Serial.println(input);
             displayBraille(input);  
         }
@@ -53,12 +53,6 @@ void displayBraille(char letter) {
     clearDots();  
 
         switch (letter) {
-        case '1': setDots(1, 0, 0, 0, 0, 0); break; // ⠁
-        case '2': setDots(0, 1, 0, 0, 0, 0); break; // ⠁
-        case '3': setDots(0, 0, 1, 0, 0, 0); break; // ⠁
-        case '4': setDots(0, 0, 0, 1, 0, 0); break; // ⠁
-        case '5': setDots(0, 0, 0, 0, 1, 0); break; // ⠁
-        case '6': setDots(0, 0, 0, 0, 0, 1); break; // ⠁
         case 'a': setDots(1, 0, 0, 0, 0, 0); break; // ⠁
         case 'b': setDots(1, 1, 0, 0, 0, 0); break; // ⠃
         case 'c': setDots(1, 0, 0, 1, 0, 0); break; // ⠉
@@ -66,11 +60,12 @@ void displayBraille(char letter) {
         case 'e': setDots(1, 0, 0, 0, 1, 0); break; // ⠑
         case 'f': setDots(1, 1, 0, 1, 0, 0); break; // ⠋
         case 'g': setDots(1, 1, 0, 1, 1, 0); break; // ⠛
-        case 'h': setDots(1, 1, 0, 1, 0, 0); break; // ⠓
+        case 'h': setDots(1, 1, 0, 0, 1, 0); break; // ⠓
         case 'i': setDots(0, 1, 0, 1, 0, 0); break; // ⠊
         case 'j': setDots(0, 1, 0, 1, 1, 0); break; // ⠚
         case 'k': setDots(1, 0, 1, 0, 0, 0); break; // ⠅
         case 'l': setDots(1, 1, 1, 0, 0, 0); break; // ⠇
+        // case 'm': setDots(1, 1, 1, 1, 1, 1); break; // ⠍
         case 'm': setDots(1, 0, 1, 1, 0, 0); break; // ⠍
         case 'n': setDots(1, 0, 1, 1, 1, 0); break; // ⠝
         case 'o': setDots(1, 0, 1, 0, 1, 0); break; // ⠕
@@ -85,6 +80,17 @@ void displayBraille(char letter) {
         case 'x': setDots(1, 0, 1, 1, 0, 1); break; // ⠭
         case 'y': setDots(1, 0, 1, 1, 1, 1); break; // ⠽
         case 'z': setDots(1, 0, 1, 0, 1, 1); break; // ⠵
+        case '#': setDots(0, 0, 1, 1, 1, 1); break;
+        case '1': setDots(1, 0, 0, 0, 0, 0); break; // ⠁
+        case '2': setDots(1, 1, 0, 0, 0, 0); break; // ⠁
+        case '3': setDots(1, 0, 0, 1, 0, 0); break; // ⠁
+        case '4': setDots(1, 0, 0, 1, 1, 0); break; // ⠁
+        case '5': setDots(1, 0, 0, 0, 1, 0); break; // ⠁
+        case '6': setDots(1, 1, 0, 1, 0, 0); break; // ⠁
+        case '7': setDots(1, 1, 0, 1, 1, 0); break; // ⠁
+        case '8': setDots(1, 1, 0, 0, 1, 0); break; // ⠁
+        case '9': setDots(0, 1, 0, 1, 0, 0); break; // ⠁
+        case '0': setDots(0, 1, 0, 1, 1, 0); break; // ⠁
         case '.': setDots(0, 0, 0, 0, 0, 0); break; // ⠵
         default: clearDots(); break; // Turn off all dots for unrecognized characters
     }
