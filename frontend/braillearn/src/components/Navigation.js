@@ -10,7 +10,7 @@ function Navigation() {
         { path: '/display', label: 'Display' },
         { path: '/practice', label: 'Practice' },
         { path: '/quiz', label: 'Quiz' },
-        { path: '/modules', label: 'Modules' },
+        // { path: '/modules', label: 'Modules' },
     ];
 
     return (
@@ -44,6 +44,11 @@ function Navigation() {
                             '&:hover': {
                                 backgroundColor: 'rgba(94, 103, 191, 0.08)',
                                 border: 'none',
+                            },
+                            '&:focus-visible': {
+                                outline: '3px solid #5e67bf',
+                                outlineOffset: '2px',
+                                backgroundColor: 'rgba(94, 103, 191, 0.08)',
                             },
                         }}
                     >
@@ -101,6 +106,13 @@ function Navigation() {
                                             : 'rgba(94, 103, 191, 0.08)',
                                     border: 'none',
                                 },
+                                '&:focus-visible': {
+                                    outline: '3px solid #5e67bf',
+                                    outlineOffset: '2px',
+                                    backgroundColor: location.pathname.startsWith(mode.path)
+                                        ? theme.palette.custom.buttonHover
+                                        : 'rgba(94, 103, 191, 0.15)',
+                                },
                             }}
                         >
                             {mode.label}
@@ -122,6 +134,11 @@ function Navigation() {
                             transition: 'all 0.2s ease',
                             '&:hover': {
                                 backgroundColor: 'rgba(94, 103, 191, 0.08)',
+                            },
+                            '&:focus-visible': {
+                                outline: '3px solid #5e67bf',
+                                outlineOffset: '2px',
+                                backgroundColor: 'rgba(94, 103, 191, 0.15)',
                             },
                         }}
                     >

@@ -1,24 +1,55 @@
 import React from 'react';
-import { Box, Typography, ThemeProvider } from '@mui/material';
-import theme from '../../../styles/theme';
+import { Card, CardContent, Typography, Box } from '@mui/material';
 
 const IntroductionPage = ({ module }) => {
     const reviews = module.charsReviewed
         ? ` and reviews characters ${module.charsReviewed}`
         : '';
-    var description = `This module covers the characters ${module.charsCovered}${reviews}.`;
+    const description = `This module covers the characters ${module.charsCovered}${reviews}.`;
 
     return (
-        <Box>
-            <ThemeProvider theme={theme}>
-                <Typography variant='p' sx={{ fontSize: '1.5rem' }}>{description}{" "}</Typography>
-                <Typography variant='p' sx={{ fontSize: '1.5rem' }}>{module.charDescription}</Typography>
-                <Typography vairant='p' sx={{ fontSize: '1.5rem' }}>
-                    When you’re ready to proceed, tap the “Next” button.
-                </Typography>
-            </ThemeProvider>
-
-        </Box>
+        <Card
+            sx={{
+                borderRadius: '12px',
+                backgroundColor: '#ffffff',
+                border: '2px solid #10b981',
+            }}
+        >
+            <CardContent sx={{ padding: '2rem' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <Typography 
+                        variant="body1" 
+                        sx={{ 
+                            fontSize: '1.125rem',
+                            lineHeight: 1.8,
+                            color: '#4a5568',
+                        }}
+                    >
+                        {description}
+                    </Typography>
+                    <Typography 
+                        variant="body1" 
+                        sx={{ 
+                            fontSize: '1.125rem',
+                            lineHeight: 1.8,
+                            color: '#4a5568',
+                        }}
+                    >
+                        {module.charDescription}
+                    </Typography>
+                    <Typography 
+                        variant="body1" 
+                        sx={{ 
+                            fontSize: '1.125rem',
+                            lineHeight: 1.8,
+                            color: '#4a5568',
+                        }}
+                    >
+                        When you're ready to proceed, tap the "Next" button.
+                    </Typography>
+                </Box>
+            </CardContent>
+        </Card>
     );
 };
 

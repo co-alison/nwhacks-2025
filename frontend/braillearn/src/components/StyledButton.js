@@ -28,9 +28,10 @@ const StyledButton = ({ children, onClick, sx, ...props }) => {
                     transform: 'translateY(0)',
                     boxShadow: '0 2px 4px rgba(94, 103, 191, 0.25)',
                 },
-                '&:focus': {
-                    outline: '3px solid rgba(94, 103, 191, 0.5)',
-                    outlineOffset: '2px',
+                '&:focus-visible': {
+                    outline: '4px solid #5e67bf',
+                    outlineOffset: '3px',
+                    boxShadow: '0 6px 12px rgba(94, 103, 191, 0.35)',
                 },
                 ...sx,
             }}

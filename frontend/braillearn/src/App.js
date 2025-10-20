@@ -420,13 +420,13 @@ function App() {
                 <Route path='/practice' element={<Practice />} />
                 <Route path='/quiz' element={<Quiz />} />
 
-                <Route path='/modules'>
+                {/* <Route path='/modules'>
                     <Route index element={<Modules modules={modules} />} />
                     <Route
                         path=':moduleId'
                         element={<ModulePage modules={modules} />}
                     />
-                </Route>
+                </Route> */}
 
                 <Route path='/about' element={<About />} />
                 {/* <Route path='/instructions' element={<Instructions />} /> */}
