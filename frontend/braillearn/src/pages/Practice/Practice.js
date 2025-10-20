@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import BackButton from '../../components/BackButton';
 import characters from '../../utils/characters';
 import { states } from '../../utils/constants';
-import theme from '../../styles/theme';
-import { Box, Typography } from '@mui/material';
 import StyledButton from '../../components/StyledButton';
+import PageContainer from '../../components/PageContainer';
+import StatusCard from '../../components/StatusCard';
+import InstructionCard from '../../components/InstructionCard';
+import { useStatusConfig } from '../../hooks/useStatusConfig';
 import { sendChar } from '../../utils/serverApi';
 import { startListeningWithTimer } from '../../utils/speechRecognition';
 
@@ -33,7 +34,8 @@ const Practice = () => {
                 recognitionRef,
                 setStatus,
                 setCharInput,
-                currentChar
+                currentChar,
+                'letter'
             );
         } else if (status === states.correct) {
             speakText('Correct!');
@@ -43,7 +45,7 @@ const Practice = () => {
             );
         } else if (status === states.retry) {
             speakText(
-                "Sorry, we didn’t catch that. Please say 'letter' before your answer, like 'letter A.'"
+                "Sorry, we didn't catch that. Please say 'letter' before your answer, like 'letter A.'"
             );
         } else if (status === states.noInput) {
             speakText('No input received.');
@@ -75,6 +77,7 @@ const Practice = () => {
         utterance.pitch = 1;
         utterance.rate = 1;
         utterance.volume = 1;
+        utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === 'Google US English') || null;
         speechSynthesis.speak(utterance);
     };
 
@@ -83,111 +86,84 @@ const Practice = () => {
         setShowingCorrectAnswer(true);
     };
 
+    const statusConfig = useStatusConfig(status, charInput, currentChar);
+
     return (
-        <Box
-            sx={{
-                padding: theme.spacing(4),
-                maxWidth: '800px',
-                margin: '0 auto',
-                textAlign: 'center',
-            }}
-        >
-            <Box
-                sx={{
-                    position: 'absolute',
-                    top: theme.spacing(4),
-                    left: theme.spacing(4),
-                }}
+        <PageContainer title="Practice Braille">
+            <StatusCard
+                statusConfig={statusConfig}
+                status={status}
+                showingCorrectAnswer={showingCorrectAnswer}
+                correctAnswerText={currentChar.toUpperCase()}
+                listenStates={[states.listen]}
             >
-                <BackButton />
-            </Box>
-
-            <Typography
-                variant='h4'
-                sx={{
-                    fontSize: '2.8rem',
-                    marginTop: theme.spacing(10),
-                    marginBottom: theme.spacing(4),
-                    fontWeight: 'bold',
-                }}
-            >
-                Practice Braille
-            </Typography>
-
-            {status === states.display ? (
-                <Typography variant='h5' sx={{ fontSize: '2rem' }}>
-                    Displaying Character...
-                </Typography>
-            ) : status === states.listen ? (
-                <Box>
-                    <Typography variant='h5' sx={{ fontSize: '2rem' }}>
-                        Listening...
-                    </Typography>
-                </Box>
-            ) : status === states.correct ? (
-                <Box>
-                    <Typography variant='h5' sx={{ fontSize: '2rem' }}>
-                        {charInput.toUpperCase()}
-                    </Typography>
-                    <Typography
-                        variant='h6'
-                        sx={{ fontSize: '1.75rem' }}
-                        color='success.main'
+                {status === states.correct && (
+                    <StyledButton 
+                        onClick={reset}
+                        sx={{
+                            minWidth: '150px',
+                            fontSize: '1.125rem',
+                        }}
                     >
-                        Correct!
-                    </Typography>
-                    <StyledButton onClick={reset}>Next</StyledButton>
-                </Box>
-            ) : status === states.incorrect ? (
-                <Box>
-                    <Typography variant='h5' sx={{ fontSize: '2rem' }}>
-                        {charInput.toUpperCase()}
-                    </Typography>
-                    <Typography
-                        variant='h6'
-                        sx={{ fontSize: '1.75rem' }}
-                        color='error.main'
-                    >
-                        Incorrect, the correct answer was:{' '}
-                        {currentChar.toUpperCase()}
-                    </Typography>
-                    <StyledButton onClick={reset}>Next</StyledButton>
-                </Box>
-            ) : status === states.noInput ? (
-                <Box>
-                    <Typography variant='h5' sx={{ fontSize: '2rem' }}>
-                        {charInput}
-                    </Typography>
-                    {showingCorrectAnswer && (
-                        <Typography variant='h6' sx={{ fontSize: '1.75rem' }}>
-                            The correct answer was: {currentChar.toUpperCase()}
-                        </Typography>
-                    )}
-
-                    <StyledButton onClick={showCorrectAnswer}>
-                        Show correct answer
+                        Next Character
                     </StyledButton>
-                    <StyledButton onClick={reset}>Next</StyledButton>
-                </Box>
-            ) : status === states.retry ? (
-                <Box>
-                    <Typography variant='h5' sx={{ fontSize: '2rem' }}>
-                        {charInput}
-                    </Typography>
-                    <Typography
-                        variant='h6'
-                        sx={{ fontSize: '1.75rem' }}
-                        color='error.main'
+                )}
+
+                {status === states.incorrect && (
+                    <StyledButton 
+                        onClick={reset}
+                        sx={{
+                            minWidth: '150px',
+                            fontSize: '1.125rem',
+                        }}
                     >
-                        Sorry, we didn’t catch that. Please say 'letter' before
-                        your answer, like 'letter A.'
-                    </Typography>
-                    <StyledButton onClick={(e) => setStatus(states.listen)}>
-                        Retry
+                        Next Character
                     </StyledButton>
-                </Box>
-            ) : null}
-        </Box>
+                )}
+
+                {status === states.noInput && (
+                    <>
+                        <StyledButton 
+                            onClick={showCorrectAnswer}
+                            sx={{
+                                minWidth: '180px',
+                                fontSize: '1.125rem',
+                            }}
+                        >
+                            Show Answer
+                        </StyledButton>
+                        <StyledButton 
+                            onClick={reset}
+                            sx={{
+                                minWidth: '150px',
+                                fontSize: '1.125rem',
+                            }}
+                        >
+                            Next Character
+                        </StyledButton>
+                    </>
+                )}
+
+                {status === states.retry && (
+                    <StyledButton 
+                        onClick={() => setStatus(states.listen)}
+                        sx={{
+                            minWidth: '150px',
+                            fontSize: '1.125rem',
+                        }}
+                    >
+                        Try Again
+                    </StyledButton>
+                )}
+            </StatusCard>
+
+            <InstructionCard title="How to Practice">
+                1. Feel the Braille character displayed on your device<br />
+                2. When you hear "Listening", say "letter" followed by your answer<br />
+                3. Get instant feedback on your response<br />
+                4. Continue to the next character to keep practicing
+            </InstructionCard>
+        </PageContainer>
     );
 };
 

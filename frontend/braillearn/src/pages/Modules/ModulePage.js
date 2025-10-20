@@ -1,8 +1,9 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, Button } from '@mui/material';
-import theme from '../../styles/theme';
-import BackButton from '../../components/BackButton';
+import { Box, Typography, Card, CardContent } from '@mui/material';
+import PageContainer from '../../components/PageContainer';
+import StyledButton from '../../components/StyledButton';
+import { ArrowForward } from '@mui/icons-material';
 import LearnPage from './module_pages/LearnPage';
 import IntroductionPage from './module_pages/IntroductionPage';
 import PracticeQuizPage from './module_pages/PracticeQuizPage';
@@ -18,7 +19,30 @@ const ModulePage = ({ modules }) => {
     const module = modules[currentIndex];
 
     if (!module) {
-        return <Typography variant="h5">Module not found</Typography>;
+        return (
+            <PageContainer title="Module Not Found">
+                <Card
+                    sx={{
+                        borderRadius: '12px',
+                        backgroundColor: '#ffffff',
+                        border: '2px solid #ef4444',
+                    }}
+                >
+                    <CardContent sx={{ padding: '2rem', textAlign: 'center' }}>
+                        <Typography 
+                            variant="h5"
+                            sx={{
+                                color: '#ef4444',
+                                fontSize: '1.5rem',
+                                fontWeight: 600,
+                            }}
+                        >
+                            Module not found
+                        </Typography>
+                    </CardContent>
+                </Card>
+            </PageContainer>
+        );
     }
 
     const renderPage = () => {
@@ -34,57 +58,58 @@ const ModulePage = ({ modules }) => {
             case 'quiz':
                 return <QuizPage module={module} nextModule={nextModule} />;
             default:
-                return <Typography variant="h6">Unknown module type</Typography>;
+                return (
+                    <Card
+                        sx={{
+                            borderRadius: '12px',
+                            backgroundColor: '#ffffff',
+                            border: '2px solid #f59e0b',
+                        }}
+                    >
+                        <CardContent sx={{ padding: '2rem', textAlign: 'center' }}>
+                            <Typography 
+                                variant="h6"
+                                sx={{
+                                    color: '#f59e0b',
+                                    fontSize: '1.25rem',
+                                    fontWeight: 600,
+                                }}
+                            >
+                                Unknown module type
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                );
         }
     };
 
     return (
-        <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'flex-start',
-                alignItems: 'center',
-                height: '100vh',
-                textAlign: 'center',
-                paddingTop: theme.spacing(8),
-            }}
-        >
-            <Box
-                sx={{
-                    position: 'absolute',
-                    top: theme.spacing(4),
-                    left: theme.spacing(4),
-                }}
-            >
-                <BackButton />
-            </Box>
-
-            <Typography variant="h2" sx={{ fontSize: '3rem', marginBottom: theme.spacing(2) }}>
-                {module.title}
-            </Typography>
-
-            <Box sx={{ width: '100%', maxWidth: '70rem', padding: theme.spacing(2) }}>
+        <PageContainer title={module.title}>
+            <Box sx={{ maxWidth: '70rem', margin: '0 auto' }}>
                 {renderPage()}
             </Box>
 
-            {module.type !== 'practice-quiz' && module.type !== 'quiz' && (
-                <Button
-                    variant="outlined"
-                    sx={{
-                        fontSize: '1.8rem',
-                        color: theme.palette.custom.buttonBackground,
-                        padding: '1rem',
-                        width: '8rem',
-                        height: '3.5rem',
+            {module.type !== 'practice-quiz' && module.type !== 'quiz' && nextModule && (
+                <Box 
+                    sx={{ 
+                        display: 'flex', 
+                        justifyContent: 'center', 
+                        marginTop: '2rem' 
                     }}
-                    onClick={() => navigate(`/modules/${nextModule.id}`)}
-                    disabled={!nextModule}
                 >
-                    Next
-                </Button>
+                    <StyledButton
+                        onClick={() => navigate(`/modules/${nextModule.id}`)}
+                        endIcon={<ArrowForward />}
+                        sx={{
+                            fontSize: '1.125rem',
+                            minWidth: '150px',
+                        }}
+                    >
+                        Next
+                    </StyledButton>
+                </Box>
             )}
-        </Box>
+        </PageContainer>
     );
 };
 
