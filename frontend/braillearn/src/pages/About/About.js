@@ -105,8 +105,8 @@ const About = () => {
                                     margin: '0 auto',
                                 }}
                             >
-                                An accessible, interactive platform designed to make learning braille 
-                                immersive and accessible for visually impaired individuals. Learn anytime, 
+                                An accessible, interactive platform designed to make learning braille
+                                immersive and accessible for visually impaired individuals. Learn anytime,
                                 anywhere to improve communication and employability.
                             </Typography>
                         </CardContent>
@@ -240,14 +240,15 @@ const About = () => {
                                     lineHeight: 1.8,
                                 }}
                             >
-                                Braille is a universal system available in every language. However, only 10% 
-                                of blind individuals are braille literate, while 90% of employed blind people 
-                                are proficient in braille. Among adults who don't know braille, only one in 
-                                three is employed. Proficiency in braille is crucial for visually impaired 
-                                children to compete with their sighted peers academically and succeed in the 
-                                workforce. Braillearn aims to make learning braille immersive and accessible, 
-                                enabling more visually impaired individuals to learn braille anytime, anywhere, 
-                                improving communication and employability.
+                                Braille is a universal system available in every language. However, only 10%
+                                of blind individuals are braille literate, while 90% of employed blind people
+                                are proficient in braille. Among adults who don't know braille, only one in
+                                three is employed. Moreover, there is a shortage of teachers for the visually
+                                impaired and a lack of resources in general for students. Braillearn aims to make
+                                braille learning immersive and accessible for both children and adults, whether
+                                they were born blind or are developing blindness later in life. It allows more
+                                visually impaired individuals to learn braille anytime and anywhere, improving
+                                communication and employability.
                             </Typography>
                         </CardContent>
                     </Card>
