@@ -7,12 +7,12 @@ Servo servo3; // Servo controlling dot 4
 Servo servo4; // Servo controlling dot 5
 Servo servo5; // Servo controlling dot 6
 
-const int raised0 = 19;
-const int raised1 = 19;
-const int raised2 = 19;
+const int raised0 = 18;
+const int raised1 = 18;
+const int raised2 = 18;
 const int raised3 = 22;
-const int raised4 = 30;
-const int raised5 = 20;
+const int raised4 = 27;
+const int raised5 = 18;
 
 const int lowered0 = 40;
 const int lowered1 = 40;
@@ -22,7 +22,7 @@ const int lowered4 = 0;
 const int lowered5 = 0;
 
 unsigned long previousMillis = 0;
-const long interval = 1000; 
+const long interval = 500; 
 
 void setup() {
     clearDots();
