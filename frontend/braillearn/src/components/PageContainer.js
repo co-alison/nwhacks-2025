@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Box, Container, Typography } from '@mui/material';
 
 /**
@@ -9,12 +9,26 @@ import { Box, Container, Typography } from '@mui/material';
  * @param {React.ReactNode} headerContent - Optional content to display in the header area
  */
 const PageContainer = ({ children, title, headerContent }) => {
+    const mainRef = useRef(null);
+
+    // Focus main content when page loads/changes
+    useEffect(() => {
+        if (mainRef.current) {
+            mainRef.current.focus();
+        }
+    }, [title]); // Re-focus when title changes (new page)
+
     return (
         <Box
+            ref={mainRef}
+            component="main"
+            role="main"
+            tabIndex={-1}
             sx={{
                 minHeight: '100vh',
                 background: 'linear-gradient(to bottom, #f0f4f8, #d9e2ec)',
                 padding: { xs: '2rem 1rem', md: '4rem 2rem' },
+                outline: 'none', // Remove focus outline since it's for programmatic focus only
             }}
         >
             <Container maxWidth="md">

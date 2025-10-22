@@ -18,6 +18,14 @@ const CustomNumberInput = React.forwardRef(function CustomNumberInput(
   const inputProps = getInputProps();
 
   inputProps.ref = useForkRef(inputProps.ref, ref);
+  
+  // Pass through id and aria-label if provided
+  if (props.id) {
+    inputProps.id = props.id;
+  }
+  if (props['aria-label']) {
+    inputProps['aria-label'] = props['aria-label'];
+  }
 
   return (
     <StyledInputRoot
@@ -27,12 +35,14 @@ const CustomNumberInput = React.forwardRef(function CustomNumberInput(
       <StyledStepperButton
         {...getIncrementButtonProps()}
         className='increment'
+        aria-label="Increment"
       >
         ▴
       </StyledStepperButton>
       <StyledStepperButton
         {...getDecrementButtonProps()}
         className='decrement'
+        aria-label="Decrement"
       >
         ▾
       </StyledStepperButton>

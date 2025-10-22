@@ -1,10 +1,11 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { AppBar, Toolbar, Button, Box } from "@mui/material";
 import theme from "../styles/theme";
 
 function Navigation() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const modes = [
     { path: "/display", label: "Display" },
@@ -27,8 +28,7 @@ function Navigation() {
         <Box sx={{ display: "flex", gap: "1rem", alignItems: "center" }}>
           {/* Home Button with Logo */}
           <Button
-            component={Link}
-            to="/"
+            onClick={() => navigate("/")}
             disableRipple
             aria-label="Go to home page"
             sx={{
@@ -78,9 +78,10 @@ function Navigation() {
           {modes.map((mode) => (
             <Button
               key={mode.path}
-              component={Link}
-              to={mode.path}
+              onClick={() => navigate(mode.path)}
               disableRipple
+              aria-label={`Go to ${mode.label} page`}
+              aria-current={location.pathname.startsWith(mode.path) ? "page" : undefined}
               sx={{
                 fontSize: "1.4rem",
                 fontFamily: "Roboto, sans-serif",
@@ -117,9 +118,9 @@ function Navigation() {
         </Box>
         <Box sx={{ display: "flex", gap: "1rem", alignItems: "center" }}>
           <Button
-            component={Link}
-            to="/about"
+            onClick={() => navigate("/about")}
             disableRipple
+            aria-label="Go to About page"
             sx={{
               color: "#555",
               fontSize: "1.4rem",

@@ -32,11 +32,11 @@ const Instructions = () => {
           }}
         >
           <h2>Practice Mode</h2>
-          <p>In Practice mode, the Braille display shows a random character for you to feel. After identifying the character, say it out loud. The software will tell you if you're correct. When ready, tap the Next button to move to the next character.</p>
+          <p>In Practice mode, the braille display shows a random character for you to feel. After identifying the character, say it out loud. The software will tell you if you're correct. When ready, tap the Next button to move to the next character.</p>
           <h2>Learn Mode</h2>
-          <p>In Learning mode, select a character to display on the Braille display by typing or saying it out loud. If you type the character, tap the Display button to update the Braille display. Then, feel the Braille display to learn how the character feels.</p>
+          <p>In Learning mode, select a character to display on the braille display by typing or saying it out loud. If you type the character, tap the Display button to update the braille display. Then, feel the braille display to learn how the character feels.</p>
           <h2>Quiz Mode</h2>
-          <p>Test your knowledge of Braille through Quiz Mode. Select the number of characters you'd like to test yourself on. After a quiz attempt, you can choose to either test yourself on all of the characters, or test yourself only on the characters that you got incorrect last time or haven't seen yet.</p>
+          <p>Test your knowledge of braille through Quiz Mode. Select the number of characters you'd like to test yourself on. After a quiz attempt, you can choose to either test yourself on all of the characters, or test yourself only on the characters that you got incorrect last time or haven't seen yet.</p>
         </Box>
       </div>
     </Box>

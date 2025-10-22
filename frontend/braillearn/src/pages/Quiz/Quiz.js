@@ -33,6 +33,17 @@ const Quiz = () => {
 
     const [isRetakingQuiz, setIsRetakingQuiz] = useState(false);
 
+    const voice =
+    speechSynthesis
+      .getVoices()
+      .find((voice) => voice.name === "Google US English") || null;
+    // Clear dots when component unmounts (leaving page)
+    useEffect(() => {
+        return () => {
+            sendChar('.');
+        };
+    }, []);
+
     useEffect(() => {
         if (status === states.display) {
             const char = getRandomChar();
@@ -141,7 +152,7 @@ const Quiz = () => {
         utterance.pitch = 1;
         utterance.rate = 1;
         utterance.volume = 1;
-        utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === 'Google US English') || null;
+        utterance.voice = voice;
         speechSynthesis.speak(utterance);
     };
 
@@ -246,11 +257,26 @@ const Quiz = () => {
                                 <Box
                                     sx={{
                                         display: 'flex',
-                                        justifyContent: 'center',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
                                         marginBottom: '1.5rem',
                                     }}
                                 >
+                                    <Typography
+                                        component="label"
+                                        htmlFor="quiz-question-count"
+                                        sx={{
+                                            fontSize: '1rem',
+                                            fontWeight: 600,
+                                            color: '#1a1a1a',
+                                            marginBottom: '0.75rem',
+                                        }}
+                                    >
+                                        Number of Quiz Questions
+                                    </Typography>
                                     <CustomNumberInput
+                                        id="quiz-question-count"
+                                        aria-label="Number of quiz questions"
                                         helperText='Number of quiz questions'
                                         value={quizQuestionCount}
                                         onChange={handleQuizQuestionChange}

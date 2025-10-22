@@ -1,29 +1,44 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ThemeProvider, Container, Box, Typography, Card, CardContent, Grid } from '@mui/material';
 import { Visibility, Edit, QuestionAnswer, MenuBook } from '@mui/icons-material';
 import theme from '../../styles/theme';
 import BraillearnLogo from '../../braillearn_title.svg';
+import { sendChar } from '../../utils/serverApi';
 
 function Home() {
+    const mainRef = useRef(null);
+
+    // Clear dots when component mounts (entering home page)
+    useEffect(() => {
+        sendChar('.');
+    }, []);
+
+    // Focus main content when page loads
+    useEffect(() => {
+        if (mainRef.current) {
+            mainRef.current.focus();
+        }
+    }, []);
+
     const modeCards = [
         {
             title: 'Display',
-            description: 'View and explore Braille characters with visual and audio feedback',
+            description: 'View and explore braille characters with visual and audio feedback',
             icon: <Visibility sx={{ fontSize: '3rem' }} />,
             path: '/display',
             color: '#5e67bf',
         },
         {
             title: 'Practice',
-            description: 'Practice reading and identifying Braille characters interactively',
+            description: 'Practice reading and identifying braille characters interactively',
             icon: <Edit sx={{ fontSize: '3rem' }} />,
             path: '/practice',
             color: '#6b7fd7',
         },
         {
             title: 'Quiz',
-            description: 'Test your knowledge with randomized Braille character quizzes',
+            description: 'Test your knowledge with randomized braille character quizzes',
             icon: <QuestionAnswer sx={{ fontSize: '3rem' }} />,
             path: '/quiz',
             color: '#7997e3',
@@ -47,11 +62,14 @@ function Home() {
             >
                 <Container maxWidth="lg">
                     <Box
+                        ref={mainRef}
                         component="main"
                         role="main"
+                        tabIndex={-1}
                         sx={{
                             paddingTop: '4rem',
                             paddingBottom: '4rem',
+                            outline: 'none',
                         }}
                     >
                         {/* Hero Section */}
@@ -96,7 +114,7 @@ function Home() {
                                 }}
                             >
                                 An accessible, interactive platform designed to help you learn 
-                                and master Braille through engaging exercises and structured lessons.
+                                and master braille through engaging exercises and structured lessons.
                             </Typography>
                             <Typography
                                 variant="body2"
@@ -256,7 +274,7 @@ function Home() {
                                 Braillearn is designed with accessibility in mind. Navigate using keyboard 
                                 (Tab, Enter, Arrow keys), enjoy full screen reader support, and benefit from 
                                 high contrast ratios throughout the application. Audio feedback is available 
-                                for all Braille characters.
+                                for all braille characters.
                             </Typography>
                         </Box>
                     </Box>

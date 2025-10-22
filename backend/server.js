@@ -17,7 +17,7 @@ port.on('open', () => {
     parser.on('data', (data) => {
         console.log('Received:', data.trim());
         if (data.trim() === 'Done') {
-            console.log('Arduino has finished displaying the Braille letter.');
+            console.log('Arduino has finished displaying the braille letter.');
         }
     });
 });

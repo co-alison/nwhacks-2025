@@ -1,7 +1,7 @@
 import React from 'react';
 import theme from '../../styles/theme';
 import { Box, Container, Card, CardContent, Typography, Avatar } from '@mui/material';
-import { School, EmojiEvents, Accessible, Groups } from '@mui/icons-material';
+import { School, EmojiEvents, Accessible, Groups, AttachMoney } from '@mui/icons-material';
 
 const About = () => {
     const teamMembers = [
@@ -15,19 +15,19 @@ const About = () => {
         {
             icon: <School sx={{ fontSize: '2rem' }} />,
             value: '10%',
-            label: 'Blind individuals are Braille literate',
+            label: 'Blind individuals are braille literate',
             color: '#5e67bf',
         },
         {
             icon: <EmojiEvents sx={{ fontSize: '2rem' }} />,
             value: '90%',
-            label: 'Of employed blind people know Braille',
-            color: '#8ec6f7',
+            label: 'Of employed blind people know braille',
+            color: '#5b8fd9',
         },
         {
-            icon: <Accessible sx={{ fontSize: '2rem' }} />,
-            value: '1 in 3',
-            label: 'Non-Braille readers are employed',
+            icon: <AttachMoney sx={{ fontSize: '2rem' }} />,
+            value: '$4000+',
+            label: 'Cost of refreshable braille displays',
             color: '#6b7fd7',
         },
     ];
@@ -70,7 +70,6 @@ const About = () => {
                         >
                             About Braillearn
                         </Typography>
-                        <Box sx={{ width: '100px' }} />
                     </Box>
 
                     {/* Hero Section */}
@@ -106,7 +105,7 @@ const About = () => {
                                     margin: '0 auto',
                                 }}
                             >
-                                An accessible, interactive platform designed to make learning Braille 
+                                An accessible, interactive platform designed to make learning braille 
                                 immersive and accessible for visually impaired individuals. Learn anytime, 
                                 anywhere to improve communication and employability.
                             </Typography>
@@ -242,12 +241,12 @@ const About = () => {
                                 }}
                             >
                                 Braille is a universal system available in every language. However, only 10% 
-                                of blind individuals are Braille literate, while 90% of employed blind people 
-                                are proficient in Braille. Among adults who don't know Braille, only one in 
-                                three is employed. Proficiency in Braille is crucial for visually impaired 
+                                of blind individuals are braille literate, while 90% of employed blind people 
+                                are proficient in braille. Among adults who don't know braille, only one in 
+                                three is employed. Proficiency in braille is crucial for visually impaired 
                                 children to compete with their sighted peers academically and succeed in the 
-                                workforce. Braillearn aims to make learning Braille immersive and accessible, 
-                                enabling more visually impaired individuals to learn Braille anytime, anywhere, 
+                                workforce. Braillearn aims to make learning braille immersive and accessible, 
+                                enabling more visually impaired individuals to learn braille anytime, anywhere, 
                                 improving communication and employability.
                             </Typography>
                         </CardContent>
