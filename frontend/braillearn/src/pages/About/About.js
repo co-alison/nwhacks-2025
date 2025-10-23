@@ -1,14 +1,18 @@
 import React from 'react';
 import theme from '../../styles/theme';
-import { Box, Container, Card, CardContent, Typography, Avatar } from '@mui/material';
-import { School, EmojiEvents, Accessible, Groups, AttachMoney } from '@mui/icons-material';
+import { Box, Container, Card, CardContent, Typography } from '@mui/material';
+import { School, EmojiEvents, Groups, AttachMoney } from '@mui/icons-material';
+import AlisonCo from '../../AlisonCo.jpg';
+import CindyCui from '../../IMG_4824.JPG';
+import MayankRastogi from '../../0.png';
+import TammyKim from '../../Tammy.jpg';
 
 const About = () => {
     const teamMembers = [
-        { name: 'Alison Co' },
-        { name: 'Cindy Cui' },
-        { name: 'Mayank Rastogi' },
-        { name: 'Tammy Kim' },
+        { name: 'Alison Co', image: AlisonCo },
+        { name: 'Cindy Cui', image: CindyCui },
+        { name: 'Mayank Rastogi', image: MayankRastogi },
+        { name: 'Tammy Kim', image: TammyKim },
     ];
 
     const stats = [
@@ -311,18 +315,20 @@ const About = () => {
                                             },
                                         }}
                                     >
-                                        <Avatar
+                                        <Box
+                                            component="img"
+                                            src={member.image}
+                                            alt={`${member.name} headshot`}
                                             sx={{
                                                 width: { xs: 80, md: 100 },
                                                 height: { xs: 80, md: 100 },
                                                 margin: '0 auto 1rem',
-                                                background: theme.palette.custom.gradient,
-                                                fontSize: { xs: '1.5rem', md: '2rem' },
-                                                fontWeight: 700,
+                                                borderRadius: '50%',
+                                                objectFit: 'cover',
+                                                border: '3px solid #e2e8f0',
+                                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                                             }}
-                                        >
-                                            {member.name.split(' ').map(n => n[0]).join('')}
-                                        </Avatar>
+                                        />
                                         <Typography
                                             variant="body1"
                                             sx={{
