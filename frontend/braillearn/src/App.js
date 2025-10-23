@@ -5,7 +5,7 @@ import Home from './pages/Home/Home';
 import Display from './pages/Display/Display';
 import Practice from './pages/Practice/Practice';
 import About from './pages/About/About';
-import Instructions from './pages/Instructions/Instructions';
+import Gallery from './pages/Gallery/Gallery';
 import Quiz from './pages/Quiz/Quiz';
 import Modules from './pages/Modules/Modules';
 import ModulePage from './pages/Modules/ModulePage';
@@ -429,6 +429,7 @@ function App() {
                 </Route>
 
                 <Route path='/about' element={<About />} />
+                <Route path='/gallery' element={<Gallery />} />
                 {/* <Route path='/instructions' element={<Instructions />} /> */}
             </Routes>
         </Router>

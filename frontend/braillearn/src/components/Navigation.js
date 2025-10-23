@@ -141,6 +141,30 @@ function Navigation() {
           >
             About
           </Button>
+          <Button
+            onClick={() => navigate("/gallery")}
+            disableRipple
+            aria-label="Go to Gallery page"
+            sx={{
+              color: "#555",
+              fontSize: "1.4rem",
+              fontFamily: "Roboto, sans-serif",
+              padding: "0.8rem 1.8rem",
+              textTransform: "none",
+              borderRadius: "8px",
+              transition: "all 0.2s ease",
+              "&:hover": {
+                backgroundColor: "rgba(94, 103, 191, 0.08)",
+              },
+              "&:focus-visible": {
+                outline: "3px solid #5e67bf",
+                outlineOffset: "2px",
+                backgroundColor: "rgba(94, 103, 191, 0.15)",
+              },
+            }}
+          >
+            Gallery
+          </Button>
           {/* <Button
                         component={Link}
                         to='/instructions'
