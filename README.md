@@ -19,7 +19,7 @@
 5. Run `npm start`
 
 ### Hardware (Optional)
-> The below is only required if 
+> The below is only required if making changes to hardware code and need to upload to Arduino Uno.
 1. Download Arduino IDE from https://www.arduino.cc/en/software
 2. Open or load `hardware/BrailleController.c` in Arduino IDE
 3. Connect the Arduino to your computer via USB
