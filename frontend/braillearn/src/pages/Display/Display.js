@@ -197,7 +197,7 @@ function Display() {
                 }}
               >
                 <ToggleButton value="text" aria-label="text input">
-                  <Keyboard sx={{ marginRight: "0.5rem" }} autocomplete="off" />
+                  <Keyboard sx={{ marginRight: "0.5rem" }} />
                   Text Input
                 </ToggleButton>
                 <ToggleButton value="speech" aria-label="speech input">
@@ -474,9 +474,10 @@ function Display() {
                 variant="outlined"
                 value={textInput}
                 onChange={handleChange}
-                onKeyPress={onKeyPress}
+                onKeyDown={onKeyPress}
                 fullWidth
                 placeholder="Type here..."
+                autoComplete="off"
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     fontSize: "1.25rem",

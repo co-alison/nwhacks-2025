@@ -519,6 +519,7 @@ const Practice = () => {
                                         onKeyPress={onKeyPress}
                                         fullWidth
                                         placeholder="Type your answer..."
+                                        autoComplete="off"
                                         sx={{
                                             '& .MuiOutlinedInput-root': {
                                                 fontSize: '1.25rem',
