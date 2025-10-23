@@ -14,11 +14,12 @@
 
 1. From root directory, `cd backend`
 2. First load the hardware and upload the code onto the Arduino (see Hardware section below)
-3. Change the COM port in `backend/server.js` to the correct port for your Arduino ~line 10 (e.g., 'COM3' on Windows or '/dev/ttyACM0' on Linux)
+3. Change the COM port in `backend/server.js` to the correct port for your Arduino ~line 10 (e.g., 'COM3' on Windows or '/dev/ttyACM0' on Linux). On Mac, after connecting device, open Terminal and run `ls /dev/cu*`. Find the COM port, e.g. `/dev/cu.usbserial-110`
 4. Run `npm install` to install dependencies
 5. Run `npm start`
 
-### Hardware
+### Hardware (Optional)
+> The below is only required if making changes to hardware code and need to upload to Arduino Uno.
 1. Download Arduino IDE from https://www.arduino.cc/en/software
 2. Open or load `hardware/BrailleController.c` in Arduino IDE
 3. Connect the Arduino to your computer via USB
