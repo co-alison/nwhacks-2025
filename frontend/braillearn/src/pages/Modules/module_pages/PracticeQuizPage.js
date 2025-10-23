@@ -1,83 +1,75 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, Button } from '@mui/material';
-import theme from '../../../styles/theme';
-import { sendChar } from '../../../utils/serverApi';
+import characters from '../../../utils/characters';
 import { states } from '../../../utils/constants';
-import  {
-    useSpeechRecognition,
-} from 'react-speech-recognition';
-import { startListeningWithTimer } from '../../../utils/speechRecognition';
+import {
+    Box,
+    TextField,
+    Card,
+    CardContent,
+    ToggleButton,
+    ToggleButtonGroup,
+    Typography,
+} from '@mui/material';
+import { Keyboard, Mic } from '@mui/icons-material';
+import theme from '../../../styles/theme';
 import StyledButton from '../../../components/StyledButton';
+import StatusCard from '../../../components/StatusCard';
+import InstructionCard from '../../../components/InstructionCard';
+import { useStatusConfig } from '../../../hooks/useStatusConfig';
+import { sendChar } from '../../../utils/serverApi';
+import { startListeningWithTimer } from '../../../utils/speechRecognition';
 
-const PracticeQuizPage = ({
-    module,
-    nextModule,
-}) => {
+const PracticeQuizPage = ({ module, nextModule }) => {
     const navigate = useNavigate();
 
     const [currentChar, setCurrentChar] = useState('');
-    const [status, setStatus] = useState(states.quizMenu);
+    const [status, setStatus] = useState(null);
     const [charInput, setCharInput] = useState('');
-
-    const [quizQuestionCount, setQuizQuestionCount] = useState(0);
-    const [correctQuizAnswers, setCorrectQuizAnswers] = useState(0);
-    const [quizComplete, setQuizComplete] = useState(false);
     const [showingCorrectAnswer, setShowingCorrectAnswer] = useState(false);
-    const [characterPool, setCharacterPool] = useState({});
-
+    const [mode, setMode] = useState('text');
+    const [textInput, setTextInput] = useState('');
+    const [error, setError] = useState(false);
     const recognitionRef = useRef(null);
     const timerRef = useRef(null);
 
+    const moduleCharacters = module.charsList || characters;
+
+    const voice =
+        speechSynthesis
+            .getVoices()
+            .find((voice) => voice.name === "Google US English") || null;
+
+    // Clear dots when component unmounts (leaving page)
     useEffect(() => {
-        resetCharacterPool();
+        return () => {
+            sendChar('.');
+        };
     }, []);
 
-    const updateCharValue = (char) => {
-        const newVal = (characterPool[char] -= 1);
-        if (newVal === 0) {
-            delete characterPool[char];
-            console.log(characterPool);
-
-            const keys = Object.keys(characterPool);
-            if (keys.length === 0) {
-                setQuizComplete(true);
-                console.log('quiz is done');
-            }
-            setCharacterPool(characterPool);
-        } else {
-            setCharacterPool((characterPool) => ({
-                ...characterPool,
-                [char]: newVal,
-            }));
-        }
-    };
-
     useEffect(() => {
-        console.log(characterPool);
-    }, [characterPool]);
-
-    const {
-        transcript,
-        listening,
-        resetTranscript,
-        browserSupportsSpeechRecognition,
-    } = useSpeechRecognition();
-
-    useEffect(() => {
-        if (status === states.display) {
-            if (!quizComplete) {
-                const char = getRandomChar();
-                console.log('char: ');
-                console.log(char);
-                setCurrentChar(char);
-
-                sendChar(char, () => {
-                    setStatus(states.listen);
-                });
-            }
+        if (status === states.display && mode === 'text') {
+            const char = getRandomChar();
+            console.log('char: ', char);
+            setCurrentChar(char);
+            sendChar(char);
+        } else if (status === states.display && mode === 'speech') {
+            const char = getRandomChar();
+            console.log('char: ', char);
+            setCurrentChar(char);
+            sendChar(char, () => {
+                setStatus(states.listen);
+            });
+            setStatus(states.listen);
         } else if (status === states.listen) {
-            startListeningWithTimer(timerRef, recognitionRef, setStatus, setCharInput, currentChar);
+            startListeningWithTimer(
+                timerRef,
+                recognitionRef,
+                setStatus,
+                setCharInput,
+                currentChar,
+                'letter'
+            );
         } else if (status === states.correct) {
             speakText('Correct!');
         } else if (status === states.incorrect) {
@@ -85,38 +77,81 @@ const PracticeQuizPage = ({
                 `Incorrect, the correct answer was: ${currentChar.toUpperCase()}`
             );
         } else if (status === states.retry) {
-            speakText("Sorry, we didn’t catch that. Please say 'letter' before your answer, like 'letter A.'");
+            speakText(
+                "Sorry, we didn't catch that. Please say 'letter' before your answer, like 'letter A.'"
+            );
         } else if (status === states.noInput) {
-            speakText("No input received.");
+            speakText('No input received.');
         }
-    }, [status]);
+
+        return () => { };
+    }, [status, mode]);
 
     const getRandomChar = () => {
-        const keys = Object.keys(characterPool);
-        console.log('pulling chars from ', keys);
-        const index = Math.floor(Math.random() * keys.length); 
-        return keys[index];
+        const index = Math.floor(Math.random() * moduleCharacters.length);
+        return moduleCharacters[index];
     };
 
+    const handleModeChange = (event, newMode) => {
+        if (newMode !== null) {
+            setMode(newMode);
+            setError(false);
+            setTextInput('');
+            setCharInput('');
+            setShowingCorrectAnswer(false);
+            setCurrentChar('');
+            setStatus(null);
+            if (recognitionRef.current) {
+                recognitionRef.current.abort();
+            }
+            clearTimeout(timerRef.current);
+        }
+    };
+
+    const startPractice = () => {
+        setStatus(states.display);
+    };
+
+    const handleTextChange = (e) => {
+        setTextInput(e.target.value);
+        setError(false);
+    };
+
+    const submitTextAnswer = () => {
+        if (textInput.length === 1) {
+            setError(false);
+            setCharInput(textInput.toLowerCase());
+            if (textInput.toLowerCase() === currentChar.toLowerCase()) {
+                setStatus(states.correct);
+            } else {
+                setStatus(states.incorrect);
+            }
+            setTextInput('');
+        } else {
+            setError(true);
+        }
+    };
+
+    const onKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            submitTextAnswer();
+        }
+    };
 
     const reset = () => {
         setCurrentChar('');
         setCharInput('');
+        setTextInput('');
+        clearTimeout(timerRef.current);
         setShowingCorrectAnswer(false);
-
-        if (quizComplete) {
-            setStatus(states.quizDone);
-        } else {
-            setStatus(states.display);
-        }
-
+        setError(false);
+        setStatus(null);
         if (recognitionRef.current) {
             recognitionRef.current.abort();
         }
-    };
-
-    const showCorrectAnswer = () => {
-        setShowingCorrectAnswer(true);
+        setTimeout(() => {
+            setStatus(states.display);
+        }, 100);
     };
 
     const speakText = (text) => {
@@ -124,173 +159,460 @@ const PracticeQuizPage = ({
         utterance.pitch = 1;
         utterance.rate = 1;
         utterance.volume = 1;
+        utterance.voice = voice;
         speechSynthesis.speak(utterance);
     };
-    const startQuiz = () => {
-        setStatus(states.display);
+
+    const showCorrectAnswer = () => {
+        speakText(`The correct answer was: ${currentChar.toUpperCase()}`);
+        setShowingCorrectAnswer(true);
     };
 
-    const restartQuiz = () => {
-        setStatus(states.quizMenu);
-        setQuizComplete(false);
-        setQuizQuestionCount(0);
-        setCorrectQuizAnswers(0);
-        resetCharacterPool();
-    };
-
-    const resetCharacterPool = () => {
-        const quizChars = {};
-        module.charsList.forEach((char) => {
-            quizChars[char] = module.numberOfQuestionRepetitions || 3;
-        });
-        setCharacterPool(quizChars);
-    };
+    const statusConfig = useStatusConfig(status, charInput, currentChar);
 
     return (
-        <Box
-            sx={{
-                padding: theme.spacing(4),
-                maxWidth: '800px',
-                margin: '0 auto',
-                textAlign: 'center',
-            }}
-        >
-            {status === states.display ? (
-                <Typography variant='h5' sx={{ fontSize: '1.5rem' }}>Displaying Character...</Typography>
-            ) : status === states.listen ? (
-                <Typography variant='h5' sx={{ fontSize: '1.5rem' }}>
-                    Listening for a character...
-                </Typography>
-            ) : status === states.correct ? (
-                <Box>
-                    <Typography variant='h5' sx={{ fontSize: '1.5rem' }}>
-                        {charInput.toUpperCase()}
-                    </Typography>
-                    <Typography variant='h6' sx={{ fontSize: '1.5rem' }} color='success.main'>
-                        Correct!
-                    </Typography><br /><br /><br />
-                    <Button onClick={reset} variant='outlined' sx={{
-                        fontSize: '1.8rem', color: theme.palette.custom.buttonBackground,
-                        padding: '1rem',
-                        width: '10rem',
-                        height: '3.5rem',
-                    }}>Continue</Button>
-                </Box>
-            ) : status === states.incorrect ? (
-                <Box>
-                    <Typography variant='h5' sx={{ fontSize: '1.5rem' }}>
-                        {charInput === 'No input received' ||
-                            charInput === 'Something went wrong'
-                            ? charInput
-                            : charInput.toUpperCase()}
-                    </Typography>
-                    <Typography variant='h6' sx={{ fontSize: '1.5rem' }} color='error.main'>
-                        Incorrect, the correct answer was:{' '}
-                        {currentChar.toUpperCase()}
-                    </Typography><br /><br /><br />
-
-                    <Button onClick={reset} variant='outlined' sx={{
-                        fontSize: '1.8rem',
-                        color: theme.palette.custom.buttonBackground,
-                        padding: '1rem',
-                        width: '10rem',
-                        height: '3.5rem',
-                    }}>Continue</Button>
-                </Box>
-            ) : status === states.quizMenu ? (
-                <Box>
-                    <Typography variant='p' sx={{ fontSize: '1.5rem' }}>
-                        You will now take a practice quiz on the characters{' '}
-                        {module.chars}.  Tap
-                        "Start" to begin.
-                    </Typography><br /><br /><br />
-
-                    <Button onClick={startQuiz} variant='outlined' sx={{
-                        fontSize: '1.8rem',
-                        color: theme.palette.custom.buttonBackground,
-                        padding: '1rem',
-                        width: '8rem',
-                        height: '3.5rem',
-                    }}>Start</Button>
-                </Box>
-            ) : status === states.quizDone ? (
-                <Box>
-                    <Typography variant='h6' sx={{ fontSize: '1.5rem' }}>
-                        Practice Quiz complete! Your score is:
+        <Box sx={{ maxWidth: '800px', margin: '0 auto' }}>
+            {/* Header with mode selection */}
+            <Card
+                sx={{
+                    borderRadius: '12px',
+                    backgroundColor: '#ffffff',
+                    border: '2px solid #e2e8f0',
+                    marginBottom: '2rem',
+                }}
+            >
+                <CardContent sx={{ padding: '1.5rem', textAlign: 'center' }}>
+                    <Typography
+                        variant="h6"
+                        component="h2"
+                        sx={{
+                            fontSize: '1.125rem',
+                            fontWeight: 600,
+                            color: '#1a1a1a',
+                            marginBottom: '1rem',
+                        }}
+                    >
+                        Practice Module Characters
                     </Typography>
                     <Typography
-                        variant='h5'
+                        variant="body2"
                         sx={{
-                            fontSize: '1.5rem',
-                            marginTop: theme.spacing(4),
-                            fontWeight: 'bold',
+                            fontSize: '0.875rem',
+                            color: '#4a5568',
+                            marginBottom: '1rem',
                         }}
                     >
-                        {correctQuizAnswers}/{quizQuestionCount}
+                        Characters: {moduleCharacters.join(', ').toUpperCase()}
                     </Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                        <ToggleButtonGroup
+                            value={mode}
+                            exclusive
+                            onChange={handleModeChange}
+                            aria-label="input method"
+                            sx={{
+                                '& .MuiToggleButtonGroup-grouped': {
+                                    border: '2px solid #e2e8f0',
+                                    borderRadius: '8px !important',
+                                    margin: '0 0.5rem',
+                                    padding: '0.75rem 1.5rem',
+                                    fontSize: '1rem',
+                                    textTransform: 'none',
+                                    '&.Mui-selected': {
+                                        backgroundColor: theme.palette.custom.buttonBackground,
+                                        color: '#ffffff',
+                                        borderColor: theme.palette.custom.buttonBackground,
+                                        '&:hover': {
+                                            backgroundColor: theme.palette.custom.buttonHover,
+                                        },
+                                    },
+                                },
+                            }}
+                        >
+                            <ToggleButton value="text" aria-label="text input">
+                                <Keyboard sx={{ marginRight: '0.5rem' }} />
+                                Text Input
+                            </ToggleButton>
+                            <ToggleButton value="speech" aria-label="speech input">
+                                <Mic sx={{ marginRight: '0.5rem' }} />
+                                Speech Input
+                            </ToggleButton>
+                        </ToggleButtonGroup>
+                    </Box>
+                </CardContent>
+            </Card>
 
-                    <Button onClick={restartQuiz} variant='outlined' sx={{
-                        fontSize: '1.8rem',
-                        color: theme.palette.custom.buttonBackground,
-                        padding: '1rem',
-                        width: '8rem',
-                        height: '3.5rem',
-                    }}>Retake Practice Quiz</Button>
-
-                    <Button
-                        onClick={() => navigate(`/modules/${nextModule.id}`)} variant='outlined' sx={{
-                            fontSize: '1.8rem',
-                            color: theme.palette.custom.buttonBackground,
-                            padding: '1rem',
-                            width: '8rem',
-                            height: '3.5rem',
-                        }}
-                        disabled={!nextModule}
+            {/* Practice content */}
+            {mode === 'speech' ? (
+                statusConfig ? (
+                    <StatusCard
+                        statusConfig={statusConfig}
+                        status={status}
+                        showingCorrectAnswer={showingCorrectAnswer}
+                        correctAnswerText={currentChar.toUpperCase()}
+                        listenStates={[states.listen]}
                     >
-                        Next
-                    </Button>
-                </Box>
-            ) : status === states.noInput ? (
-                <Box>
-                    <Typography variant='h5' sx={{ fontSize: '1.5rem' }}>{charInput}</Typography>
-                    {showingCorrectAnswer && (
-                        <Typography variant='h6' sx={{ fontSize: '1.5rem' }}>
-                            The correct answer was: {currentChar.toUpperCase()}
-                        </Typography>
-                    )}
+                        {status === states.correct && (
+                            <StyledButton
+                                onClick={reset}
+                                sx={{
+                                    minWidth: '150px',
+                                    fontSize: '1.125rem',
+                                }}
+                            >
+                                Next Character
+                            </StyledButton>
+                        )}
 
-                    <Button onClick={showCorrectAnswer} variant='outlined' sx={{
-                        fontSize: '1.8rem',
-                        color: theme.palette.custom.buttonBackground,
-                        padding: '1rem',
-                        width: '8rem',
-                        height: '3.5rem',
-                    }}>
-                        Show correct answer
-                    </Button>
-                    <Button onClick={reset} variant='outlined' sx={{
-                        fontSize: '1.8rem',
-                        color: theme.palette.custom.buttonBackground,
-                        padding: '1rem',
-                        width: '8rem',
-                        height: '3.5rem',
-                    }}>Next</Button>
-                </Box>
-            ) : status === states.retry ? (
-                <Box>
-                    <Typography variant='h5' sx={{ fontSize: '1.5rem' }}>{charInput}</Typography>
-                    <Typography variant='h6' sx={{ fontSize: '1.5rem' }} color='error.main'>
-                        Sorry, we didn’t catch that. Please say 'letter' before your answer, like 'letter A.'
-                    </Typography><br /><br /><br />
-                    <StyledButton onClick={(e) => setStatus(states.listen)} variant='outlined' sx={{
-                        fontSize: '1.8rem',
-                        color: theme.palette.custom.buttonBackground,
-                        padding: '1rem',
-                        width: '8rem',
-                        height: '3.5rem',
-                    }}>Retry</StyledButton>
-                </Box>
-            ) : null}
+                        {status === states.incorrect && (
+                            <StyledButton
+                                onClick={reset}
+                                sx={{
+                                    minWidth: '150px',
+                                    fontSize: '1.125rem',
+                                }}
+                            >
+                                Next Character
+                            </StyledButton>
+                        )}
+
+                        {status === states.noInput && (
+                            <>
+                                {!showingCorrectAnswer && (
+                                    <StyledButton
+                                        onClick={showCorrectAnswer}
+                                        sx={{
+                                            minWidth: '180px',
+                                            fontSize: '1.125rem',
+                                        }}
+                                    >
+                                        Show Answer
+                                    </StyledButton>
+                                )}
+                                <StyledButton
+                                    onClick={reset}
+                                    sx={{
+                                        minWidth: '150px',
+                                        fontSize: '1.125rem',
+                                    }}
+                                >
+                                    Next Character
+                                </StyledButton>
+                            </>
+                        )}
+
+                        {status === states.retry && (
+                            <StyledButton
+                                onClick={() => setStatus(states.listen)}
+                                sx={{
+                                    minWidth: '150px',
+                                    fontSize: '1.125rem',
+                                }}
+                            >
+                                Try Again
+                            </StyledButton>
+                        )}
+                    </StatusCard>
+                ) : (
+                    <Card
+                        sx={{
+                            borderRadius: '12px',
+                            backgroundColor: '#ffffff',
+                            border: '2px solid #e2e8f0',
+                        }}
+                    >
+                        <CardContent
+                            sx={{
+                                padding: { xs: '1.5rem', md: '2rem' },
+                                textAlign: 'center',
+                            }}
+                        >
+                            <Box
+                                sx={{
+                                    width: '80px',
+                                    height: '80px',
+                                    borderRadius: '50%',
+                                    background: 'rgba(94, 103, 191, 0.1)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    margin: '0 auto 1rem',
+                                    color: theme.palette.custom.buttonBackground,
+                                }}
+                                aria-hidden="true"
+                            >
+                                <Mic sx={{ fontSize: '3rem' }} />
+                            </Box>
+
+                            <Typography
+                                variant="h5"
+                                component="h2"
+                                sx={{
+                                    fontSize: { xs: '1.25rem', md: '1.5rem' },
+                                    fontWeight: 600,
+                                    color: '#1a1a1a',
+                                    marginBottom: '0.5rem',
+                                }}
+                            >
+                                Speak Your Answer
+                            </Typography>
+
+                            <Typography
+                                variant="body1"
+                                component="p"
+                                sx={{
+                                    fontSize: { xs: '0.875rem', md: '1rem' },
+                                    color: '#4a5568',
+                                    marginBottom: '1rem',
+                                    lineHeight: 1.5,
+                                }}
+                            >
+                                Click the button and say "letter" followed by a single character (e.g., "letter A")
+                            </Typography>
+
+                            <StyledButton
+                                onClick={startPractice}
+                                sx={{
+                                    minWidth: '150px',
+                                    fontSize: '1.125rem',
+                                }}
+                            >
+                                Start Listening
+                            </StyledButton>
+                        </CardContent>
+                    </Card>
+                )
+            ) : (
+                <>
+                    {!currentChar ? (
+                        <Card
+                            sx={{
+                                borderRadius: '12px',
+                                backgroundColor: '#ffffff',
+                                border: '2px solid #e2e8f0',
+                            }}
+                        >
+                            <CardContent
+                                sx={{
+                                    padding: { xs: '1.5rem', md: '2rem' },
+                                    textAlign: 'center',
+                                }}
+                            >
+                                <Box
+                                    sx={{
+                                        width: '80px',
+                                        height: '80px',
+                                        borderRadius: '50%',
+                                        background: 'rgba(94, 103, 191, 0.1)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        margin: '0 auto 1rem',
+                                        color: theme.palette.custom.buttonBackground,
+                                    }}
+                                    aria-hidden="true"
+                                >
+                                    <Keyboard sx={{ fontSize: '3rem' }} />
+                                </Box>
+
+                                <Typography
+                                    variant="h5"
+                                    component="h2"
+                                    sx={{
+                                        fontSize: { xs: '1.25rem', md: '1.5rem' },
+                                        fontWeight: 600,
+                                        color: '#1a1a1a',
+                                        marginBottom: '0.5rem',
+                                    }}
+                                >
+                                    Type Your Answer
+                                </Typography>
+
+                                <Typography
+                                    variant="body1"
+                                    component="p"
+                                    sx={{
+                                        fontSize: { xs: '0.875rem', md: '1rem' },
+                                        color: '#4a5568',
+                                        marginBottom: '1rem',
+                                        lineHeight: 1.5,
+                                    }}
+                                >
+                                    Click the button to start practicing
+                                </Typography>
+
+                                <StyledButton
+                                    onClick={startPractice}
+                                    sx={{
+                                        minWidth: '150px',
+                                        fontSize: '1.125rem',
+                                    }}
+                                >
+                                    Start Practicing
+                                </StyledButton>
+                            </CardContent>
+                        </Card>
+                    ) : (
+                        <>
+                            {status === states.display && (
+                                <Card
+                                    sx={{
+                                        borderRadius: '12px',
+                                        backgroundColor: '#ffffff',
+                                        border: '2px solid #e2e8f0',
+                                    }}
+                                >
+                                    <CardContent
+                                        sx={{
+                                            padding: { xs: '1.5rem', md: '2rem' },
+                                            textAlign: 'center',
+                                        }}
+                                    >
+                                        <Box
+                                            sx={{
+                                                width: '80px',
+                                                height: '80px',
+                                                borderRadius: '50%',
+                                                background: 'rgba(94, 103, 191, 0.1)',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                margin: '0 auto 1rem',
+                                                color: theme.palette.custom.buttonBackground,
+                                            }}
+                                            aria-hidden="true"
+                                        >
+                                            <Keyboard sx={{ fontSize: '3rem' }} />
+                                        </Box>
+
+                                        <Typography
+                                            variant="h5"
+                                            component="h2"
+                                            sx={{
+                                                fontSize: { xs: '1.25rem', md: '1.5rem' },
+                                                fontWeight: 600,
+                                                color: '#1a1a1a',
+                                                marginBottom: '0.5rem',
+                                            }}
+                                        >
+                                            Type Your Answer
+                                        </Typography>
+
+                                        <Typography
+                                            variant="body1"
+                                            component="p"
+                                            sx={{
+                                                fontSize: { xs: '0.875rem', md: '1rem' },
+                                                color: '#4a5568',
+                                                marginBottom: '1rem',
+                                                lineHeight: 1.5,
+                                            }}
+                                        >
+                                            Type the character displayed on your braille device
+                                        </Typography>
+
+                                        <Box sx={{ maxWidth: '400px', margin: '0 auto 1rem' }}>
+                                            <TextField
+                                                id="practice-text-input"
+                                                label="Your Answer"
+                                                error={error}
+                                                helperText={
+                                                    error
+                                                        ? 'Please enter a single character'
+                                                        : ''
+                                                }
+                                                variant='outlined'
+                                                value={textInput}
+                                                onChange={handleTextChange}
+                                                onKeyDown={onKeyPress}
+                                                fullWidth
+                                                placeholder="Type your answer..."
+                                                sx={{
+                                                    '& .MuiOutlinedInput-root': {
+                                                        fontSize: '1.25rem',
+                                                        padding: '0.25rem',
+                                                        borderRadius: '8px',
+                                                        '&:hover fieldset': {
+                                                            borderColor: theme.palette.custom.buttonBackground,
+                                                        },
+                                                        '&.Mui-focused fieldset': {
+                                                            borderColor: theme.palette.custom.buttonBackground,
+                                                            borderWidth: '2px',
+                                                        },
+                                                    },
+                                                    '& .MuiFormHelperText-root': {
+                                                        fontSize: '1rem',
+                                                    },
+                                                }}
+                                            />
+                                        </Box>
+
+                                        <StyledButton
+                                            onClick={submitTextAnswer}
+                                            disabled={!textInput}
+                                            sx={{
+                                                minWidth: '150px',
+                                                fontSize: '1.125rem',
+                                            }}
+                                        >
+                                            Submit Answer
+                                        </StyledButton>
+                                    </CardContent>
+                                </Card>
+                            )}
+
+                            {(status === states.correct || status === states.incorrect) && (
+                                <StatusCard
+                                    statusConfig={statusConfig}
+                                    status={status}
+                                    showingCorrectAnswer={showingCorrectAnswer}
+                                    correctAnswerText={currentChar.toUpperCase()}
+                                    listenStates={[]}
+                                >
+                                    <StyledButton
+                                        onClick={reset}
+                                        sx={{
+                                            minWidth: '150px',
+                                            fontSize: '1.125rem',
+                                        }}
+                                    >
+                                        Next Character
+                                    </StyledButton>
+                                </StatusCard>
+                            )}
+                        </>
+                    )}
+                </>
+            )}
+
+            {/* Navigation buttons */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '2rem' }}>
+                {nextModule && (
+                    <StyledButton
+                        onClick={() => navigate(`/modules/${nextModule.id}`)}
+                        sx={{
+                            fontSize: '1.125rem',
+                            minWidth: '150px',
+                        }}
+                    >
+                        Next Module
+                    </StyledButton>
+                )}
+            </Box>
+
+            <InstructionCard title="How to Practice">
+                <strong>Text Input:</strong><br />
+                1. Feel the braille character displayed on your box<br />
+                2. Type the character you think it is<br />
+                3. Press Enter or click "Submit Answer"<br />
+                4. Get instant feedback on your response<br />
+                <br />
+                <strong>Speech Input:</strong><br />
+                1. Feel the braille character displayed on your box<br />
+                2. When you hear "Listening", say "letter" followed by your answer<br />
+                3. Get instant feedback on your response<br />
+                4. Continue to the next character to keep practicing
+            </InstructionCard>
         </Box>
     );
 };
