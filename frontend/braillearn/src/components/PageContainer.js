@@ -27,12 +27,12 @@ const PageContainer = ({ children, title, headerContent }) => {
             sx={{
                 minHeight: '100vh',
                 background: 'linear-gradient(to bottom, #f0f4f8, #d9e2ec)',
-                padding: { xs: '2rem 1rem', md: '4rem 2rem' },
+                padding: { xs: '1.5rem 1rem', md: '2rem 2rem' },
                 outline: 'none', // Remove focus outline since it's for programmatic focus only
             }}
         >
             <Container maxWidth="md">
-                <Box sx={{ marginTop: { xs: '1rem', md: '2rem' } }}>
+                <Box>
                     {/* Page Title */}
                     {title && (
                         <Typography

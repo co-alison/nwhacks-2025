@@ -189,7 +189,7 @@ const Modules = ({ modules }) => {
               borderRadius: "12px",
               backgroundColor: "#ffffff",
               border: "2px solid #e2e8f0",
-              overflow: "hidden",
+              overflow: "visible",
             }}
           >
             {/* Module Group Header */}
@@ -202,15 +202,16 @@ const Modules = ({ modules }) => {
               sx={{
                 padding: "1.25rem 1.5rem",
                 backgroundColor: "#f8fafc",
-                borderBottom: "1px solid #e2e8f0",
+                borderBottom: expandedModules[groupNum] ? "1px solid #e2e8f0" : "none",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                transition: "background-color 0.2s",
+                transition: "background-color 0.2s, border-radius 0.2s",
                 width: "100%",
                 border: "none",
                 textAlign: "left",
+                borderRadius: expandedModules[groupNum] ? "12px 12px 0 0" : "12px",
                 "&:hover": {
                   backgroundColor: "#f1f5f9",
                 },
@@ -218,6 +219,7 @@ const Modules = ({ modules }) => {
                   outline: "3px solid #5e67bf",
                   outlineOffset: "-3px",
                   backgroundColor: "#f1f5f9",
+                  borderRadius: expandedModules[groupNum] ? "12px 12px 0 0" : "12px",
                 },
               }}
               onClick={() => toggleModule(groupNum)}
@@ -256,6 +258,10 @@ const Modules = ({ modules }) => {
             <Collapse
               in={expandedModules[groupNum]}
               id={`module-group-${groupNum}`}
+              sx={{
+                borderRadius: "0 0 12px 12px",
+                overflow: "hidden",
+              }}
             >
               <CardContent sx={{ padding: "1.5rem" }}>
                 <Box
