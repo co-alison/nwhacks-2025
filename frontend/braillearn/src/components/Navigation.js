@@ -33,8 +33,8 @@ function Navigation() {
   ];
 
   const secondaryItems = [
-    { path: "/about", label: "About" },
-    { path: "/gallery", label: "Gallery" },
+    { path: "/about", label: "About" }
+    // { path: "/gallery", label: "Gallery" },
   ];
 
   const handleNavigate = (path) => {
