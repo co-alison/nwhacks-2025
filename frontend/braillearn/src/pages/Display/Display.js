@@ -39,11 +39,11 @@ function Display() {
       .find((voice) => voice.name === "Google US English") || null;
 
   // Clear dots when component unmounts (leaving page)
-  useEffect(() => {
-    return () => {
-      sendChar('.');
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     sendChar('.');
+  //   };
+  // }, []);
 
   const sendInputValue = async () => {
     if (textInput.length === 1) {
@@ -96,8 +96,8 @@ function Display() {
   };
 
   const clearDots = () => {
-    sendChar('.');
-    setDisplayedChar('');
+    sendChar(".");
+    setDisplayedChar("");
     speakText("Dots have been cleared.");
   };
 
@@ -197,7 +197,7 @@ function Display() {
                 }}
               >
                 <ToggleButton value="text" aria-label="text input">
-                  <Keyboard sx={{ marginRight: "0.5rem" }} />
+                  <Keyboard sx={{ marginRight: "0.5rem" }} autocomplete="off" />
                   Text Input
                 </ToggleButton>
                 <ToggleButton value="speech" aria-label="speech input">
@@ -220,79 +220,79 @@ function Display() {
             {(status === states.display ||
               status === states.noInput ||
               status === states.retry) && (
-                <Box
-                  sx={{
-                    width: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box sx={{ marginBottom: "1rem" }}>
-                    <ToggleButtonGroup
-                      value={speechInputType}
-                      exclusive
-                      onChange={(event, newType) => {
-                        if (newType !== null) {
-                          setSpeechInputType(newType);
-                        }
-                      }}
-                      aria-label="speech input type"
-                      size="small"
-                      sx={{
-                        "& .MuiToggleButtonGroup-grouped": {
-                          border: "1px solid #e2e8f0",
-                          borderRadius: "6px !important",
-                          margin: "0 0.25rem",
-                          padding: "0.5rem 1rem",
-                          fontSize: "0.875rem",
-                          textTransform: "none",
-                          "&.Mui-selected": {
-                            backgroundColor:
-                              theme.palette.custom.buttonBackground,
-                            color: "#ffffff",
-                            borderColor: theme.palette.custom.buttonBackground,
-                          },
-                        },
-                      }}
-                    >
-                      <ToggleButton value="letter">Letter</ToggleButton>
-                      <ToggleButton value="word">Word</ToggleButton>
-                    </ToggleButtonGroup>
-                  </Box>
-                  <StyledButton
-                    onClick={reset}
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <Box sx={{ marginBottom: "1rem" }}>
+                  <ToggleButtonGroup
+                    value={speechInputType}
+                    exclusive
+                    onChange={(event, newType) => {
+                      if (newType !== null) {
+                        setSpeechInputType(newType);
+                      }
+                    }}
+                    aria-label="speech input type"
+                    size="small"
                     sx={{
-                      minWidth: "150px",
-                      fontSize: "1.125rem",
-                      marginBottom:
-                        status === states.display && displayedChar ? "1rem" : 0,
+                      "& .MuiToggleButtonGroup-grouped": {
+                        border: "1px solid #e2e8f0",
+                        borderRadius: "6px !important",
+                        margin: "0 0.25rem",
+                        padding: "0.5rem 1rem",
+                        fontSize: "0.875rem",
+                        textTransform: "none",
+                        "&.Mui-selected": {
+                          backgroundColor:
+                            theme.palette.custom.buttonBackground,
+                          color: "#ffffff",
+                          borderColor: theme.palette.custom.buttonBackground,
+                        },
+                      },
                     }}
                   >
-                    Listen Again
-                  </StyledButton>
-                  {status === states.display && displayedChar && (
-                    <Box
+                    <ToggleButton value="letter">Letter</ToggleButton>
+                    <ToggleButton value="word">Word</ToggleButton>
+                  </ToggleButtonGroup>
+                </Box>
+                <StyledButton
+                  onClick={reset}
+                  sx={{
+                    minWidth: "150px",
+                    fontSize: "1.125rem",
+                    marginBottom:
+                      status === states.display && displayedChar ? "1rem" : 0,
+                  }}
+                >
+                  Listen Again
+                </StyledButton>
+                {status === states.display && displayedChar && (
+                  <Box
+                    sx={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      backgroundColor: "rgba(16, 185, 129, 0.1)",
+                      borderRadius: "8px",
+                    }}
+                  >
+                    <Typography
+                      variant="body1"
                       sx={{
-                        width: "100%",
-                        padding: "0.75rem",
-                        backgroundColor: "rgba(16, 185, 129, 0.1)",
-                        borderRadius: "8px",
+                        color: "#059669",
+                        fontWeight: 600,
                       }}
                     >
-                      <Typography
-                        variant="body1"
-                        sx={{
-                          color: "#059669",
-                          fontWeight: 600,
-                        }}
-                      >
-                        Displaying: "{displayedChar}"
-                      </Typography>
-                    </Box>
-                  )}
-                </Box>
-              )}
+                      Displaying: "{displayedChar}"
+                    </Typography>
+                  </Box>
+                )}
+              </Box>
+            )}
           </StatusCard>
         ) : (
           <Card
@@ -497,7 +497,14 @@ function Display() {
               />
             </Box>
 
-            <Box sx={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Box
+              sx={{
+                display: "flex",
+                gap: "1rem",
+                justifyContent: "center",
+                flexWrap: "wrap",
+              }}
+            >
               <StyledButton
                 onClick={sendInputValue}
                 disabled={!textInput}
@@ -514,9 +521,9 @@ function Display() {
                 sx={{
                   minWidth: "150px",
                   fontSize: "1.125rem",
-                  backgroundColor: '#ef4444',
-                  '&:hover': {
-                    backgroundColor: '#dc2626',
+                  backgroundColor: "#ef4444",
+                  "&:hover": {
+                    backgroundColor: "#dc2626",
                   },
                 }}
               >
