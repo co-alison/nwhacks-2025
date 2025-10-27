@@ -17,7 +17,7 @@ function Home() {
     // Focus main content when page loads
     useEffect(() => {
         if (mainRef.current) {
-            mainRef.current.focus();
+            mainRef.current.focus({ preventScroll: true });
         }
     }, []);
 
@@ -67,7 +67,7 @@ function Home() {
                         role="main"
                         tabIndex={-1}
                         sx={{
-                            paddingTop: '4rem',
+                            paddingTop: { xs: '1.5rem', md: '2rem' },
                             paddingBottom: '4rem',
                             outline: 'none',
                         }}

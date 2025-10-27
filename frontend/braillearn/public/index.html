@@ -25,6 +25,27 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
         <title>Braillearn</title>
+        <script>
+            // Ensure page always starts at top on load/reload
+            if ('scrollRestoration' in history) {
+                history.scrollRestoration = 'manual';
+            }
+            window.scrollTo(0, 0);
+            
+            // Also on DOMContentLoaded
+            document.addEventListener('DOMContentLoaded', function() {
+                window.scrollTo(0, 0);
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+            });
+            
+            // And on full page load
+            window.addEventListener('load', function() {
+                window.scrollTo(0, 0);
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+            });
+        </script>
     </head>
 
     <body>

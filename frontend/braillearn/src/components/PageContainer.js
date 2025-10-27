@@ -12,11 +12,11 @@ const PageContainer = ({ children, title, headerContent }) => {
     const mainRef = useRef(null);
 
     // Focus main content when page loads/changes
-    useEffect(() => {
-        if (mainRef.current) {
-            mainRef.current.focus();
-        }
-    }, [title]); // Re-focus when title changes (new page)
+    // useEffect(() => {
+    //     if (mainRef.current) {
+    //         mainRef.current.focus({ preventScroll: true });
+    //     }
+    // }, [title]); // Re-focus when title changes (new page)
 
     return (
         <Box
